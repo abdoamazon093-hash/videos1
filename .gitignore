@@ -1,0 +1,33 @@
+# Environment & Secrets (STRICT - NEVER COMMIT)
+.env
+.env.*
+!.env.example
+
+# Databases & Cache
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+
+# Virtual Environments & Python Cache
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & System Files
+*.log
+logs/
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos1 Platform | منصة الفيديوهات والإصدارات الآمنة</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-area">
+                <div class="status-indicator live"></div>
+                <h1>Videos1 <span class="badge">v1</span></h1>
+            </div>
+            <div class="header-actions">
+                <span class="tag env-tag">Production</span>
+                <span class="tag branch-tag">GitHub Connected</span>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-card">
+            <h2>نظام إدارة الإصدارات والأمان الصارم</h2>
+            <p>مشروع FastAPI متكامل مع كاش SQLite محلي وواجهة أمامية سريعة، مدعوم بأتمتة كاملة للحفظ والرجوع على GitHub وحماية مطلقة للمفاتيح والأسرار.</p>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="label">الحالة:</span>
+                    <span id="health-status" class="value ok">جاري الفحص...</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">زمن التشغيل:</span>
+                    <span id="uptime-val" class="value font-mono">0 ثانية</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">عناصر الكاش:</span>
+                    <span id="cache-count" class="value font-mono">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">المنفذ (Port):</span>
+                    <span id="app-port" class="value font-mono">8095</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Cache Management Panel -->
+            <div class="card cache-panel">
+                <h3>إدارة الكاش المحلي (SQLite Cache)</h3>
+                <form id="cache-form" class="cache-form">
+                    <div class="input-group">
+                        <label for="cache-key">المفتاح (Key)</label>
+                        <input type="text" id="cache-key" placeholder="مثال: video_101_meta" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="cache-val">القيمة (Value)</label>
+                        <textarea id="cache-val" rows="3" placeholder="محتوى البيانات (نص أو JSON)..." required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="cache-ttl">مدة الصلاحية بالثواني (اختياري)</label>
+                        <input type="number" id="cache-ttl" placeholder="مثال: 3600">
+                    </div>
+                    <button type="submit" class="btn btn-primary">حفظ في الكاش</button>
+                </form>
+
+                <div class="cache-list-container">
+                    <h4>العناصر المخزنة حالياً</h4>
+                    <div id="cache-list" class="cache-list">
+                        <p class="empty-state">لا توجد عناصر في الكاش بعد.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Architecture & Automation Overview -->
+            <div class="card info-panel">
+                <h3>الأوامر الآلية السريعة (Server CLI)</h3>
+                <div class="cli-command-box">
+                    <div class="cmd-title">1. حفظ إصدار جديد فوراً:</div>
+                    <code>save-version "رسالة التعديل"</code>
+                    <p class="cmd-desc">يقوم بجمع التعديلات، فحص الأمان، زيادة رقم الفيرجن تلقائياً (v1, v2...)، ورفعه إلى GitHub.</p>
+                </div>
+
+                <div class="cli-command-box">
+                    <div class="cmd-title">2. الرجوع الآمن بالزمن:</div>
+                    <code>rollback-version v1</code>
+                    <p class="cmd-desc">يعيد كامل ملفات المشروع 100% وبكل بايت إلى التاج المحدد ويوثق الرجوع ويرفعه لـ GitHub.</p>
+                </div>
+
+                <div class="cli-command-box">
+                    <div class="cmd-title">3. خدمة النظام الخلفية (Systemd):</div>
+                    <code>systemctl status videos1.service</code>
+                    <p class="cmd-desc">يعمل السيرفر في الخلفية 24/7 ويعاود الإقلاع الذاتي فوراً عند إعادة تشغيل الـ VPS.</p>
+                </div>
+
+                <div class="security-rules">
+                    <h4>قواعد الأمان المطبقة:</h4>
+                    <ul>
+                        <li>تم عزل جميع المفاتيح والأسرار داخل <code>.env</code> المحلي فقط.</li>
+                        <li>ملف <code>.gitignore</code> نشط ويتجاهل ملفات البيئة وقواعد البيانات.</li>
+                        <li>ملف <code>.env.example</code> متاح كمرجع خالي من الأسرار.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Videos1 Engine • Strict Versioning &amp; Rollback Architecture • 2026</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
