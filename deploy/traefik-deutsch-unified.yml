@@ -1,0 +1,15 @@
+http:
+  routers:
+    deutsch-unified:
+      rule: "Host(`deutsch.srv2162066.hstgr.cloud`) || Host(`videos.srv2162066.hstgr.cloud`)"
+      entryPoints:
+        - "websecure"
+      service: "deutsch-unified-service"
+      tls:
+        certResolver: "letsencrypt"
+
+  services:
+    deutsch-unified-service:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8095"
