@@ -1,0 +1,563 @@
+1|2|g|Chefsekretärin, -nen|السكرتيرة التنفيذية / سكرتيرة المدير|Vorstandssekretärin, Direktionsassistentin
+2|2|g|ausgiebig|بإسهاب / بشكل وافر ومفصل|ausführlich, eingehend, gründlich
+3|2|g|her/richten|يُجهّز / يُعدّ / يُصلح|vorbereiten, zurechtmachen, instand setzen
+4|2|r|aus/führen|ينفّذ / يشرح بالتفصيل|durchführen, erledigen / darlegen, erläutern
+5|2|g|durchweg|بلا استثناء / تماماً / في المجمل|ausnahmslos, durchgehend, alles in allem
+6|2|g|Charaktersache|مسألة شخصية / تتوقف على الطبع|Frage des Charakters, Typsache
+7|2|r|im Alleingang|بمفرده / بشكل منفرد دون مساعدة|allein, auf eigene Faust, ohne Hilfe
+8|2|r|wesentlich|جوهري / أساسي / إلى حد كبير|entscheidend, grundlegend, erheblich
+9|2|g|die Charakterbildung|بناء الشخصية / تكوين الخُلُق|Persönlichkeitsentwicklung, Charakterformung
+10|2|r|beitragen zu|يساهم في / يساعد على|beisteuern zu, mitwirken an, fördern
+11|2|g|der Kommilitone,|زميل الدراسة الجامعية|Mitstudent, Studienkollege
+12|2|g|sich ein/fügen in + AKK|يندمج في / يتأقلم مع|sich anpassen an, sich integrieren in
+13|2|g|gut gemeinte Kritik|نقد حسن النية / نقد بنّاء|wohlwollende Kritik, konstruktive Kritik
+14|2|g|existieren|يوجد / يكون موجوداً|bestehen, vorhanden sein, geben
+15|2|r|diesbezüglich|في هذا الصدد / بخصوص ذلك|in dieser Hinsicht, dazu, hierzu
+16|2|r|eminent wichtig|بالغ الأهمية / في غاية الأهمية|äußerst wichtig, enorm wichtig, entscheidend
+17|2|r|der Individualist,|الشخص المستقل / الفرداني|Einzelgänger, unabhängiger Geist
+18|2|g|treffend|دقيق / صائب / معبّر بوضوح|passend, genau, präzise, zutreffend
+19|2|g|das Hantieren|التعامل اليدوي (مع أدوات) / العبث بـ|Umgehen, Arbeiten, Manipulieren
+20|2|r|weltoffen|منفتح على العالم / متسامح|aufgeschlossen, kosmopolitisch, tolerant
+21|2|r|verallgemeinern|يُعمّم|generalisieren, pauschalisieren
+22|2|r|das Klischee,|الصورة النمطية / القالب الجاهز|Stereotyp, Vorurteil, Schablone
+23|3|g|versteht sich|يُفهم منه (يشمل...) / بطبيعة الحال|gilt (inklusive/exklusive), selbstverständlich
+24|3|g|bekanntlich|كما هو معروف|wie man weiß, bekanntermaßen
+25|3|g|Wirtschaftskrise,|أزمة اقتصادية|Rezession, Konjunkturkrise, Depression
+26|3|g|Heil|شفاء / خلاص / فلاح|Rettung, Genesung, Wohlergehen
+27|3|r|der Riss,|شق / تصدّع / شرخ|Spalt, Sprung, Bruch
+28|3|g|weg/brechen|ينهار فجأة / يتلاشى (كالعملاء أو الإيرادات)|wegfallen, verloren gehen, einbrechen
+29|3|g|zusammen/brechen|ينهار / يسقط مغشياً عليه|einstürzen, kollabieren, scheitern
+30|3|r|unverschuldet|دون ذنب منه / بلا تقصير شخصي|ohne eigenes Verschulden, schuldlos
+31|3|r|geraten in + AKK|يقع في (مأزق / خطر / أزمة)|kommen in, hineingeraten in
+32|3|g|begehrt|مرغوب بشدة / مطلوب جداً|gefragt, beliebt, erwünscht
+33|3|g|gerüstet|مستعد / مجهّز جيداً|vorbereitet, gewappnet, ausgestattet
+34|3|g|Anwachsen|تزايد / نمو / ارتفاع|Anstieg, Zunahme, Wachstum
+35|3|g|konjunkturell|مرتبط بالدورة الاقتصادية|wirtschaftlich bedingt, konjunkturbedingt
+36|3|g|Krise,|أزمة / ضائقة|Notlage, schwierige Lage, Wendepunkt
+37|3|r|derzeitig-|حالي / راهن|aktuell, gegenwärtig, momentan
+38|3|g|Exportnation,|دولة مصدِّرة|Ausfuhrland, Exportland
+39|3|g|abgeschlossen|مكتمل / منتهٍ / مغلق|beendet, erledigt, verschlossen
+40|3|g|Geringqualifizierte,|ذوو التأهيل المحدود / الأقل تأهيلاً|Ungelernte, niedrig Qualifizierte
+41|3|r|ein/stellen|يوظّف / يضبط (جهازاً) / يتأقلم مع|anstellen, engagieren / justieren / sich anpassen
+42|3|g|sich berufen auf + AKK|يستند إلى / يحتجّ بـ|sich stützen auf, sich beziehen auf
+43|4|g|demnach|وبناءً على ذلك / وفقاً لذلك|folglich, also, demzufolge
+44|4|g|privilegiert|ذو امتيازات / محظوظ اجتماعياً|bevorzugt, begünstigt
+45|4|r|der Anstieg|الارتفاع / الزيادة / الصعود|Zunahme, Erhöhung, Zuwachs
+46|4|g|Frühjahrsmüdigkeit|خمول الربيع / إرهاق بداية الربيع|Frühlingsmüdigkeit, saisonale Mattigkeit
+47|4|r|die Beschwerde, -n|شكوى / ألم أو وعكة صحية|Reklamation, Klage / Leiden, Schmerz
+48|4|g|ertragen|يتحمّل / يطيق|aushalten, dulden, überstehen
+49|4|g|abgeschlagen|منهك القوى / خائر القوى|erschöpft, matt, ermüdet
+50|4|g|wechselhaft|متقلّب / غير مستقر|unbeständig, veränderlich, schwankend
+51|4|g|Anpassungsphase,|مرحلة التأقلم / فترة التكيّف|Eingewöhnungszeit, Umstellungsphase
+52|4|g|wetterfühlig|حسّاس لتقلبات الطقس|wetterempfindlich, klimasensibel
+53|4|r|fest/stehen|يتأكد / يكون محدداً وثابتاً|sicher sein, beschlossen sein, klar sein
+54|4|g|aus/setzen|يُعرِّض لـ / يوقف مؤقتاً|preisgeben, konfrontieren mit / unterbrechen
+55|4|g|drosseln|يُخفّض / يُبطئ / يقلّص|reduzieren, verlangsamen, einschränken
+56|4|g|erholsam|مُريح / باعث على الاستجمام|entspannend, regenerierend, wohltuend
+57|4|g|reibungslos|بسلاسة / دون عقبات أو مشاكل|problemlos, glatt, störungsfrei
+58|4|g|Übergangszeit|فترة انتقالية|Zwischenzeit, Übergangsphase
+59|5|r|der Sauerstoff|الأكسجين|O2, Lebensluft
+60|5|g|vertragen|يتحمّل (طعاماً أو طقساً) / يتقبّل|tolerieren, verkraften, aushalten
+61|5|r|trimmen|يُشذّب (الشعر/الشجر) / يدرب ويهيئ البدَن|stutzen, schneiden / trainieren, fit machen
+62|5|r|ins Rollen kommen|يبدأ بالتحرك / ينطلق (مشروع أو قضية)|in Gang kommen, anlaufen, starten
+63|5|r|an/regen|يُحفّز / ينشّط / يقترح|stimulieren, beleben, vorschlagen
+64|5|r|gymnastisch|جمبازي / متعلق بالتمارين البدنية|turnerisch, sportlich-beweglich
+65|5|g|Fußmarsch,|سير على الأقدام / مسيرة راجلة|Wanderung, Fußweg, Marsch
+66|5|g|auf Trab bringen (bringen den kreislauf auf Trap)|ينشّط / يبعث الحيوية والحركة في|in Schwung bringen, aktivieren, beleben
+67|5|g|Schwung|حيوية / زخم / اندفاع|Elan, Dynamik, Energie, Antrieb
+68|5|g|Organ,|عضو (في الجسم) / هيئة|Körperteil / Institution, Gremium
+69|5|g|ausgestattet|مُجهَّز / مُزوَّد بـ|ausgerüstet, versehen mit, eingerichtet
+70|5|g|durchbluten|يُغذّي بالدم / ينشط الدورة الدموية في|mit Blut versorgen
+71|5|g|die Ausstrahlung|الحضور الطاغي / الكاريزما / الإشراق|Charisma, Wirkung, Aura
+72|5|g|ab/sacken|يهبط فجأة / ينخفض بشدة|absinken, abfallen, nachlassen
+73|5|g|auf/raffen|يستجمع قواه / يشدّ همته للقيام بشيء|sich überwinden, sich entschließen
+74|5|g|anhaltend|مستمر / متواصل / دائم|andauernd, fortdauernd, beständig
+75|5|g|die Antriebslosigkeit|فقدان الدافعية / الخمول وانعدام الحافز|Lustlosigkeit, Passivität, Trägheit
+76|5|g|die Gereiztheit|التوتر / سرعة الانفعال والغضب|Reizbarkeit, Genervtheit, Angespanntheit
+77|5|g|die Niedergeschlagenheit|الكآبة / انقباض الصدر / الإحباط|Bedrücktheit, Schwermut, Traurigkeit
+78|5|g|Depression|الاكتئاب|Schwermut, depressive Erkrankung
+79|5|g|bemerkbar|ملحوظ / محسوس|spürbar, erkennbar, merklich
+80|5|g|unaufgefordert|من تلقاء نفسه / دون أن يُطلب منه|spontan, freiwillig, von sich aus
+81|5|g|die Mitfahrgelegenheit,|فرصة مشاركة الركوب (السفر المشترك بالسيارة)|Fahrgemeinschaft, Mitfahrmöglichkeit
+82|6|g|vor/sehen|يخطط لـ / ينصّ على / يخصص|planen, einplanen, bestimmen
+83|6|g|Prozedur,|إجراء / عملية روتينية مطولة|Verfahren, Ablauf, Vorgang
+84|6|g|Zeitfresser,|مضيعة للوقت / مستنزف للوقت|Zeitverschwendung, Zeiträuber
+85|6|g|theatralisch|مسرحي مبالغ فيه / درامي مفتعل|übertrieben dramatisch, pathetisch
+86|6|g|killen|يقتل / يقضي على (بلغة دارجة)|töten, zunichtemachen, zerstören
+87|6|g|der Selbstmord,|الانتحار|Suizid, Freitod
+88|6|g|Abreise|المغادرة / الرحيل|Abfahrt, Abflug, Aufbruch
+89|6|g|Jugendherbergswerk|اتحاد بيوت الشباب|Verband der Jugendherbergen
+90|6|g|Aufbewahrung|حفظ / تخزين / إيداع|Lagerung, Verwahrung, Speicherung
+91|6|g|Haftung|المسؤولية القانونية / الضمان|Verantwortung, Bürgschaft, Gewähr
+92|6|g|das Kuvert,|المظروف / الظرف البريدي|Briefumschlag, Umschlag
+93|6|g|der/das Safe|الخزنة الحديدية|Tresor, Geldschrank, Schließfach
+94|6|g|hinterlegen|يُودِع (أمانة أو وثيقة أو مفتاحاً)|deponieren, abgeben, verwahren lassen
+95|6|g|Gelände|أرض / موقع / ساحة مجمّع|Areal, Gebiet, Grundstück
+96|6|g|ab/spielen|يدور / يحدث / يجري (حدث أو قصة)|sich ereignen, stattfinden, geschehen
+97|7|g|Anschrift|العنوان البريدي|Adresse, Wohnanschrift
+98|7|r|nix|لا شيء (صيغة عامية لـ nichts)|nichts, gar nichts
+99|7|r|bislang|حتى الآن|bisher, bis jetzt, bis dato
+100|7|g|einschulen|يُلحق الطفل بالمدرسة الابتدائية|in die Schule aufnehmen
+101|7|r|betreuen|يرعى / يشرف على / يعتني بـ|versorgen, begleiten, sich kümmern um
+102|7|g|lediglich|فقط / فحسب / لا غير|nur, bloß, einzig und allein
+103|7|r|ein/springen|يحلّ محلّ شخص (بشكل طارئ) / ينوب عن|aushelfen, vertreten, übernehmen
+104|7|g|Karat,|قيراط (وحدة نقاء الذهب أو وزن الألماس)|Feingehaltseinheit, Gewichtseinheit
+105|7|r|verzierten|مُزيَّن / مُزخرف|geschmückt, dekoriert, ornamentiert
+106|7|g|Deckel,|غطاء (قدر / علبة / كتاب)|Verschluss, Abdeckung, Kappe
+107|7|g|Provinz|مقاطعة / إقليم ريفي بعيد عن العاصمة|Region, Landgebiet, Peripherie
+108|7|g|verschmutzen|يلوّث / يتّسخ|verunreinigen, verdrecken, kontaminieren
+109|7|g|synthetisch|اصطناعي / تركيبي (كيميائي)|künstlich, chemisch hergestellt
+110|7|g|Ausmaß,|حجم / مدى / نطاق|Umfang, Dimension, Größenordnung
+111|7|g|Teilchen,|جُسَيم / ذرّة صغيرة|Partikel, Körnchen, Molekül
+112|7|g|erheblich|كبير جداً / ملحوظ / جسيم|beträchtlich, bedeutend, wesentlich
+113|7|g|gefährden|يُعرّض للخطر / يهدد|bedrohen, aufs Spiel setzen, riskieren
+114|8|c|Werkstatt B2|ورشة عمل (اسم الكتاب التدريبي لمستوى B2)|Übungsbuch B2, Trainingsprogramm B2
+115|8|g|Nahrungskette|السلسلة الغذائية|Fresskette, trophische Kette
+116|8|g|Tragödie,|مأساة / فاجعة|Katastrophe, Drama, Unglück
+117|8|g|Hungersnot,|مجاعة|Hungerkrise, Nahrungsmangel
+118|8|g|ergeben|يُسفر عن / يُظهر / ينتج عنه|zeigen, resultieren in, zur Folge haben
+119|8|g|depressive|اكتئابي / كئيب|niedergeschlagen, schwermütig
+120|8|g|psychische Störungen|اضطرابات نفسية|seelische Erkrankungen, mentale Störungen
+121|8|g|psychisch belastende Einflüsse|مؤثرات ضاغطة نفسياً|seelische Stressfaktoren, psychische Belastungen
+122|8|g|vorerst|في الوقت الراهن / مؤقتاً|zunächst, vorläufig, fürs Erste
+123|8|g|widerstandsfähig|مقاوِم / صامد / متين|robust, belastbar, resilient
+124|8|g|die Anregung,|اقتراح / فكرة ملهمة / تحفيز|Impuls, Idee, Vorschlag, Inspiration
+125|8|g|der Psychiater|الطبيب النفسي|Facharzt für Psychiatrie, Seelenarzt
+126|9|g|seelisches|نفسي / روحي|psychisch, mental, innerlich
+127|9|g|altersbedingt|مرتبط بالتقدم في العمر|durch das Alter verursacht, altersabhängig
+128|9|g|die Verfassung|الحالة (الصحية أو النفسية) / الدستور|Zustand, Kondition / Grundgesetz
+129|9|g|beeinträchtigen|يؤثر سلباً على / يُضعف / يعيق|schmälern, stören, einschränken, schaden
+130|9|g|umso besser|فذلك أفضل بكثير / كلما كان... كان أفضل|desto besser, noch besser
+131|9|g|das Belohnungszeichen,|علامة أو رمز مكافأة وتشجيع|Lobsymbol, Fleißkärtchen, Anerkennungssymbol
+132|9|g|schulisch|مدرسي / دراسي|die Schule betreffend, unterrichtlich
+133|9|g|keinerlei|لا ... على الإطلاق / أيّ نوع من (في النفي)|überhaupt kein, gar kein
+134|9|g|die Ziffer, -n|رقم / خانة رقمية|Zahlzeichen, Nummer
+135|9|g|Anhand|بناءً على / بالاستعانة بـ / على ضوء|mithilfe von, gestützt auf, mittels
+136|9|g|demoralisieren|يُثبّط العزيمة / يُحبط المعنويات|entmutigen, demotivieren, herunterziehen
+137|9|g|Ziffernnoten|الدرجات الرقمية (التقييم بالأرقام)|Zahlennoten, Schulnoten in Ziffern
+138|9|g|Berichtszeugnis,|شهادة مدرسية وصفية (تقرير تقييمي مكتوب)|Lernentwicklungsbericht, Wortgutachten
+139|10|g|Autismus|التوحّد (اضطراب طيف التوحد)|Autismus-Spektrum-Störung
+140|10|g|Autist,|شخص مصاب بالتوحد|Mensch im Autismus-Spektrum
+141|10|g|autistische|توحّدي / متعلق بالتوحد|zum Autismus gehörend
+142|10|g|Zugang|وصول / مدخل / إمكانية الدخول|Zutritt, Einstieg, Zugriff
+143|10|g|Teilhabe|المشاركة الفاعلة / الاندماج المجتمعي|Partizipation, Mitwirkung, Einbeziehung
+144|10|g|genetischer|وراثي / جيني|erblich, genbedingt, hereditär
+145|10|g|arrogant|متعجرف / متكبّر / مغرور|überheblich, hochmütig, eingebildet
+146|10|g|verdrängen|يكبت (مشاعر/ذكريات) / يُقصي ويحلّ محل|unterdrücken, beiseiteschieben, vertreiben
+147|10|g|das Asperger-Syndrom|متلازمة أسبرجر (أحد أطياف التوحد)|Form des Autismus-Spektrums
+148|10|g|entschlüsseln|يفكّ الشفرة / يفسّر لغزاً|decodieren, dechiffrieren, enträtseln
+149|11|g|eine abschließende|نهائي / ختامي|endgültig, final, letzte
+150|11|g|mit System und Verstand|بمنهجية وعقلانية / بتخطيط وحكمة|planmäßig und klug, durchdacht, systematisch
+151|11|g|der Meilenstein,|علامة فارقة / إنجاز تاريخي هام|Wendepunkt, wichtiger Etappenerfolg
+152|11|g|die Präsenz|الحضور / التواجد|Anwesenheit, Gegenwart, Auftreten
+153|11|g|ansprechend|جذّاب / مثير للإعجاب|attraktiv, gefällig, einladend
+154|11|g|referieren über + AKK|يلقي محاضرة أو عرضاً حول|vortragen über, berichten über
+155|11|g|höherer Verdienst|دخل أعلى / أجر أكبر|besseres Einkommen, höheres Gehalt
+156|11|g|Rodeln|التزلج بالمزلجة على الثلج|Schlittenfahren
+157|11|g|die Bedenken|مخاوف / تحفّظات / شكوك|Zweifel, Einwände, Sorgen, Vorbehalte
+158|12|g|sich die Zeit vertreiben|يقضي الوقت / يسلّي نفسه|die Zeit überbrücken, sich beschäftigen
+159|12|g|die Sicherheitsvorschriften|لوائح وتعليمات السلامة|Sicherheitsbestimmungen, Schutzregeln
+160|12|c|heimisch|أصلي الموطن / يشعر وكأنه في بيته|einheimisch, ortsansässig, vertraut
+161|12|c|die Expedition,|بعثة استكشافية|Forschungsreise, Entdeckungsreise
+162|12|c|das Couchsurfing|استضافة المسافرين مجاناً في المنازل|kostenlose Privatübernachtung bei Gastgebern
+163|12|c|zur Verfügung stellen|يُتيح / يوفّر / يضع تحت التصرف|bereitstellen, anbieten, überlassen
+164|12|c|alles ist drin|كل شيء وارد وممكن / كل الاحتمالات مفتوحة|alles ist möglich, jede Chance besteht
+165|12|c|im Vorhinein|مسبقاً / سلفاً|im Voraus, vorab, von vornherein
+166|12|c|aus/helfen +|يساعد في وقت الضيق / يسعف بـ|unterstützen, beistehen, einspringen
+167|12|c|der Horror|رعب / كابوس لا يُطاق|Schrecken, Albtraum, Grauen
+168|12|c|ein/halten|يلتزم بـ (موعد / قانون / وعد)|befolgen, beachten, erfüllen
+169|12|c|Pauschaltourist,|سائح ضمن رحلة شاملة منظمة|Pauschalreisender
+170|12|c|massenweise|بكميات هائلة / بأعداد غفيرة|in großen Mengen, haufenweise, zahlreich
+171|12|c|das Dutzend,|دزينة (اثنا عشر)|zwölf Stück
+172|12|c|übrig bleiben|يتبقّى / يفضل|verbleiben, zurückbleiben
+173|12|c|vor/finden|يجد أمامه (عند وصوله لمكان)|antreffen, entdecken, begegnen
+174|13|c|daheim|في البيت / في الوطن|zu Hause, in der Heimat
+175|13|c|geräumig|واسع / فسيح|großzügig, weitläufig, Platz bietend
+176|13|c|sich zurück/ziehen|ينسحب / يختلي بنفسه / يتقاعد|sich absondern, sich erholen, zurücktreten
+177|13|c|im Hinblick auf + AKK|بالنظر إلى / فيما يتعلق بـ|hinsichtlich, bezüglich, mit Blick auf
+178|13|c|der Flieger|الطائرة (أو الطيّار)|Flugzeug, Maschine / Pilot
+179|13|c|bei/tragen zu + DAT|يساهم في / يساعد على تحقيق|beisteuern zu, mitwirken an, fördern
+180|13|c|der Badeanzug,|بدلة السباحة|Schwimmanzug, Badekleidung
+181|13|c|ab/streifen|يخلع (ملابس) / يتخلّص من (عادة قديمة)|ausziehen, ablegen, loswerden
+182|13|c|zertifiziert|مُعتمَد رسمياً / حاصل على شهادة جودة|geprüft, amtlich bestätigt, anerkannt
+183|13|c|der Hirnforscher,|عالِم أبحاث الدماغ والأعصاب|Neurowissenschaftler, Neurobiologe
+184|13|c|rational|عقلاني / منطقي|vernünftig, sachlich, logisch
+185|13|c|vertraut|مألوف / على دراية بـ|bekannt, gewohnt, kundig
+186|14|c|(wieder)erkennbar|قابل للتعرّف عليه / مميّز وواضح|identifizierbar, deutlich sichtbar
+187|14|c|ab/kürzen|يختصر (الطريق أو الكلام)|verkürzen, kürzer fassen
+188|14|c|sich fest/setzen|يرسخ / يثبت / يترسّب|haften bleiben, sich einprägen, sich ablagern
+189|14|c|Verführer, -|مُغوٍ / فاتن|Charmeur, Verlocker
+190|14|c|die Rarität,|تحفة نادرة / شيء نادر الوجود|Seltenheit, Kostbarkeit, Sammlerstück
+191|14|c|die Ehrung|تكريم / تشريف|Auszeichnung, Würdigung
+192|14|c|die Salbung|المسح بالزيت المقدس (طقس ديني أو ملكي)|Weihe mit Salböl, Einreibung
+193|14|o|die Oberschicht|الطبقة العليا في المجتمع|Elite, wohlhabende Gesellschaftsschicht
+194|14|c|die Essenz,|الجوهر / الخلاصة العطرية المركّزة|Kern, Wesentliche / Extrakt, Konzentrat
+195|14|c|der Aromastoff,|مادة منكّهة أو عطرية|Duftstoff, Geschmacksstoff
+196|14|c|der Weihrauch|البخور / اللبان الذكر|Räucherharz, Kirchenweihrauch
+197|14|c|heilig|مقدّس|sakral, geweiht, unantastbar
+198|14|c|der Kartäusermönch,|راهب كارتوزي (يعيش في عزلة وصمت)|Mönch des Kartäuserordens
+199|14|c|scheinbar|ظاهرياً / على ما يبدو|dem Anschein nach, oberflächlich betrachtet
+200|14|c|die Manufaktur,|مشغل حرفي يدوي / مصنع تقليدي راقٍ|Handwerksbetrieb, Werkstätte
+201|14|c|der Firmensitz|المقرّ الرئيسي للشركة|Hauptsitz, Zentrale, Unternehmenssitz
+202|14|c|die Zusammensetzung|التركيبة / التكوين|Aufbau, Struktur, Mischung, Rezeptur
+203|14|c|unterliegen +|يخضع لـ (قانون / رقابة / ضريبة)|gebunden sein an, betroffen sein von
+204|15|c|Hauptbestandteil, -e|المكوّن الأساسي / العنصر الرئيسي|Hauptkomponente, Grundelement
+205|15|c|ätherisch|طَيّار / عطري (مثل الزيوت العطرية)|flüchtig duftend, aromatisch
+206|15|c|Rosmarin|إكليل الجبل (الروزماري)|Kräuterpflanze Rosmarinus
+207|15|c|Lavendel|الخزامى (اللافندر)|Duftpflanze Lavandula
+208|15|c|entfalten|ينشر / يُظهر ويطوّر (رائحة أو موهبة أو تأثيراً)|entwickeln, verströmen, zur Geltung bringen
+209|15|c|vorbehalten|مقصور على / مخصّص حصرياً لـ|reserviert für, beschränkt auf
+210|15|c|Kreation,|إبداع / ابتكار (في العطور أو الطبخ أو الأزياء)|Schöpfung, Werk, Komposition
+211|15|c|Geruch,|رائحة|Duft, Gestank, Aroma, Note
+212|15|c|Truppe,|فرقة / مجموعة|Gruppe, Team, Ensemble, Mannschaft
+213|15|c|Demonstrant,|متظاهر / محتجّ|Protestteilnehmer, Kundgebungsteilnehmer
+214|15|c|Flucht|هروب / فرار / لجوء|Entkommen, Ausbruch, Vertreibung
+215|15|c|die Abwasserreinigungsanlage|محطة معالجة وتنقية مياه الصرف الصحي|Kläranlage, Wasseraufbereitungsanlage
+216|15|c|Stammtisch,|حلقة نقاش دورية للأصدقاء / طاولة الروّاد الدائمين|regelmäßige Gesprächsrunde, Freundesrunde
+217|16|c|harmonisch|متناغم / منسجم|stimmig, ausgewogen, einträchtig
+218|16|c|belächeln|يبتسم باستخفاف لـ / يستهين بـ|milde lächeln über, nicht ernst nehmen
+219|16|c|ins Lächerliche ziehen|يسخر من / يحوّل الأمر إلى مدعاة للسخرية|lächerlich machen, verspotten, verhöhnen
+220|16|c|das Übergewicht|زيادة الوزن / السمنة|Fettleibigkeit, Adipositas, zu hohes Gewicht
+221|16|c|erheblich|كبير جداً / ملحوظ / ملموس|beträchtlich, wesentlich, deutlich
+222|16|c|das Inhaltsverzeichnis,|فهرس المحتويات|Gliederung, Kapitelübersicht
+223|16|c|auswärtiger Leihverkehr|الإعارة الخارجية بين المكتبات|Fernleihe بين المكتبات
+224|16|c|die Vorbestellung, -en|الحجز المسبق / الطلب المسبق|Reservierung, Vormerkung
+225|16|c|der Dienst,|الخدمة / الدوام أو المناوبة|Service, Leistung / Schicht, Arbeitseinsatz
+226|16|c|ausleihbar|متاح للإعارة|entleihbar, verfügbar zur Ausleihe
+227|16|c|die Entrichtung|سداد / دفع (رسوم أو ضرائب)|Zahlung, Begleichung, Überweisung
+228|16|c|die Ausstattung|التجهيزات / المعدات|Einrichtung, Ausrüstung, Inventar
+229|16|c|schonend|لطيف / غير مُتلف / رفيق بـ|pfleglich, behutsam, sanft
+230|16|c|die Sorgfalt|العناية / الدقة والحرص|Gewissenhaftigkeit, Achtsamkeit, Umsicht
+231|16|c|sich betragen|يتصرّف / يسلك سلوكاً مؤدباً|sich benehmen, sich verhalten
+232|17|c|ablenken|يشتّت الانتباه / يشغل عن|zerstreuen, stören, abbringen von
+233|17|c|der Verstoß,|مخالفة / انتهاك (لقانون أو قاعدة)|Übertretung, Regelbruch, Verletzung
+234|17|c|einmalig|يدفع لمرة واحدة فقط / فريد من نوعه|nur ein einziges Mal / einzigartig
+235|17|c|ein/ziehen|ينتقل للسكن في / يصادر أو يسحب (بطاقة أو جوازاً)|einwandern in Wohnung / einbehalten, konfiszieren
+236|17|c|sorgfältig|بعناية / بدقة وحرص|gründlich, gewissenhaft, behutsam
+237|17|c|vorinstalliert|مُثبّت مسبقاً (برنامج على جهاز)|ab Werk installiert, vorab eingerichtet
+238|17|c|untersagt sein|ممنوع / محظور رسمياً|verboten sein, nicht gestattet sein
+239|17|c|sichtbar|مرئي / ظاهر للعيان|erkennbar, wahrnehmbar, offenbar
+240|17|c|erwähnt|مذكور / مشار إليه|genannt, angeführt, angesprochen
+241|17|c|innig|عميق وحميم / من صميم القلب|herzlich, tief empfunden, vertraut
+242|17|c|die Stille|الهدوء التام / السكون / الصمت|Ruhe, Lautlosigkeit, Schweigen
+243|17|c|die Geräuschlosigkeit,|انعدام الصوت / الصمت المطلق|Lautlosigkeit, absolute Ruhe
+244|17|r|absorbieren|يمتصّ (الضوء / الصوت / الماء)|aufnehmen, aufsaugen, dämpfen
+245|17|c|stören|يزعج / يعطّل / يشوّش على|belästigen, behindern, unterbrechen
+246|17|c|skeptisch|مُتشكّك / مرتاب|zweifelnd, misstrauisch, kritisch
+247|18|c|nachschlagen|يبحث عن معلومة أو كلمة في مرجع أو قاموس|nachsehen, recherchieren, konsultieren
+248|18|r|ohnehin|على أي حال / في كل الأحوال|sowieso, ohnedies, sowieso schon
+249|18|r|das Summen|طنين / أزيز (البعوض أو الأجهزة)|Brummen, Surren
+250|18|r|die Stechmücke|البعوضة اللاسعة (الناموسة)|Moskito, Schnake, Mücke
+251|18|c|der Blutsauger|ماصّ الدماء|blutsaugendes Insekt, Parasit
+252|18|c|der Juckreiz|الحكّة الجلدية|Jucken, Hautkribbeln
+253|18|r|plagen|يؤرق / يزعج بشدة / يعذّب|quälen, belästigen, zusetzen
+254|18|r|feucht|رطب / مبلّل قليلاً|nass, klamm, wasserhaltig
+255|18|c|das Gewässer|المسطح المائي (بحيرة / نهر / بركة)|See, Fluss, Teich, Wasserfläche
+256|18|r|der Mückenplage|آفة انتشار البعوض الكثيف|Mückeninvasion, massenhaftes Auftreten von Mücken
+257|18|c|die Schallwelle,|الموجة الصوتية|Klangwelle, akustische Welle
+258|18|c|versprühen|يرشّ / ينثر رذاذاً|zerstäuben, spritzen, verteilen
+259|18|c|sich beziehen auf +|يشير إلى / يستند إلى / يتعلق بـ|Bezug nehmen auf, betreffen, anknüpfen an
+260|18|c|verschütten|يسكب (سائلاً دون قصد)|auskippen, vergießen, kleckern
+261|19|o|eine Zeitlang an/halten|يستمر لفترة من الوقت|eine Weile andauern, fortbestehen
+262|19|o|in Gang setzen|يُشغّل / يُطلق شرارة البدء|starten, auslösen, anstoßen, aktivieren
+263|19|c|Neurobiologe|عالم الأحياء العصبية|Hirnforscher, Neurowissenschaftler
+264|19|c|ahnen|يتكهّن / يشعر بحدس مسبق|vermuten, voraussehen, spüren
+265|19|c|langersehnt|طال انتظاره / مرتقب بشوق|lang erwartet, heiß ersehnt
+266|19|c|in den Griff bekommen|يسيطر على / يتحكم في مشكلة بنجاح|bewältigen, meistern, unter Kontrolle bringen
+267|19|c|ein eingespieltes Team|فريق متفاهم ومتناغم بالخبرة|gut aufeinander abgestimmte Gruppe
+268|19|c|ein schlechtes Gewissen haben|يشعر بتأنيب الضمير|Schuldgefühle haben, Reue empfinden
+269|19|c|auf der Strecke bleiben|يُهمَل / يضيع في خضم الانشغال|vernachlässigt werden, verloren gehen
+270|19|o|zu kurz kommen|لا ينال حقه الكافي / يُظلم أو يُهمَل|benachteiligt werden, vernachlässigt werden
+271|19|c|in Kauf nehmen|يتقبّل (أمراً سلبياً كضريبة لشيء آخر)|akzeptieren, hinnehmen, dulden
+272|19|c|die Zeitnot|ضيق الوقت / ضغط الوقت|Zeitmangel, Zeitdruck, Eile
+273|19|c|das Vorschulalter|سنّ ما قبل المدرسة|Kindergartenalter
+274|19|c|abarbeiten|ينجز المهام المتراكمة بالتتابع|erledigen, schrittweise fertigstellen
+275|19|o|abarbeiten|يُنهي قائمة الأعمال المتبقية واحدة تلو الأخرى|erledigen, abhaken, bewältigen
+276|19|c|die Auszeit|فترة استراحة مستقطعة / إجازة للتجديد|Pause, Erholungsphase, Sabbatical
+277|19|o|Letztendlich|في نهاية المطاف / أخيراً|schließlich, letzten Endes, im Endeffekt
+278|19|c|zugute/kommen|يعود بالنفع على / يفيد|nützen, zum Vorteil gereichen, helfen
+279|19|c|das Aufbaustudium|دراسات عليا تكميلية (بعد البكالوريوس)|weiterführendes Studium, Masterstudium
+280|19|c|nach/holen|يعوّض ما فاته (امتحاناً أو موعداً)|später erledigen, nachreichen
+281|19|c|versäumen|يفوّت (فرصة أو موعداً أو درساً)|verpassen, auslassen, verabsäumen
+282|19|c|vor lauter|من شدة كذا / لكثرة كذا|wegen zu viel, aus reiner
+283|19|c|zittrige Knie bekommen|ترتعد فرائصه / يشعر بالخوف والارتباك|Angst bekommen, nervös werden
+284|19|c|im schlimmsten|في أسوأ الأحوال (im schlimmsten Fall)|schlimmstenfalls, im ungünstigsten Fall
+285|19|c|beklemmt|مقبوض الصدر / يشعر بضيق وقلق|bedrückt, ängstlich, eingeengt
+286|20|c|ab/weichen|ينحرف عن / يختلف عن|differieren, sich unterscheiden, abkommen von
+287|20|o|angesichts + GEN|نظراً لـ / في ظلّ / إزاء|im Hinblick auf, wegen, in Anbetracht
+288|20|o|die Bedrohung, -en|تهديد / خطر محدق|Gefahr, Gefährdung, Einschüchterung
+289|20|c|das Patentrezept,|وصفة سحرية جاهزة / حل مثالي لكل شيء|Ideallösung, Allheilmittel, Universalrezept
+290|20|o|das Pensum|حجم العمل المطلوب إنجازه / النصاب|Arbeitsumfang, Arbeitspensum, Soll
+291|20|c|den Überblick behalten|يحافظ على رؤية شاملة واضحة للأمور|die Übersicht bewahren, alles im Blick haben
+292|20|o|beeinträchtigen|يؤثر سلباً على / يضعف|schmälern, mindern, schaden, stören
+293|20|o|Versagensgefühl, -e|الشعور بالفشل والعجز|Insuffizienzgefühl, Gefühl des Scheiterns
+294|20|c|das Herzklopfen|خفقان القلب|Herzrasen, schneller Pulsschlag
+295|20|o|bundesweit|على مستوى الجمهورية الاتحادية بالكامل|in ganz Deutschland, landesweit
+296|20|c|mittelmäßig|متوسط المستوى / عادي جداً|durchschnittlich, mäßig, mittelklassig
+297|20|c|überschreiten|يتجاوز / يتخطى (الحد المسموح)|übersteigen, übertreten, hinausgehen über
+298|20|c|zerlegen|يفكّك (إلى أجزاء) / يقسّم (إلى خطوات صغيرة)|auseinandernehmen, aufteilen, untergliedern
+299|20|c|die Portion|حصّة غذائية / وجبة|Menge, Ration, Anteil
+300|20|c|gefürchtet|مَهيب / مخيف / يُخشى منه|Angst einflößend, berüchtigt
+301|20|c|simulieren|يحاكي / يمثّل موقفاً للتدريب|nachbilden, durchspielen, vortäuschen
+302|20|c|die allerwenigsten|القلة القليلة جداً / أقلية نادرة|fast niemand, nur sehr wenige
+303|21|o|scheitern an + DAT|يفشل بسبب / يخفق في|misslingen wegen, fehlschlagen an
+304|21|o|Vaterschaftsurlaub beantragen|يتقدم بطلب إجازة أبوة|Elternzeit für Väter anmelden
+305|21|o|Anspruch haben auf + AKK|يحقّ له الحصول على|das Recht haben auf, zustehen
+306|21|o|Alleinerziehende,|والد أو والدة يربّي أطفاله بمفرده|Ein-Eltern-Familie, allein erziehende Person
+307|21|o|vereinbaren|يتفق على / يوفّق بين (العمل والأسرة)|abmachen, verabreden / in Einklang bringen
+308|21|o|das Weingut,|مزرعة كروم ومصنع نبيذ|Weinbaubetrieb, Winzerhof
+309|21|o|der Feinschmecker,|ذوّاق الطعام الفاخر|Gourmet, Genießer, Kenner
+310|21|o|die Zukunftsaussichten|آفاق المستقبل / الفرص المستقبلية|Perspektiven, Erfolgschancen, Prognosen
+311|21|o|körperlich Behinderte|ذوو الإعاقة الجسدية|Menschen mit körperlicher Beeinträchtigung
+312|21|o|die Behinderung, -en|الإعاقة / العائق|Beeinträchtigung, Handicap, Einschränkung
+313|21|o|infizieren|يُعدي / يُصيب بالعدوى|anstecken, übertragen
+314|21|o|die Sicherheitsvorkehrungen|إجراءات واحتياطات الأمن والسلامة|Schutzmaßnahmen, Sicherheitsmaßnahmen
+315|21|o|das Fachgeschäft, -e|متجر متخصّص|Spezialgeschäft, Fachhandel
+316|21|o|die Bindung, -en|رابطة عاطفية / التزام وارتباط|Beziehung, Verbundenheit, Verpflichtung
+317|22|o|gebildet|مثقّف / متعلّم|belesen, kultiviert, gelehrt
+318|22|o|Berufung|رسالة سامية في الحياة / شغف مهني فطري|innere Bestimmung, Lebensaufgabe
+319|22|o|Burnout gefährdet|معرّض لخطر الاحتراق النفسي والوظيفي|von Erschöpfung bedroht, überlastungsgefährdet
+320|22|o|ein erfüllender Beruf|مهنة مُشبِعة تمنح الرضا والسعادة|sinnstiftende Tätigkeit, befriedigende Arbeit
+321|22|o|die Leere|الفراغ / الخواء (النفسي أو المكاني)|Sinnleere, Hohlheit, Unausgefülltheit
+322|22|o|umgeben sein von + DAT|مُحاط بـ|eingeschlossen sein von, umringt sein von
+323|22|o|der Reichtum|الثروة / الغنى|Wohlstand, Vermögen, Überfluss
+324|22|o|hinterher/laufen + DAT|يركض وراء / يلهث خلف (حلم أو شخص)|nachjagen, hinterherrennen, nachstreben
+325|22|o|vergebens|عبثاً / بلا جدوى|vergeblich, umsonst, erfolglos
+326|22|o|aus/lösen|يثير / يتسبب في / يطلق (إنذاراً أو شعوراً)|verursachen, hervorrufen, bewirken
+327|22|o|bezweifeln|يشكّك في|anzweifeln, infrage stellen, nicht glauben
+328|22|o|der Kranfahrer, -|سائق الرافعة (الونش)|Kranführer, Baumaschinenführer
+329|22|o|wohltätige Zwecke|أغراض خيرية وإنسانية|gemeinnützige Zwecke, karitative Ziele
+330|22|o|der Mitmensch,|الإنسان الآخر / أخوك في الإنسانية|Nächster, Zeitgenosse, Nachbar
+331|22|o|auf/leben|ينتعش / تدبّ فيه الحياة من جديد|aufblühen, neue Kraft schöpfen, erwachen
+332|22|o|der Zusammenhalt|التكاتف / التماسك والترابط|Solidarität, Geschlossenheit, Gemeinschaftssinn
+333|22|o|die Verbundenheit|الارتباط الوثيق / الانتماء العميق|Zusammengehörigkeitsgefühl, Nähe, Treue
+334|22|o|den Fokus richten auf + AKK|يوجه التركيز نحو / يسلّط الضوء على|sich konzentrieren auf, den Schwerpunkt legen auf
+335|22|o|erfreulich|مُفرح / سارّ / مبشّر|positiv, willkommen, schön
+336|23|o|Weltelite|النخبة العالمية / الصفوة العالمية|Weltspitze, internationale Spitzenklasse
+337|23|o|der Amateur, -e|الهاوي (غير المحترف)|Nichtprofi, Freizeitakteur, Laie
+338|23|o|der Läufer,|العدّاء / المتسابق في الجري|Jogger, Sprinter, Marathonläufer
+339|23|o|überstehen|يجتاز بسلام / ينجو من محنة أو عملية|überwinden, durchstehen, überleben
+340|23|o|dopen|يتعاطى المنشطات المحظورة رياضياً|unerlaubte Leistungssteigerungsmittel nehmen
+341|23|o|genau genommen|بالمعنى الدقيق / في الحقيقة|streng genommen, eigentlich, präzise gesagt
+342|23|o|der Wirkstoff, -e|المادة الفعّالة (في الدواء)|aktive Substanz, Arzneistoff
+343|23|o|lebensbedrohlich|مهدِّد للحياة / خطير جداً|lebensgefährlich, kritisch, tödlich
+344|23|o|der Schlaganfall,|السكتة الدماغية / الجلطة الدماغية|Hirnschlag, Apoplex
+345|23|o|die Niere,|الكُلية|Entgiftungsorgan, Renalorgan
+346|23|o|die Magenblutung, -en|نزيف المعدة|gastrische Blutung
+347|23|o|absurd|سخيف / غير منطقي / عبثي|unsinnig, abwegig, widersinnig
+348|23|o|die Denkleistung|الكفاءة الذهنية / القدرة الفكرية|kognitive Leistung, geistige Kapazität
+349|23|o|leistungsfähig|ذو كفاءة عالية / قادر على الأداء والإنتاج|effizient, belastbar, produktiv
+350|23|o|erlernte Denkweise|نمط تفكير مكتسب|antrainiertes Denkmuster, Gewohnheitsdenken
+351|23|o|an/setzen bei + DAT|يبدأ المعالجة من عند (جذور المشكلة)|beginnen bei, anknüpfen an
+352|23|o|bekämpfen|يكافح / يحارب / يقاوم|begegnen, eindämmen, vorgehen gegen
+353|24|o|nach/helfen|يمدّ يد المساعدة / يدعم قليلاً لتسريع الأمر|unterstützen, fördern, nachbessern
+354|24|o|heran/kommen an + AKK|يصل إلى مستوى كذا / يطول شيئاً|erreichen, gleichkommen, heranreichen an
+355|24|o|vorüber/gehen an + DAT|يمرّ بجانب / يفوته دون أن ينتبه|vorbeigehen an, unbemerkt bleiben von
+356|24|o|entrümpeln|يُفرغ المكان من الكراكيب والأشياء القديمة|aufräumen, ausmisten, leerräumen
+357|24|o|Vorsatz,|عزم / نية / قرار شخصي للتغيير|Absicht, Entschluss, Vorhaben
+358|24|o|ernüchtert|مُفاق من الوهم / مصاب بخيبة أمل واقعية|desillusioniert, enttäuscht, realistisch geworden
+359|24|o|aus/gehen|يخرج للتنزه / يفترض (ausgehen von) / ينطفئ|weggehen / annehmen / erlöschen
+360|24|o|geradezu|حقاً / بكل معنى الكلمة / يكاد يكون|regelrecht, förmlich, direkt
+361|24|o|vererbt|موروث (جينياً أو كتركة وميراث)|weitergegeben, hinterlassen, genetisch übertragen
+362|24|o|bereuen|يندم على|bedauern, beklagen, Reue zeigen
+363|24|o|hinaus/schieben|يؤجّل / يماطل في الموعد|aufschieben, vertagen, verzögern
+364|25|o|zeitaufwändig|مستغرق لوقت طويل / مكلف زمنياً|zeitintensiv, langwierig
+365|25|o|unterteilen|يقسّم إلى أجزاء فرعية|gliedern, aufteilen, klassifizieren
+366|25|o|vornherein|من البداية أصلاً (von vornherein)|von Anfang an, im Voraus
+367|25|o|rum/schleppen|يجرجر معه / يحمل أشياء ثقيلة هنا وهناك|herumtragen, mitschleppen
+368|25|o|Prognose,|توقّع مستقبلي / تنبؤ علمي أو اقتصادي|Vorhersage, Voraussage, Ausblick
+369|25|o|sich erweisen|يتبيّن أنه / يثبت بالتجربة أنه|sich herausstellen als, sich zeigen als
+370|25|o|spannend|مثير / مشوّق|fesselnd, aufregend, interessant
+371|25|o|Bruchteil,|جزء ضئيل جداً / كسر بسيط|kleiner Teil, Minimalanteil, Fragment
+372|25|o|herum/tragen|يتجول حاملاً معه (أوراقاً أو أفكاراً)|bei sich tragen, mit sich führen
+373|25|o|ein/sparen|يوفّر / يقتصد في (المال أو الطاقة أو الوقت)|sparen, reduzieren, kürzen
+374|25|o|einen Gefallen tun + DAT|يسدي معروفاً / يقدم خدمة لـ|aushelfen, entgegenkommen
+375|25|o|Datenvolumen|باقة البيانات / حجم استهلاك الإنترنت|Datenkontingent, Internetvolumen
+376|25|o|Übertragungsstandard|معيار نقل البيانات والاتصال|Funkstandard, Kommunikationsprotokoll
+377|25|o|vorübergehend|مؤقت / عابر|temporär, zeitweilig, vorläufig
+378|26|o|die Einzugsermächtigung|تفويض بالخصم المباشر من الحساب البنكي|Lastschriftmandat, Abbuchungserlaubnis
+379|26|o|ab/buchen|يخصم مبلغاً من الحساب البنكي|einziehen, belasten, verrechnen
+380|26|o|der Ablauf|سير الإجراءات / التسلسل الزمني / انتهاء الصلاحية|Verlauf, Hergang, Prozedur / Fristende
+381|26|o|das Vertragsverhältnis|العلاقة التعاقدية|Vertragsbindung, Rechtsverhältnis
+382|26|o|vertraglich|تعاقدي / بموجب العقد|kontraktlich, per Vertrag festgelegt
+383|26|o|Gültigkeitsdauer|مدة الصلاحية / فترة السريان|Laufzeit, Geltungsdauer
+384|26|o|Genmaterial,|المادة الوراثية (DNA)|Erbgut, genetisches Material
+385|26|o|Zypern|قبرص|Mittelmeerinsel Zypern
+386|26|o|die enge Beziehung|العلاقة الوثيقة|innige Bindung, vertrautes Verhältnis
+387|26|o|einführen|يُدخِل / يطبّق (نظاماً أو قانوناً جديداً)|etablieren, starten, importieren
+388|26|o|wobei|حيث إن / علماً بأن / في حين أن|während, wenngleich, bei dem
+389|26|o|von vorne nach hinten|من البداية إلى النهاية / من الأمام إلى الخلف|komplett durch, von Anfang bis Ende
+390|26|o|der Bericht|التقرير|Report, Darstellung, Schilderung
+391|26|o|Amnesty International|منظمة العفو الدولية|Menschenrechtsorganisation Amnesty
+392|26|o|anbauen|يزرع (محاصيل أو خضروات)|kultivieren, pflanzen, züchten
+393|26|o|aufbauen|يبني / يؤسس / يعيد بناء|errichten, gründen, entwickeln
+394|27|o|unersetzliches|لا يُعوَّض / لا غنى عنه|unwiederbringlich, unverzichtbar, einzigartig
+395|27|o|Lithium-Ionen-Akkus|بطاريات أيونات الليثيوم القابلة للشحن|wiederaufladbare Energiespeicher
+396|27|o|Minderjährige|القاصرون (دون السن القانونية)|Jugendliche unter 18 Jahren, Unmündige
+397|27|o|Eingriff,|عملية جراحية / تدخّل|Operation, Intervention, Maßnahme
+398|27|o|Dozent,|محاضِر جامعي|Hochschullehrer, Lehrbeauftragter
+399|27|o|Erhebung|دراسة استقصائية / إحصاء وجمع بيانات|Umfrage, Studie, Datenerfassung
+400|27|o|bisherig|سابق / ما كان معمولاً به حتى الآن|bislang gültig, vorangehend
+401|27|o|langlebig|طويل العمر / معمّر ومتين|haltbar, beständig, dauerhaft
+402|27|o|einzig|وحيد / فريد|alleinig, einzeln, einmalig
+403|27|o|Rekordhalter|حامل الرقم القياسي|Bestmarkeninhaber, Spitzenreiter
+404|27|o|Lektüre|قراءة / مادة مخصصة للقراءة|Lesestoff, Buch, das Lesen
+405|27|o|zunehmend|على نحو متزايد / باطّراد|wachsend, steigend, immer mehr
+406|27|o|Zeitaufwand|الوقت المستغرق / الجهد الزمني المطلوب|Zeitbedarf, benötigte Zeit
+407|27|o|vorherig|سابق / سالف الذكر|vorangehend, früher, letzt-
+408|28|o|verschieben|يؤجّل (موعداً) / يحرّك من مكانه|vertagen, verlegen / verrücken
+409|28|o|blättern|يتصفّح / يقلّب صفحات كتاب أو مجلة|durchsehen, Seiten umwenden, schmökern
+410|28|o|durchsetzen|يفرض رأيه أو اقتراحه / ينتشر ويسود|erwirken, erreichen / sich behaupten
+411|28|o|aufschlussreich|غني بالمعلومات الكاشفة / مفيد ومُوضح|informativ, lehrreich, erhellend
+412|28|o|Konsumterrors|هوس وضغط الاستهلاك الإعلاني|Konsumzwang, Kaufdruck
+413|28|o|Kaufzwang|إدمان الشراء القهري|Kaufsucht, zwanghaftes Kaufen
+414|28|o|Hochsaison|موسم الذروة السياحي|Hauptsaison, Spitzenzeit
+415|28|o|Schuldenberg, -e|تراكم الديون / جبل من الديون|hohe Verschuldung, Schuldenlast
+416|28|o|vormachen (sich)|يوهِم نفسه / يخدع نفسه أو غيره|sich einreden, vortäuschen, vorspielen
+417|28|o|großzügig|كريم / سخي / واسع المساحة|freigebig, spendabel / geräumig
+418|28|o|ausgesprochen|للغاية / جداً / بشكل واضح|äußerst, besonders, überaus
+419|28|o|kaufsüchtig|مدمن على التسوق والشراء|vom Kaufzwang betroffen
+420|28|o|bergen|ينطوي على (مخاطر) / ينقذ وينتشل|enthalten, in sich tragen / retten
+421|28|o|Pubertät|مرحلة البلوغ والمراهقة|Reifezeit, Jugendalter, Adoleszenz
+422|28|o|entbrennen|يندلع / يشتعل (نقاش أو نزاع)|ausbrechen, heftig beginnen, entflammen
+423|28|o|die Niederlage,|الهزيمة / الخسارة|Verlust, Misserfolg, Schlappe
+424|28|o|wie Pech und Schwefel zusammen/halten|يتكاتفون كالبنيان المرصوص / لا يفترقون أبداً|unzertrennlich sein, fest zusammenstehen
+425|29|o|wertschätzen|يُقدّر / يثمّن عالياً|würdigen, achten, anerkennen
+426|29|o|so gut wie|تقريباً / في حكم المؤكد|fast, beinahe, praktisch
+427|29|o|angeblich|كما يُزعم / على حدّ الادعاء|vermeintlich, vorgeblich, dem Vernehmen nach
+428|29|o|zuweilen|أحياناً / بين الحين والآخر|manchmal, gelegentlich, mitunter
+429|29|o|unweigerlich|حتماً / لا محالة|zwangsläufig, unvermeidlich, unausweichlich
+430|29|o|der Strang, "-e|حبل مجدول / مسار حبكة|Seil, Schnur / Handlungsfaden
+431|29|o|antik|أثري / عتيق / قديم الطراز|altertümlich, historisch, klassisch
+432|29|o|sich bemühen|يجتهد / يسعى جاهداً|sich anstrengen, versuchen, streben nach
+433|29|o|das Burn-out-Syndrom|متلازمة الاحتراق النفسي والإنهاك المهني|chronischer Erschöpfungszustand
+434|29|o|die Wärmedämmung|العزل الحراري للمباني|Thermoisolierung, Wärmeisolierung
+435|29|o|ab/dichten|يعزل بإحكام (ضد تسرب الماء أو الهواء)|versiegeln, isolieren, dicht machen
+436|30|o|auf/bessern|يحسّن (الدخل) / يرمم ويجدّد|erhöhen, aufstocken / renovieren, verschönern
+437|30|o|qualmen|ينفث دخاناً كثيفاً / يدخّن بشراهة|rauchen, dampfen, rußen
+438|30|o|widerstehen|يقاوم / يصمد أمام (إغراء أو ضغط)|standhalten, trotzen, sich widersetzen
+439|30|o|sich aus/setzen|يعرّض نفسه لـ (خطر / برد / ضوضاء)|auf sich nehmen, sich konfrontieren mit
+440|30|o|inhalieren|يستنشق (بخاراً أو دواءً أو دخاناً)|einatmen
+441|30|o|die Krebsform,|نوع من أنواع مرض السرطان|Tumorart, Krebserkrankungstyp
+442|30|o|der Mord,|جريمة قتل عمد|Tötungsdelikt, Kapitalverbrechen
+443|30|o|die Anhebung|رفع / زيادة (الأسعار أو الأجور)|Erhöhung, Steigerung, Heraufsetzung
+444|30|o|die Freigabe|الإذن بالنشر أو الاستخدام / التصريح الرسمي|Genehmigung, Zulassung, Freischaltung
+445|30|o|hervor/rufen|يثير / يسبّب / يولّد|auslösen, verursachen, erzeugen, bewirken
+446|30|o|erwartbar|متوقَّع / غير مفاجئ|absehbar, vorhersehbar, wahrscheinlich
+447|30|o|an/steigen|يرتفع / يتزايد|zunehmen, wachsen, sich erhöhen
+448|30|o|-n|لاحقة الجمع في اللغة الألمانية (-n)|Pluralendung -n, Deklinationsendung
+449|30|o|alarmierend|مُنذِر بالخطر / مقلق للغاية|besorgniserregend, beunruhigend, bedrohlich
+450|30|o|meines Erachtens|في رأيي / حسب تقديري|meiner Meinung nach, aus meiner Sicht
+451|31|o|das Zündholz,|عود الثقاب (الكبريت)|Streichholz
+452|31|o|der Funke,|شرارة|Lichtblitz, Glutpartikel, Impuls
+453|31|o|dürr|جافّ ويابس / نحيل جداً|vertrocknet, ausgetrocknet, karg
+454|31|o|in Brand setzen|يُضرم النار في / يشعل حريقاً في|anzünden, anstecken, entfachen
+455|31|o|ab/brennen|يحترق بالكامل حتى النهاية|niederbrennen, herunterbrennen
+456|31|o|verrotten|يتحلّل / يتعفّن ويبلى|verfaulen, verwesen, zerfallen
+457|31|o|umweltfreundlich|صديق للبيئة|ökologisch, umweltschonend, nachhaltig
+458|31|o|der Glimmstängel, -|السيجارة (تعبير ساخر دارج)|Zigarette, Kippe
+459|31|o|der Genuss|المتعة / التلذذ / الاستمتاع|Freude, Vergnügen, Wohlgeschmack
+460|31|o|der Geist,|العقل والذهن / الروح / الشبح|Verstand, Intellekt / Seele / Gespenst
+461|31|o|der Einsatzbereich,|مجال الاستخدام والتطبيق|Anwendungsgebiet, Aufgabenfeld
+462|31|o|erzielen|يحقق / يحرز (نتائج أو أرباحاً)|erreichen, erlangen, erwirtschaften
+463|32|o|auf mehrfache Weise|بطرق متعددة / بأساليب شتى|auf verschiedene Art, mehrfach
+464|32|o|die kognitiven Fähigkeiten|القدرات الإدراكية والمعرفية|geistige Fähigkeiten, Denkvermögen
+465|32|o|die App,|تطبيق إلكتروني (على الهاتف أو الحاسوب)|Anwendung, Mobilprogramm, Applikation
+466|32|o|die Flugangst|رهاب الطيران (الخوف من ركوب الطائرة)|Aviophobie, Angst vor dem Fliegen
+467|32|o|das Ritual,|طقس معتاد / عادة منتظمة ذات رمزية|Zeremonie, fester Brauch, Gewohnheit
+468|32|o|frühkindliche Erziehung|التربية في مرحلة الطفولة المبكرة|Frühpädagogik, Kleinkindförderung
+469|32|o|motivationssteigernd|محفّز / رافع لمستوى الدافعية|anspornend, ermutigend, förderlich
+470|32|o|oftmals|في كثير من الأحيان / غالباً|häufig, oft, vielfach, meistens
+471|32|o|der Hörschaden,|ضعف أو تلف في حاسة السمع|Hörverlust, Gehörschädigung
+472|32|o|instrumentale Musik|موسيقى آلية صامتة (بدون غناء)|Instrumentalmusik, Musik ohne Gesang
+473|33|o|verkleidet|متنكّر بزيّ معيّن|kostümiert, maskiert
+474|33|o|die Visite, -n|المرور الطبي الصباحي على المرضى|Arztbesuch am Krankenbett, Stationsrunde
+475|33|o|ein/gehen auf + AKK|يتجاوب مع / يتناول بالتفصيل|reagieren auf, berücksichtigen, behandeln
+476|33|o|das Improvisationstalent|موهبة الارتجال وحسن التصرف الفوري|Spontaneitätsbegabung, Einfallsreichtum
+477|33|o|der Abstand,|المسافة الفاصلة / الفارق|Distanz, Zwischenraum, Entfernung
+478|33|o|wahren|يصون / يحافظ على (الهدوء أو الحدود أو المظهر)|bewahren, aufrechterhalten, schützen
+479|33|o|herrschen|يسود / يعمّ (الهدوء أو النظام أو الطقس)|bestehen, vorherrschen, regieren
+480|33|o|die Interaktion|التفاعل المتبادل|Wechselwirkung, Austausch, Zusammenspiel
+481|33|o|die Belastung,|العبء / الضغط والإجهاد|Beanspruchung, Druck, Stress, Last
+482|33|o|der Pfarrer,|القسّ / راعي الكنيسة|Geistlicher, Pastor, Seelsorger
+483|33|o|der Störenfried,|مشاغب / معكّر صفو الهدوء|Unruhestifter, Quertreiber
+484|33|o|die Entlastung|تخفيف العبء / الفرج والارتياح|Erleichterung, Unterstützung, Abhilfe
+485|34|o|lose Blätter|أوراق سائبة (غير مدبّسة أو مجلّدة)|einzelne Seiten, ungebundene Zettel
+486|34|o|der Karriereknick, -s|تعثّر المسار المهني / انتكاسة وظيفية|beruflicher Rückschlag, Laufbahnbruch
+487|34|o|der Auftraggeber, -|العميل صاحب الطلب / الجهة المتعاقدة|Kunde, Klient, Besteller
+488|34|o|die Zumutung|أمر لا يُطاق / طلب مجحف يفوق الاحتمال|Unverschämtheit, Überforderung, Frechheit
+489|34|o|(sich) wühlen|ينبش / يفتّش وسط ركام من الأشياء|graben, kramen, durchforsten
+490|34|o|instinktiv|فطرياً / غريزياً / لاشعورياً|unbewusst, reflexartig, intuitiv
+491|34|o|die Befreiung|التحرير / الانعتاق والفرج|Erlösung, Freilassung, Entlastung
+492|34|o|die Abmeldung,|إلغاء التسجيل / إشعار المغادرة|Kündigung, Austragung, Abbestellung
+493|34|o|bei Einhaltung|في حال الالتزام بـ / عند مراعاة|unter Beachtung, bei Befolgung
+494|34|o|ein/behalten|يحتجز (مبلغاً أو تأميناً) / لا يُرجع|zurückbehalten, abziehen, nicht auszahlen
+495|34|o|die Bescheinigung,|شهادة رسمية / إفادة خطية|Bestätigung, Nachweis, Attest, Zertifikat
+496|34|o|aus/stellen|يُصدر (وثيقة أو شهادة) / يعرض (في متحف)|ausfertigen, erteilen / präsentieren
+497|34|o|die Anwesenheitsliste,|كشف الحضور والغياب|Teilnehmerliste, Präsenzliste
+498|34|o|der Nachschub,|الإمدادات الإضافية / التعزيزات|Nachlieferung, Versorgung, Vorratsergänzung
+499|34|o|die Flüssigkeit|السائل|Fluid, flüssiger Stoff
+500|35|o|die Reserve,|الاحتياطي / المدّخر للطوارئ|Vorrat, Rücklage, Notgroschen
+501|35|o|die Vielzahl|العدد الكبير / التنوع الوافر|Menge, Fülle, große Anzahl
+502|35|o|die Wachstumsphase|مرحلة النمو والتوسع|Entwicklungsphase, Expansionszeit
+503|35|o|die Verfolgung|المطاردة / الاضطهاد|Jagd, Fahndung / Unterdrückung, Repression
+504|35|o|die Langstrecken|المسافات الطويلة|weite Distanzen, Fernstrecken
+505|35|o|die Hirnaktivität|نشاط الدماغ|Gehirntätigkeit, neuronale Aktivität
+506|35|o|das Hinterrad|العجلة الخلفية|hinteres Laufrad
+507|35|o|drücke dir die Daumen|أتمنى لك التوفيق من كل قلبي|wünsche dir viel Glück und Erfolg
+508|35|o|das Wappen|شعار النبالة / الشعار الرسمي للمدينة أو الدولة|Hoheitszeichen, Emblem, Stadtsymbol
+509|35|o|in Freier Wildbahn|في البرية المفتوحة (في الطبيعة الحرة)|in der freien Natur, außerhalb von Gehegen
+510|35|o|der Instinkt,|الغريزة / الفطرة|Naturtrieb, Gespür, Intuition
+511|35|o|das Kuscheltier,|دمية محشوة ناعمة للأطفال|Stofftier, Plüschtier
+512|35|o|das Gespür|الحسّ المرهف / الفطنة والحدس|Feingefühl, Intuition, Instinkt, Sinn
+513|36|o|zugegeben|أعترف بأن... / صحيح أن...|zugegebenermaßen, ehrlich gesagt
+514|36|o|aus/bleiben|يغيب / لا يحدث / يتأخر عن المجيء|nicht eintreten, fehlen, unterbleiben
+515|36|o|mühsam|شاقّ / مُجهد / بصعوبة بالغة|beschwerlich, anstrengend, mühevoll
+516|36|o|Vorgehen|طريقة العمل / النهج المتّبع|Vorgehensweise, Verfahren, Strategie
+517|36|o|die Übungssache|مسألة تعوّد وممارسة|Frage des Trainings, Gewohnheitssache
+518|36|o|pendeln بين|يتردّد يومياً بين مكانين (السكن والعمل)|hin- und herfahren zwischen
+519|36|o|überfüllt|مكتظّ / مزدحم للغاية|überlaufen, vollbesetzt, gedrängt voll
+520|36|o|der Abstand, " -e|المسافة الفاصلة / البُعد|Distanz, Entfernung, Zwischenraum
+521|36|o|permanent|دائم / مستمر بلا انقطاع|ständig, dauerhaft, ununterbrochen
+522|36|o|schmökern|يستمتع بقراءة كتاب بتأنٍّ واسترخاء|genussvoll lesen, intensiv blättern
+523|36|o|stimulieren|يحفّز / ينشّط / يثير|anregen, fördern, beleben
+524|37|o|ausschließlich|حصرياً / فقط لا غير|nur, einzig und allein, exklusiv
+525|37|o|entrinnen|يفلت من / ينجو بصعوبة من|entkommen, entfliehen, entgehen
+526|37|o|verehrt|مُوقَّر / مبجّل / محبوب بشدة|geschätzt, geachtet, bewundert
+527|37|o|nach/lassen|يخفّ تدريجياً / يهدأ / يضعف|abnehmen, schwächer werden, abklingen
+528|37|o|eine neue Existenz auf/bauen|يبني حياة مهنية ومعيشية جديدة|neu anfangen, sich eine neue Lebensgrundlage schaffen
+529|37|o|geschlechtergerechte Erziehung|تربية عادلة تراعي المساواة بين الجنسين|gleichberechtigte Pädagogik
+530|37|o|plädieren für|يطالب بـ / يؤيد ويدافع عن|sich aussprechen für, eintreten für, befürworten
+531|37|o|das Tutorial,|درس تعليمي تطبيقي مصوّر أو مكتوب|Anleitung, Lernprogramm, Einführungskurs
+532|37|o|der Werbevertrag,|عقد إعلاني / عقد رعاية دعائية|Sponsoringvertrag, Reklamekontrakt
+533|37|o|der Modetrend,|صيحة الموضة / الاتجاه السائد في الأزياء|Modeströmung, aktueller Stil
+534|37|o|die zukünftigen Perspektiven|الآفاق والتطلعات المستقبلية|Zukunftsaussichten, kommende Chancen
+535|38|o|auf dem Vormarsch|في تقدّم وانتشار مستمر|im Kommen, auf dem Weg nach vorn, wachsend
+536|38|o|der Kollektor,|المجمِّع الشمسي (لاقط الطاقة الشمسية)|Sonnenkollektor, Solarsammler
+537|38|o|teure Investition|استثمار مكلف|kostspielige Anschaffung, hohe Geldanlage
+538|38|o|die Wiedergabe|تشغيل وعرض (الصوت أو الفيديو) / إعادة سرد|Abspielen, Reproduktion, Darstellung
+539|38|o|abrufbar|متاح للوصول والتحميل في أي وقت|verfügbar, zugänglich, einsehbar
+540|38|o|geimpft|مُطعَّم / حاصل على اللقاح|vakziniert, durch Impfung geschützt
+541|38|o|züchten|يربّي ويُكاثر (حيوانات) / يزرع ويطوّر (نباتات)|heranziehen, kultivieren, vermehren
+542|38|o|schrumpfen|ينكمش / يتقلّص / يتراجع حجمه|kleiner werden, abnehmen, zurückgehen
+543|38|o|ausgiebig|بإسهاب / بوفرة وبشكل مطوّل|ausführlich, reichlich, gründlich
+544|38|o|der Auslauf|فسحة الجري والحركة للحيوان في الهواء الطلق|Bewegungsfreiheit im Freien, Freilauf
+545|38|o|der Papagei,|الببغاء|sprechender Tropenvogel
+546|39|o|der Tierhalter,|مربّي الحيوانات الأليفة / صاحب الحيوان|Tierbesitzer, Haustierhalter
+547|39|o|adoptieren|يتبنّى (طفلاً أو حيواناً أليفاً)|annehmen, aufnehmen
+548|39|o|der Besitzer, -|المالك / الصاحب|Eigentümer, Inhaber
+549|39|o|verfügen über + AKK|يمتلك / يتوفر لديه|besitzen, haben, aufweisen
+550|39|o|die Linderung|تخفيف الألم / التهدئة والراحة|Abschwächung, Erleichterung, Besserung
+551|39|o|der Gassi-Dienst|خدمة تمشية الكلاب|Hundeausführservice, Hundesitter-Dienst
+552|39|o|das Aquarium, Aquarien|حوض الأسماك المائي|Fischbecken, Wasserbecken
+553|39|o|sich zu/legen|يقتني / يشتري لنفسه شيئاً جديداً|anschaffen, kaufen, erwerben
+554|39|o|der Lügner,|الكذّاب|Schwindler, Betrüger, Unwahrheitssager
+555|39|o|enttarnen|يكشف القناع عن / يفضح حقيقة مخادع|entlarven, aufdecken, bloßstellen
+556|39|o|verbergen|يُخفي / يكتم|verstecken, verheimlichen, zurückhalten
+557|39|o|Anerkennung erlangen|ينال التقدير والاعتراف|Wertschätzung gewinnen, Respekt erhalten
+558|39|o|prosozial|داعم للمجتمع / تعاوني وإيثاري|gemeinnützig, hilfsbereit, sozial förderlich
+559|39|o|gezielt|موجّه بدقة / هادف ومقصود|zweckgerichtet, bewusst, systematisch
+560|39|o|benachteiligen|يظلم / يعامل بتمييز سلبي / يبخس حقاً|diskriminieren, schlechterstellen, zurücksetzen
+561|39|o|der Scharfsinn|حدة الذكاء / الفطنة والبصيرة النافذة|Klugheit, Durchblick, geistige Schärfe
+562|40|o|vor/spielen|يعزف أو يمثّل أمام الآخرين / يتظاهر بـ|aufführen, vortragen / vortäuschen
+563|40|o|der Schweiß|العَرَق|Transpiration, Körperschweiß

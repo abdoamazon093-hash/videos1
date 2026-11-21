@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قاموس ومُعلّم النطق التفاعلي — Vocab Tutor</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .font-german {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(2, 132, 199, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0); }
+    }
+    .word-btn-speaking {
+      animation: pulse-ring 1.1s infinite;
+      background-color: #e0f2fe !important;
+      border-color: #0284c7 !important;
+      color: #0369a1 !important;
+    }
+
+    @keyframes sound-wave {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-bar {
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      margin: 0 1px;
+      background-color: #0284c7;
+      border-radius: 2px;
+      animation: sound-wave 0.6s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+
+    .card-learned {
+      background-color: #f0fdf4 !important;
+      border-color: #86efac !important;
+      border-top: 4px solid #10b981 !important;
+    }
+
+    .card-review {
+      background-color: #fffbeb !important;
+      border-color: #fcd34d !important;
+      border-top: 4px solid #f59e0b !important;
+    }
+
+    .card-default {
+      border-top: 4px solid #0284c7;
+    }
+
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      #cards-container { display: block !important; }
+      .vocab-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        margin-bottom: 6px !important;
+        padding: 8px 12px !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Global Header / Navigation Bar -->
+  <header class="bg-slate-900 text-white shadow-lg border-b-4 border-sky-500 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+          <a href="#/" class="flex items-center gap-2.5 text-white hover:text-sky-300 transition group cursor-pointer">
+            <span class="text-2xl sm:text-3xl p-1.5 bg-sky-500/20 rounded-xl border border-sky-400/30 group-hover:scale-105 transition">📚</span>
+            <div>
+              <div class="text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
+                <span>Vocab Tutor</span>
+                <span id="app-version-badge" class="text-xs bg-sky-500 text-slate-950 font-extrabold px-2 py-0.5 rounded-full">v16</span>
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium">قاموس ومُعلّم النطق التفاعلي المقسّم بالصفحات والملفات</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex flex-wrap items-center gap-2 no-print self-stretch md:self-auto">
+          <!-- Back to Library Button (visible only in study view) -->
+          <a
+            id="nav-back-to-library-btn"
+            href="#/"
+            class="hidden items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 hover:text-sky-200 border border-sky-500/40 font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl transition cursor-pointer shadow-sm"
+          >
+            <span>🔙</span>
+            <span>مكتبة الملفات</span>
+          </a>
+
+          <!-- Upload New Document Button -->
+          <button
+            id="open-upload-modal-btn"
+            type="button"
+            class="flex items-center justify-center gap-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-xl shadow transition cursor-pointer"
+          >
+            <span>➕</span>
+            <span>رفع ملف جديد</span>
+          </button>
+
+          <!-- Study Actions (visible only in study view) -->
+          <div id="nav-study-actions" class="hidden flex items-center gap-2">
+            <button
+              id="export-standalone-btn"
+              type="button"
+              title="تنزيل صفحة مستقلة تعمل بدون إنترنت لهذا الملف"
+              class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-xl shadow transition cursor-pointer"
+            >
+              <span>📥</span>
+              <span class="hidden sm:inline">تصدير HTML</span>
+            </button>
+            <button
+              id="print-pdf-btn"
+              type="button"
+              class="flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-bold text-xs sm:text-sm px-3 py-2 rounded-xl transition cursor-pointer"
+            >
+              <span>🖨️</span>
+              <span class="hidden sm:inline">طباعة</span>
+            </button>
+          </div>
+
+          <!-- Audio Test Button -->
+          <button
+            id="test-audio-btn"
+            type="button"
+            class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-xl border border-slate-600 transition cursor-pointer"
+          >
+            <span>🔊</span>
+            <span class="hidden sm:inline">اختبار الصوت</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- VIEW 1: LIBRARY VIEW (صفحة مكتبة الملفات والكتب) -->
+  <!-- ========================================== -->
+  <div id="view-library" class="hidden flex-1 flex flex-col">
+    <!-- Hero / Welcome Banner -->
+    <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-8 border-b border-slate-700 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-bold px-3 py-1 rounded-full">
+              <span>📚 مكتبة المفردات المنفصلة</span>
+              <span>•</span>
+              <span>صفحات مستقلة لكل ملف</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+              مكتبة كتبي وملفات المفردات الألمانية
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              كل ملف ترفعه يحصل على <strong class="text-sky-300">صفحة مستقلة تماماً</strong> تعرض مفرداته فقط، بدون أي خلط بين الكلمات القديمة والجديدة. اختر كتاباً لدراسته، أو ارفع ملفاً جديداً بعنوان مخصص فوراً.
+            </p>
+          </div>
+
+          <!-- Quick Stats Pills -->
+          <div class="flex flex-wrap md:flex-col gap-2.5 w-full md:w-auto shrink-0 text-xs font-semibold">
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3 shadow-inner">
+              <span class="text-slate-400">إجمالي الكتب والملفات:</span>
+              <strong id="lib-total-books-count" class="text-sky-400 text-base">0</strong>
+            </div>
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3 shadow-inner">
+              <span class="text-slate-400">إجمالي الكلمات المحفوظة:</span>
+              <strong id="lib-total-words-count" class="text-emerald-400 text-base">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Library Content -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <!-- Upload New File Card Section -->
+      <section class="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl p-2 bg-sky-50 rounded-2xl border border-sky-100">📤</span>
+            <div>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">رفع ملف أو كتاب جديد وإنشاء صفحته المستقلة</h2>
+              <p class="text-xs sm:text-sm text-slate-500">اكتب عنوان الملف ثم اختر ملف Word أو PDF ليتم استخراجه وعزله في صفحته الخاصة</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="library-upload-form" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                عنوان الملف أو الكتاب (يظهر كعنوان للصفحة):
+              </label>
+              <input
+                id="library-upload-title"
+                type="text"
+                placeholder="مثال: Aspekte Neu B2 - Kapitel 4 أو قائمة كلمات العيادة"
+                class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:bg-white focus:outline-none transition"
+              >
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                اختر ملف Word (.docx) أو PDF (.pdf) أو نص (.txt):
+              </label>
+              <input
+                id="library-upload-file"
+                type="file"
+                accept=".docx,.pdf,.txt"
+                required
+                class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer border border-dashed border-slate-300 rounded-xl p-2 bg-slate-50/60"
+              >
+            </div>
+          </div>
+
+          <div id="library-upload-status" class="hidden text-xs font-bold p-3.5 rounded-xl"></div>
+
+          <div class="flex items-center justify-between pt-2 flex-wrap gap-3">
+            <span class="text-[11px] text-slate-500 flex items-center gap-1.5">
+              <span>💡</span>
+              <span>يتعرف النظام تلقائياً على أعمدة الجداول (المصدر، الماضي، البيرفكت، المعنى، الأمثلة) دون الحاجة لترتيب محدد</span>
+            </span>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <a
+                href="/api/backup/download-raw"
+                download="sprechen.db"
+                class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-2.5 rounded-xl transition cursor-pointer shadow-sm"
+                title="تنزيل نسخة كاملة من قاعدة بيانات الكلمات والمحفوظات للكمبيوتر"
+              >
+                <span>💾</span>
+                <span>تنزيل قاعدة البيانات (.db)</span>
+              </a>
+              <a
+                href="/api/upload/template/docx"
+                download="Vocab_Template.docx"
+                class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-3 py-2.5 rounded-xl transition cursor-pointer shadow-sm"
+                title="تنزيل ملف Word منسق ومجهز مسبقاً بكافة الأعمدة المطلوبة"
+              >
+                <span>📥</span>
+                <span>تحميل قالب Word جاهز (.docx)</span>
+              </a>
+              <button
+                id="library-submit-upload-btn"
+                type="submit"
+                class="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md transition cursor-pointer"
+              >
+                <span>🚀</span>
+                <span>رفع المستند وفتح صفحته المستقلة</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Books Grid Section -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📂</span>
+            <h2 class="text-lg sm:text-xl font-black text-slate-900">
+              كتبي وملفاتي المسجلة (<span id="library-doc-count" class="text-sky-600">0</span>)
+            </h2>
+          </div>
+          <span class="text-xs text-slate-500">اضغط على أي ملف لفتح صفحته المخصصة ودراسة كلماته فقط</span>
+        </div>
+
+        <!-- Books Grid -->
+        <div id="library-books-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Library Empty State -->
+        <div id="library-empty-state" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-3">
+          <div class="text-5xl">📚</div>
+          <h3 class="text-lg font-bold text-slate-800">لا توجد ملفات مرفوعة بعد</h3>
+          <p class="text-sm text-slate-500 max-w-md mx-auto">
+            قم برفع أول ملف أو كتاب بالأعلى لإنشاء صفحته المستقلة وعرض كلماته ونطقها بدقة.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VIEW 2: STUDY VIEW (صفحة دراسة الملف المحدد) -->
+  <!-- ========================================== -->
+  <div id="view-study" class="hidden flex-1 flex flex-col">
+    <!-- Top Study Header Banner -->
+    <section class="bg-slate-900 text-white shadow-lg border-b-4 border-sky-500">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-4">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <a href="#/" class="inline-flex items-center gap-1.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-400/30 text-xs font-bold px-3 py-1 rounded-full transition cursor-pointer">
+                <span>🔙</span>
+                <span>العودة لمكتبة الملفات</span>
+              </a>
+              <span id="study-doc-badge" class="bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-bold px-2.5 py-1 rounded-full">جارٍ التحميل...</span>
+              <span class="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-bold px-2.5 py-1 rounded-full">⏳ البيرفكت (Perfekt)</span>
+              <span class="bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-bold px-2.5 py-1 rounded-full">🔊 نطق المرادفات</span>
+              <span class="bg-rose-500/20 text-rose-300 border border-rose-400/30 text-xs font-bold px-2.5 py-1 rounded-full">🎬 YouGlish + 🖼️ صور</span>
+              <span class="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold px-2.5 py-1 rounded-full">🌐 أمثلة حية</span>
+            </div>
+            <h1 id="study-main-title" class="text-2xl sm:text-3xl font-extrabold mt-2.5 tracking-tight">
+              قاموس ومُعلّم النطق التفاعلي — جارٍ التحميل...
+            </h1>
+            <p class="text-slate-300 text-sm mt-1">
+              أنت الآن في <strong class="text-sky-300">صفحة هذا الملف المستقلة</strong> (لا تختلط كلماته مع أي ملف آخر) • اضغط على أي كلمة أو مرادف للنطق، وادرس البيرفكت والأمثلة السياقية.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 no-print self-stretch md:self-auto">
+            <a href="#/" class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-600 font-bold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition cursor-pointer">
+              <span>📚</span>
+              <span>تبديل الملف</span>
+            </a>
+            <button id="study-export-btn" type="button" title="تنزيل صفحة مستقلة تعمل بدون إنترنت" class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl shadow transition cursor-pointer">
+              <span>📥</span>
+              <span>تصدير HTML أوفلاين</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Bar Card -->
+        <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 sm:p-4 no-print">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🎯</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-200">مستوى حفظ وإنجاز هذا الملف:</span>
+              <span id="study-progress-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-extrabold px-2.5 py-0.5 rounded-full">0%</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-300">
+              <span>✅ المحفوظة: <strong id="learned-total-count" class="text-emerald-400">0</strong></span>
+              <span>⭐ للمراجعة: <strong id="review-total-count" class="text-amber-400">0</strong></span>
+              <span>⏳ المتبقية: <strong id="remaining-total-count" class="text-sky-300">0</strong></span>
+              <span>📚 إجمالي كلمات هذا الملف: <strong id="total-words-count" class="text-white">0</strong></span>
+            </div>
+          </div>
+          <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-700">
+            <div id="study-progress-bar-fill" class="h-full bg-gradient-to-l from-emerald-400 via-teal-500 to-sky-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 pt-2 border-t border-slate-700/70 text-[11px] text-slate-400">
+            <span>💾 يتم الحفظ التلقائي في قاعدة البيانات والمزامنة الحية على متصفحك</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="mark-visible-btn" type="button" class="text-emerald-300 hover:text-emerald-200 bg-emerald-950/60 hover:bg-emerald-900/70 border border-emerald-700/50 px-2.5 py-1 rounded-lg font-bold transition cursor-pointer">
+                ✅ تحديد المعروض كمحفوظ
+              </button>
+              <button id="clear-review-btn" type="button" class="text-amber-300 hover:text-amber-200 bg-amber-950/50 hover:bg-amber-900/60 border border-amber-800/50 px-2.5 py-1 rounded-lg font-bold transition cursor-pointer">
+                ⭐ إخلاء قائمة المراجعة
+              </button>
+              <button id="reset-progress-btn" type="button" class="text-rose-300 hover:text-rose-200 bg-rose-950/50 hover:bg-rose-900/60 border border-rose-800/50 px-2.5 py-1 rounded-lg font-bold transition cursor-pointer">
+                🗑️ تصفير التقدم
+              </button>
+              <button id="backup-btn" type="button" class="text-sky-300 hover:text-sky-200 bg-sky-950/60 hover:bg-sky-900/70 border border-sky-700/50 px-2.5 py-1 rounded-lg font-bold transition cursor-pointer" title="أخذ نسخة احتياطية وإرسالها للتليجرام">
+                💾 نسخ احتياطي
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sticky Control & Filter Bar -->
+    <section class="sticky top-[69px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 space-y-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 items-center">
+          <!-- Search Input -->
+          <div class="relative lg:col-span-3">
+            <input
+              id="search-input"
+              type="search"
+              placeholder="ابحث في هذا الملف بالكلمة، البيرفكت، الترجمة..."
+              class="w-full pl-9 pr-10 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition"
+            >
+            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
+            <button id="clear-search-btn" type="button" title="مسح البحث" class="hidden absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs bg-slate-200 px-2 py-0.5 rounded-md">✕</button>
+          </div>
+
+          <!-- Document Quick Switcher -->
+          <div class="lg:col-span-2">
+            <select id="study-doc-select" aria-label="تبديل الملف" class="w-full py-2 px-3 text-sm bg-sky-50 border border-sky-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-bold text-sky-900 cursor-pointer">
+              <option value="">📚 تحميل المستندات...</option>
+            </select>
+          </div>
+
+          <!-- Sort & Case Filter Selector -->
+          <div class="lg:col-span-2">
+            <select id="sort-select" aria-label="ترتيب الكلمات وتصفية الحالات" class="w-full py-2 px-2 text-sm bg-sky-50/70 border border-sky-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-bold text-sky-950 cursor-pointer">
+              <option value="alpha" selected>🔤 أبجدي (A - Z)</option>
+              <option value="akk_only" class="case-option">🎯 أفعال Akkusativ فقط</option>
+              <option value="dat_only" class="case-option">💎 أفعال Dativ فقط</option>
+              <option value="both_only" class="case-option">🎯+💎 أفعال Dativ + Akkusativ معاً</option>
+              <option value="akk_then_dat" class="case-option">🎯 الأكوزاتيف أولاً ثم 💎 الداتيف (مجمّع)</option>
+              <option value="alpha_desc">🔤 أبجدي عكسي (Z - A)</option>
+              <option value="original">📄 حسب ورود الكلمات</option>
+            </select>
+          </div>
+
+          <!-- Page Filter -->
+          <div class="lg:col-span-2 flex items-center gap-1">
+            <button id="prev-page-btn" type="button" title="الصفحة السابقة" class="py-2 px-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-700 border border-slate-300 transition cursor-pointer">
+              ◀
+            </button>
+            <select id="page-select" aria-label="تصفية حسب الصفحة" class="w-full py-2 px-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700 cursor-pointer">
+              <option value="all">📄 كل الصفحات</option>
+            </select>
+            <button id="next-page-btn" type="button" title="الصفحة التالية" class="py-2 px-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-700 border border-slate-300 transition cursor-pointer">
+              ▶
+            </button>
+          </div>
+
+          <!-- Rate Selector -->
+          <div class="lg:col-span-2">
+            <select id="rate-select" aria-label="سرعة النطق" class="w-full py-2 px-3 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700 cursor-pointer">
+              <option value="0.95">🎙️ سرعة: عادية (0.95x)</option>
+              <option value="0.8">🎙️ سرعة: هادئة (0.80x)</option>
+              <option value="0.65">🎙️ سرعة: بطيئة (0.65x)</option>
+              <option value="1.1">🎙️ سرعة: سريعة (1.10x)</option>
+            </select>
+          </div>
+
+          <!-- View Mode Switcher -->
+          <div class="lg:col-span-1 flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button id="view-cards-btn" type="button" title="عرض البطاقات" class="flex-1 py-1 px-1.5 text-xs font-bold rounded-lg bg-white text-sky-700 shadow-sm transition cursor-pointer text-center">
+              🗂️
+            </button>
+            <button id="view-table-btn" type="button" title="عرض الجدول" class="flex-1 py-1 px-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer text-center">
+              📋
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Pills Row -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <div class="flex flex-wrap items-center gap-1.5" id="status-filters">
+            <button type="button" data-status="all" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-slate-900 text-white border-slate-900 ring-2 ring-offset-1 ring-slate-900">
+              📚 الكل (<span id="filter-all-count">0</span>)
+            </button>
+            <button type="button" data-status="akk" id="filter-akk-btn" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-sky-50 text-sky-900 border-sky-300 hover:bg-sky-100 hidden">
+              🎯 الأكوزاتيف (<span id="filter-akk-count">0</span>)
+            </button>
+            <button type="button" data-status="dat" id="filter-dat-btn" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-purple-50 text-purple-900 border-purple-300 hover:bg-purple-100 hidden">
+              💎 الداتيف (<span id="filter-dat-count">0</span>)
+            </button>
+            <button type="button" data-status="both" id="filter-both-btn" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-indigo-50 text-indigo-900 border-indigo-300 hover:bg-indigo-100 hidden">
+              🎯+💎 كلاهما (<span id="filter-both-count">0</span>)
+            </button>
+            <button type="button" data-status="verbs" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-teal-50 text-teal-900 border-teal-300 hover:bg-teal-100">
+              ⏳ الأفعال والبيرفكت (<span id="filter-verbs-count">0</span>)
+            </button>
+            <button type="button" data-status="review" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100">
+              ⭐ للمراجعة (<span id="filter-review-count">0</span>)
+            </button>
+            <button type="button" data-status="learned" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100">
+              ✅ المحفوظة (<span id="filter-learned-count">0</span>)
+            </button>
+            <button type="button" data-status="unlearned" class="status-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer bg-sky-50 text-sky-800 border-sky-300 hover:bg-sky-100">
+              ⏳ غير المحفوظة (<span id="filter-unlearned-count">0</span>)
+            </button>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="toggle-all-examples-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-indigo-300 bg-indigo-50 text-indigo-900 hover:bg-indigo-100 transition cursor-pointer">
+              📖 إظهار كل الأمثلة المحلية
+            </button>
+            <span id="results-counter" class="bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600">
+              المعروض: <strong class="text-sky-700">0</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+      <!-- Cards View -->
+      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+      <!-- Table View -->
+      <div id="table-container" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right border-collapse">
+            <thead class="bg-slate-900 text-white text-xs uppercase">
+              <tr>
+                <th class="py-3.5 px-3 w-20 text-center"># / الصفحة</th>
+                <th class="py-3.5 px-3 w-40 text-center">الحفظ والمراجعة</th>
+                <th class="py-3.5 px-4 text-left" dir="ltr">🔊 الكلمة + ⏳ البيرفكت + النوافذ المصغرة</th>
+                <th class="py-3.5 px-4">الترجمة العربية + 🌐 أمثلة مترجمة</th>
+                <th class="py-3.5 px-4 text-left" dir="ltr">🔊 المرادفات (اضغط للنطق)</th>
+              </tr>
+            </thead>
+            <tbody id="table-body" class="divide-y divide-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 my-4 p-6">
+        <div class="text-4xl mb-3">🔎</div>
+        <h3 class="text-lg font-bold text-slate-800">لا توجد كلمات مطابقة لبحثك في هذا الملف</h3>
+        <p class="text-xs text-slate-500 mt-1">جرب تغيير كلمة البحث أو اختيار فلتر آخر.</p>
+        <button id="reset-filters-btn" type="button" class="mt-4 bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition cursor-pointer">
+          إعادة عرض جميع كلمات الملف
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: QUICK UPLOAD MODAL (متاح من كل مكان) -->
+  <!-- ========================================== -->
+  <div id="upload-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📄</span>
+          <h3 class="text-lg font-bold text-slate-900">رفع مستند جديد (PDF / Word)</h3>
+        </div>
+        <button id="close-upload-modal-btn" type="button" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 cursor-pointer">✕</button>
+      </div>
+
+      <form id="modal-upload-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">عنوان الملف أو الكتاب (يظهر كصفحة مستقلة):</label>
+          <input
+            id="modal-upload-title"
+            type="text"
+            placeholder="مثال: Aspekte Neu B2 - Kapitel 4"
+            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اختر ملف Word (.docx) أو PDF (.pdf):</label>
+          <input
+            id="modal-upload-file"
+            type="file"
+            accept=".docx,.pdf,.txt"
+            required
+            class="w-full text-xs text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer border border-dashed border-slate-300 rounded-2xl p-3 bg-slate-50/50"
+          >
+        </div>
+
+        <div id="modal-upload-status" class="hidden text-xs font-bold p-3 rounded-xl"></div>
+
+        <div class="flex items-center justify-between gap-2 pt-2 flex-wrap">
+          <a
+            href="/api/upload/template/docx"
+            download="Vocab_Template.docx"
+            class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-3 py-2 rounded-xl transition cursor-pointer"
+            title="تنزيل قالب Word منسق ومجهز مسبقاً"
+          >
+            <span>📥</span>
+            <span>قالب Word جاهز</span>
+          </a>
+          <div class="flex items-center gap-2">
+            <button id="cancel-upload-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+              إلغاء
+            </button>
+            <button id="modal-submit-upload-btn" type="submit" class="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-extrabold bg-sky-600 hover:bg-sky-500 text-white shadow transition cursor-pointer">
+              <span>🚀</span>
+              <span>بدء المعالجة وفتح الصفحة</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TTS AUDIO TOAST NOTIFICATION -->
+  <!-- ========================================== -->
+  <div id="tts-toast" class="fixed bottom-5 left-5 z-50 hidden items-center gap-3 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 max-w-sm transition-all no-print" dir="ltr">
+    <div class="flex items-end h-4 gap-0.5">
+      <span class="wave-bar"></span>
+      <span class="wave-bar"></span>
+      <span class="wave-bar"></span>
+    </div>
+    <div class="min-w-0">
+      <div class="text-[11px] uppercase tracking-wider text-sky-400 font-semibold">Aussprache (de-DE)</div>
+      <div id="tts-toast-word" class="text-sm font-bold font-german truncate"></div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- APPLICATION LOGIC & ROUTER -->
+  <!-- ========================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Routing & State
+      let currentDocumentId = null;
+      let vocabItems = [];
+      let currentDocInfo = null;
+      let documentsList = [];
+
+      let learnedSet = new Set();
+      let reviewSet = new Set();
+      let customExamples = {};
+      let openExampleIds = new Set();
+      let exampleVariantIndex = {};
+      let showAllExamples = false;
+
+      let currentPage = 'all';
+      let currentStatus = 'all';
+      let currentSort = 'alpha';
+      let currentSearch = '';
+      let currentView = 'cards';
+      let germanVoices = [];
+
+      // View Elements
+      const viewLibrary = document.getElementById('view-library');
+      const viewStudy = document.getElementById('view-study');
+      const navBackToLibraryBtn = document.getElementById('nav-back-to-library-btn');
+      const navStudyActions = document.getElementById('nav-study-actions');
+
+      // Library View Elements
+      const libraryBooksGrid = document.getElementById('library-books-grid');
+      const libraryEmptyState = document.getElementById('library-empty-state');
+      const libraryDocCount = document.getElementById('library-doc-count');
+      const libTotalBooksCount = document.getElementById('lib-total-books-count');
+      const libTotalWordsCount = document.getElementById('lib-total-words-count');
+      const libraryUploadForm = document.getElementById('library-upload-form');
+      const libraryUploadTitle = document.getElementById('library-upload-title');
+      const libraryUploadFile = document.getElementById('library-upload-file');
+      const libraryUploadStatus = document.getElementById('library-upload-status');
+      const librarySubmitUploadBtn = document.getElementById('library-submit-upload-btn');
+
+      // Study View Elements
+      const studyDocBadge = document.getElementById('study-doc-badge');
+      const studyMainTitle = document.getElementById('study-main-title');
+      const studyDocSelect = document.getElementById('study-doc-select');
+      const studyProgressBadge = document.getElementById('study-progress-badge');
+      const studyProgressBarFill = document.getElementById('study-progress-bar-fill');
+      const studyExportBtn = document.getElementById('study-export-btn');
+
+      const cardsContainer = document.getElementById('cards-container');
+      const tableContainer = document.getElementById('table-container');
+      const tableBody = document.getElementById('table-body');
+      const emptyState = document.getElementById('empty-state');
+      const searchInput = document.getElementById('search-input');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const pageSelect = document.getElementById('page-select');
+      const sortSelect = document.getElementById('sort-select');
+      const filterAkkBtn = document.getElementById('filter-akk-btn');
+      const filterDatBtn = document.getElementById('filter-dat-btn');
+      const filterBothBtn = document.getElementById('filter-both-btn');
+      const filterAkkCount = document.getElementById('filter-akk-count');
+      const filterDatCount = document.getElementById('filter-dat-count');
+      const filterBothCount = document.getElementById('filter-both-count');
+      const prevPageBtn = document.getElementById('prev-page-btn');
+      const nextPageBtn = document.getElementById('next-page-btn');
+      const rateSelect = document.getElementById('rate-select');
+      const resultsCounter = document.getElementById('results-counter');
+      const viewCardsBtn = document.getElementById('view-cards-btn');
+      const viewTableBtn = document.getElementById('view-table-btn');
+      const ttsToast = document.getElementById('tts-toast');
+      const ttsToastWord = document.getElementById('tts-toast-word');
+      const toggleAllExamplesBtn = document.getElementById('toggle-all-examples-btn');
+      const exportStandaloneBtn = document.getElementById('export-standalone-btn');
+
+      // Modal Upload Elements
+      const uploadModal = document.getElementById('upload-modal');
+      const openUploadModalBtn = document.getElementById('open-upload-modal-btn');
+      const closeUploadModalBtn = document.getElementById('close-upload-modal-btn');
+      const cancelUploadBtn = document.getElementById('cancel-upload-btn');
+      const modalUploadForm = document.getElementById('modal-upload-form');
+      const modalUploadTitle = document.getElementById('modal-upload-title');
+      const modalUploadFile = document.getElementById('modal-upload-file');
+      const modalUploadStatus = document.getElementById('modal-upload-status');
+      const modalSubmitUploadBtn = document.getElementById('modal-submit-upload-btn');
+
+      function escapeHTML(str) {
+        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function getGoogleImagesUrl(spokenWord) {
+        return 'https://www.google.com/search?q=' + encodeURIComponent(spokenWord) + '&udm=2';
+      }
+
+      function getYouGlishUrl(query) {
+        return 'https://youglish.com/pronounce/' + encodeURIComponent(query) + '/german';
+      }
+
+      function getReversoExamplesUrl(query) {
+        return 'https://context.reverso.net/%D8%A7%D9%84%D8%AA%D8%B1%D8%AC%D9%85%D8%A9/%D8%A7%D9%84%D8%A3%D9%84%D9%85%D8%A7%D9%86%D9%8A%D8%A9-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9/' + encodeURIComponent(query);
+      }
+
+      function getGlosbeExamplesUrl(query) {
+        return 'https://ar.glosbe.com/de/ar/' + encodeURIComponent(query);
+      }
+
+      function openSingleMiniPopup(url, windowName) {
+        const w = Math.min(860, Math.round((window.screen.availWidth || 1200) * 0.74));
+        const h = Math.min(640, Math.round((window.screen.availHeight || 800) * 0.78));
+        const left = Math.max(20, Math.round(((window.screen.availWidth || 1200) - w) / 2));
+        const top = Math.max(35, Math.round(((window.screen.availHeight || 800) - h) / 2));
+        const features = `popup=yes,width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=yes,status=no,resizable=yes,scrollbars=yes`;
+        const win = window.open(url, windowName || 'VocabTutorSinglePopup', features);
+        if (win && win.focus) win.focus();
+      }
+
+      function setSpeakingUI(id, spokenText, isSpeaking) {
+        document.querySelectorAll('.word-btn-speaking').forEach(el => el.classList.remove('word-btn-speaking'));
+        if (isSpeaking && id !== null) {
+          document.querySelectorAll(`[data-speak-id="${id}"]`).forEach(el => el.classList.add('word-btn-speaking'));
+          ttsToastWord.textContent = spokenText;
+          ttsToast.classList.remove('hidden');
+          ttsToast.classList.add('flex');
+        } else {
+          ttsToast.classList.add('hidden');
+          ttsToast.classList.remove('flex');
+        }
+      }
+
+      function speakGermanText(id, spokenText) {
+        if (!spokenText) return;
+        const rate = parseFloat(rateSelect.value) || 0.95;
+        if ('speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(spokenText);
+            utterance.lang = 'de-DE';
+            utterance.rate = rate;
+            if (germanVoices.length > 0) {
+              utterance.voice = germanVoices.find(v => v.lang === 'de-DE' || v.lang === 'de_DE') || germanVoices[0];
+            }
+            utterance.onstart = () => setSpeakingUI(id, spokenText, true);
+            utterance.onend = () => setSpeakingUI(null, '', false);
+            utterance.onerror = () => setSpeakingUI(null, '', false);
+            setSpeakingUI(id, spokenText, true);
+            window.speechSynthesis.speak(utterance);
+            return;
+          } catch (err) {}
+        }
+        setSpeakingUI(id, spokenText, true);
+        setTimeout(() => setSpeakingUI(null, '', false), 1200);
+      }
+
+      function loadVoices() {
+        if (!('speechSynthesis' in window)) return;
+        germanVoices = (window.speechSynthesis.getVoices() || []).filter(v => v.lang && v.lang.toLowerCase().startsWith('de'));
+      }
+      if ('speechSynthesis' in window) {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+
+      // ==========================================
+      // PERSISTENCE & LOCALSTORAGE HELPERS
+      // ==========================================
+      function getDocStorageKey(docId, key) {
+        return `vocab_tutor_doc_${docId}_${key}`;
+      }
+
+      function saveProgressToLocalStorage(docId) {
+        if (!docId) return;
+        try {
+          localStorage.setItem(getDocStorageKey(docId, 'learned'), JSON.stringify(Array.from(learnedSet)));
+          localStorage.setItem(getDocStorageKey(docId, 'review'), JSON.stringify(Array.from(reviewSet)));
+          localStorage.setItem('vocab_tutor_last_doc_id', String(docId));
+        } catch (e) {
+          console.warn('localStorage save failed:', e);
+        }
+      }
+
+      // ==========================================
+      // ROUTING LOGIC (تقسيم الصفحات بناءً على Hash)
+      // ==========================================
+      async function handleRouting() {
+        const hash = window.location.hash || '';
+        const docMatch = hash.match(/^#\/doc\/(\d+)$/);
+
+        if (docMatch) {
+          const docId = parseInt(docMatch[1], 10);
+          await showStudyView(docId);
+        } else if (hash === '#/' || hash === '#/library') {
+          await showLibraryView();
+        } else {
+          // If hash is completely empty (user opened the website freshly):
+          const lastDocId = localStorage.getItem('vocab_tutor_last_doc_id');
+          if (lastDocId && lastDocId !== 'null' && lastDocId !== '') {
+            window.location.hash = `#/doc/${lastDocId}`;
+            return;
+          }
+          await showLibraryView();
+        }
+      }
+
+      window.addEventListener('hashchange', handleRouting);
+
+      // ==========================================
+      // 1. LIBRARY VIEW FUNCTIONS
+      // ==========================================
+      async function showLibraryView() {
+        viewStudy.classList.add('hidden');
+        viewLibrary.classList.remove('hidden');
+        navBackToLibraryBtn.classList.add('hidden');
+        navBackToLibraryBtn.classList.remove('inline-flex');
+        navStudyActions.classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        await loadLibraryDocuments();
+      }
+
+      async function loadLibraryDocuments() {
+        try {
+          const res = await fetch('/api/documents');
+          documentsList = await res.json();
+
+          const totalDocs = documentsList.length;
+          const totalWords = documentsList.reduce((acc, d) => acc + (d.total_words || 0), 0);
+          const totalLearned = documentsList.reduce((acc, d) => acc + (d.learned_count || 0), 0);
+
+          libraryDocCount.textContent = totalDocs;
+          libTotalBooksCount.textContent = `${totalDocs} ملف`;
+          libTotalWordsCount.textContent = `${totalLearned} من ${totalWords}`;
+
+          // Also populate study quick switcher dropdown
+          studyDocSelect.innerHTML = '';
+          documentsList.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = String(d.id);
+            opt.textContent = `📚 ${d.title} (${d.total_words} كلمة)`;
+            studyDocSelect.appendChild(opt);
+          });
+
+          if (totalDocs === 0) {
+            libraryBooksGrid.innerHTML = '';
+            libraryEmptyState.classList.remove('hidden');
+            return;
+          }
+
+          libraryEmptyState.classList.add('hidden');
+          libraryBooksGrid.innerHTML = documentsList.map(doc => {
+            const total = doc.total_words || 0;
+            const learned = doc.learned_count || 0;
+            const review = doc.review_count || 0;
+            const remaining = Math.max(0, total - learned);
+            const percent = total > 0 ? Math.round((learned / total) * 100) : 0;
+            const fileTypeBadge = doc.file_type ? doc.file_type.toUpperCase() : 'DOC';
+
+            const canDelete = doc.id !== 1;
+
+            return `
+              <div class="bg-white rounded-3xl border border-slate-200 hover:border-sky-300 shadow-sm hover:shadow-xl transition-all duration-200 p-5 flex flex-col justify-between gap-4 group">
+                <div class="space-y-3">
+                  <!-- Top Row Badges -->
+                  <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <span class="bg-sky-50 text-sky-800 border border-sky-200 text-[11px] font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1">
+                      <span>📄</span>
+                      <span>${escapeHTML(fileTypeBadge)}</span>
+                    </span>
+                    <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-lg border border-slate-200">
+                      ${total} كلمة
+                    </span>
+                  </div>
+
+                  <!-- Book Title -->
+                  <div>
+                    <h3 class="text-base sm:text-lg font-black text-slate-900 group-hover:text-sky-700 transition leading-snug line-clamp-2">
+                      ${escapeHTML(doc.title)}
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mt-1" dir="ltr">
+                      ${escapeHTML(doc.filename || '')} • ${doc.created_at ? doc.created_at.split(' ')[0] : ''}
+                    </p>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="space-y-1.5 pt-1">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+                      <span>نسبة الحفظ:</span>
+                      <span class="text-emerald-600 font-extrabold">${percent}%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                      <div class="h-full bg-gradient-to-l from-emerald-500 to-teal-400 rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
+                      <span>✅ محفوظ: <strong class="text-emerald-700">${learned}</strong></span>
+                      <span>⭐ مراجعة: <strong class="text-amber-700">${review}</strong></span>
+                      <span>⏳ متبقي: <strong class="text-slate-700">${remaining}</strong></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                  <a
+                    href="#/doc/${doc.id}"
+                    class="w-full flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-black text-xs sm:text-sm py-2.5 px-4 rounded-xl shadow transition cursor-pointer"
+                  >
+                    <span>📖</span>
+                    <span>فتح ودراسة هذا الملف</span>
+                  </a>
+
+                  <div class="flex items-center gap-2">
+                    <a
+                      href="/api/documents/${doc.id}/export/html"
+                      target="_blank"
+                      class="flex-1 flex items-center justify-center gap-1 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 text-xs font-bold py-1.5 px-2.5 rounded-xl transition cursor-pointer"
+                      title="تحميل صفحة أوفلاين مستقلة تماماً لهذا الملف"
+                    >
+                      <span>📥</span>
+                      <span>تصدير HTML</span>
+                    </a>
+
+                    ${canDelete ? `
+                      <button
+                        type="button"
+                        data-delete-doc-id="${doc.id}"
+                        data-delete-doc-title="${escapeHTML(doc.title)}"
+                        class="delete-doc-btn text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 hover:border-rose-600 text-xs font-bold py-1.5 px-2.5 rounded-xl transition cursor-pointer"
+                        title="حذف هذا الملف"
+                      >
+                        <span>🗑️</span>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Bind delete buttons
+          document.querySelectorAll('.delete-doc-btn').forEach(btn => {
+            btn.addEventListener('click', async function (e) {
+              e.preventDefault();
+              const id = this.getAttribute('data-delete-doc-id');
+              const title = this.getAttribute('data-delete-doc-title');
+              if (window.confirm(`هل أنت متأكد من حذف الملف "${title}" بالكامل من المكتبة؟`)) {
+                try {
+                  const delRes = await fetch(`/api/documents/${id}`, { method: 'DELETE' });
+                  if (delRes.ok) {
+                    await loadLibraryDocuments();
+                  } else {
+                    const err = await delRes.json();
+                    window.alert(err.detail || 'حدث خطأ أثناء الحذف.');
+                  }
+                } catch (err) {
+                  window.alert('تعذر الاتصال بالخادم.');
+                }
+              }
+            });
+          });
+
+        } catch (e) {
+          console.error('Error loading library documents:', e);
+        }
+      }
+
+      // ==========================================
+      // 2. STUDY VIEW FUNCTIONS (صفحة دراسة الملف المحدد)
+      // ==========================================
+      async function showStudyView(docId) {
+        currentDocumentId = docId;
+        viewLibrary.classList.add('hidden');
+        viewStudy.classList.remove('hidden');
+        navBackToLibraryBtn.classList.remove('hidden');
+        navBackToLibraryBtn.classList.add('inline-flex');
+        navStudyActions.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        await loadDocumentWords(docId);
+      }
+
+      function germanSortKey(text) {
+        let t = (text || '').toLowerCase().trim();
+        for (const art of ['der ', 'die ', 'das ']) {
+          if (t.startsWith(art)) { t = t.slice(art.length).trim(); break; }
+        }
+        if (t.startsWith('sich ')) {
+          t = t.slice(5).trim() + ' sich';
+        } else if (t.includes(', sich')) {
+          t = t.replace(', sich', '').trim() + ' sich';
+        }
+        t = t.replace(/^#+/, '');
+        const tClean = t.replace(/[/()\-\–,\.]/g, '').trim();
+        const norm = tClean
+          .replace(/ä/g, 'a')
+          .replace(/ö/g, 'o')
+          .replace(/ü/g, 'u')
+          .replace(/ß/g, 'ss');
+        return norm;
+      }
+
+      const DATIV_VERB_STEMS = new Set([
+        'antworten', 'ähneln', 'ausweichen', 'befehlen', 'begegnen', 'beistehen', 'beitreten', 
+        'beiwohnen', 'danken', 'dienen', 'drohen', 'einfallen', 'entgegenkommen', 'entkommen', 
+        'entsprechen', 'fehlen', 'folgen', 'gefallen', 'gehorchen', 'gehören', 'gelingen', 
+        'genügen', 'glauben', 'gratulieren', 'helfen', 'nachhelfen', 'missfallen', 'misslingen', 
+        'misstrauen', 'nachgeben', 'nachgehen', 'nachlaufen', 'nützen', 'nutzen', 'passen', 
+        'reichen', 'schaden', 'schmecken', 'schwerfallen', 'leichtfallen', 'stehen', 'trauen', 
+        'vertrauen', 'unterliegen', 'verzeihen', 'wehtun', 'widersprechen', 'widmen', 'zuhören', 
+        'zujubeln', 'zureden', 'zusehen', 'zustimmen', 'zuwenden', 'zugutekommen', 'hinterherlaufen',
+        'aushelfen', 'beitragen', 'auffallen'
+      ]);
+
+      const BOTH_VERB_STEMS = new Set([
+        'abnehmen', 'anbieten', 'beibringen', 'bringen', 'empfehlen', 'erklären', 'erlauben', 
+        'erzählen', 'geben', 'leihen', 'mitteilen', 'schenken', 'schicken', 'schreiben', 
+        'senden', 'stehlen', 'tragen', 'verbieten', 'versichern', 'versprechen', 'wegnehmen', 
+        'zeigen', 'wünschen', 'vorschlagen', 'kaufen', 'verraten', 'liefern', 'vorspielen', 
+        'vormachen', 'bereitstellen', 'überlassen', 'ausstellen', 'einbehalten', 'mitbringen'
+      ]);
+
+      const INTRANSITIVE_VERB_STEMS = new Set([
+        'existieren', 'schlafen', 'bleiben', 'ankommen', 'abfahren', 'aufwachen', 'sterben', 
+        'wachsen', 'geschehen', 'passieren', 'fallen', 'sinken', 'steigen', 'pendeln', 'rosten', 
+        'verrotten', 'schrumpfen', 'ausbleiben', 'anhalten', 'qualmen', 'dopen', 'entbrennen'
+      ]);
+
+      function cleanVerbStem(v) {
+        let t = (v || '').toLowerCase().trim();
+        t = t.replace(/^[#•\-\*\s]+/, '');
+        for (const prefix of ['sich ', 'jemandem ', 'etwas ', 'den ']) {
+          if (t.startsWith(prefix)) t = t.substring(prefix.length);
+        }
+        t = t.replace(/\//g, '');
+        const parts = t.split(/\s+/);
+        return parts[0] || '';
+      }
+
+      function classifyCase(synonym, word, isVerb) {
+        const s = `${synonym || ''} ${word || ''}`.toUpperCase();
+
+        const hasDExplicit = /\+\s*D\b|\+\s*DAT\b|\bDATIV\b|\bDAT\.?\b|\(\+?\s*D\b/.test(s);
+        const hasAExplicit = /\+\s*A\b|\+\s*AKK\b|\bAKKUSATIV\b|\bAKK\.?\b|\(\+?\s*A\b/.test(s);
+
+        if (hasDExplicit && hasAExplicit) return 'both';
+        if (hasAExplicit) return 'akk';
+        if (hasDExplicit) return 'dat';
+
+        if (isVerb || /\b(ZU|VON|BEI|MIT|NACH|AUS|SEIT|FÜR|DURCH|GEGEN|OHNE|UM)\b/.test(s)) {
+          if (/\b(ZU|VON|BEI|MIT|NACH|AUS|SEIT|GEGENÜBER)\b/.test(s)) return 'dat';
+          if (/\b(FÜR|DURCH|GEGEN|OHNE|UM)\b/.test(s)) return 'akk';
+        }
+
+        const wClean = cleanVerbStem(word);
+        if (isVerb || (wClean && /(en|eln|ern)$/.test(wClean))) {
+          if (BOTH_VERB_STEMS.has(wClean)) return 'both';
+          if (DATIV_VERB_STEMS.has(wClean)) return 'dat';
+          if (INTRANSITIVE_VERB_STEMS.has(wClean)) return 'none';
+          if (isVerb) return 'akk';
+        }
+
+        return 'none';
+      }
+
+      function getItemCase(item) {
+        if (item.grammatical_case && item.grammatical_case !== 'none') {
+          return item.grammatical_case;
+        }
+        return classifyCase(item.synonym, item.word, item.is_verb);
+      }
+
+      function renderCaseBadgeHTML(item) {
+        const c = getItemCase(item);
+        if (c === 'akk') {
+          return `
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 shadow-xs" title="فعل يأخذ مفعولاً به منصوباً (Akkusativ)">
+              <span>🎯</span>
+              <span>Akkusativ (+A)</span>
+            </span>
+          `;
+        }
+        if (c === 'dat') {
+          return `
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-black bg-purple-100 text-purple-900 border border-purple-300 shadow-xs" title="فعل يأخذ حالة الجر (Dativ)">
+              <span>💎</span>
+              <span>Dativ (+D)</span>
+            </span>
+          `;
+        }
+        if (c === 'both') {
+          return `
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-black bg-gradient-to-r from-sky-100 to-purple-100 text-indigo-950 border border-indigo-300 shadow-xs" title="فعل يأخذ الحالتين: Dativ + Akkusativ">
+              <span>🎯+💎</span>
+              <span>Dativ + Akkusativ</span>
+            </span>
+          `;
+        }
+        return '';
+      }
+
+      function applySortingAndNumbering() {
+        if (currentSort === 'akk_only') {
+          vocabItems.sort((a, b) => germanSortKey(a.word).localeCompare(germanSortKey(b.word), 'de'));
+        } else if (currentSort === 'dat_only') {
+          vocabItems.sort((a, b) => germanSortKey(a.word).localeCompare(germanSortKey(b.word), 'de'));
+        } else if (currentSort === 'both_only') {
+          vocabItems.sort((a, b) => germanSortKey(a.word).localeCompare(germanSortKey(b.word), 'de'));
+        } else if (currentSort === 'akk_then_dat') {
+          const caseRank = { akk: 0, both: 1, dat: 2, none: 3 };
+          vocabItems.sort((a, b) => {
+            const ca = caseRank[getItemCase(a)] ?? 3;
+            const cb = caseRank[getItemCase(b)] ?? 3;
+            if (ca !== cb) return ca - cb;
+            return germanSortKey(a.word).localeCompare(germanSortKey(b.word), 'de');
+          });
+        } else if (currentSort === 'alpha') {
+          vocabItems.sort((a, b) => germanSortKey(a.word).localeCompare(germanSortKey(b.word), 'de'));
+        } else if (currentSort === 'alpha_desc') {
+          vocabItems.sort((a, b) => germanSortKey(b.word).localeCompare(germanSortKey(a.word), 'de'));
+        } else if (currentSort === 'original') {
+          vocabItems.sort((a, b) => (a.page - b.page) || (a.id - b.id));
+        }
+        vocabItems.forEach((it, idx) => {
+          it.page_word_num = idx + 1;
+        });
+      }
+
+      async function loadDocumentWords(docId) {
+        try {
+          studyDocBadge.textContent = 'جارٍ التحميل...';
+          studyMainTitle.textContent = 'جارٍ تحميل كلمات الملف...';
+
+          const res = await fetch(`/api/documents/${docId}/words`);
+          if (!res.ok) {
+            localStorage.removeItem('vocab_tutor_last_doc_id');
+            window.location.hash = '#/';
+            await showLibraryView();
+            return;
+          }
+
+          const data = await res.json();
+          currentDocInfo = data.document;
+          vocabItems = data.words || [];
+
+          // Sort alphabetically by default and number sequentially from 1 to N
+          applySortingAndNumbering();
+
+          studyDocBadge.textContent = currentDocInfo.title;
+          studyMainTitle.textContent = `قاموس ${currentDocInfo.title} — النطق، البيرفكت، والأمثلة`;
+          studyDocSelect.value = String(docId);
+
+          learnedSet.clear();
+          reviewSet.clear();
+          customExamples = {};
+
+          // 1. Load from database
+          vocabItems.forEach(it => {
+            if (it.is_learned) learnedSet.add(it.id);
+            if (it.is_review) reviewSet.add(it.id);
+            if (it.custom_example_de) {
+              customExamples[it.id] = { de: it.custom_example_de, ar: it.custom_example_ar || '' };
+            }
+          });
+
+          // 2. Merge with localStorage (preserves progress even if tab was closed before network sync)
+          try {
+            const localLearned = JSON.parse(localStorage.getItem(getDocStorageKey(docId, 'learned')) || '[]');
+            const localReview = JSON.parse(localStorage.getItem(getDocStorageKey(docId, 'review')) || '[]');
+            let syncNeeded = false;
+
+            localLearned.forEach(id => {
+              if (typeof id === 'number' && !learnedSet.has(id)) {
+                learnedSet.add(id);
+                syncNeeded = true;
+              }
+            });
+            localReview.forEach(id => {
+              if (typeof id === 'number' && !reviewSet.has(id)) {
+                reviewSet.add(id);
+                syncNeeded = true;
+              }
+            });
+
+            if (syncNeeded) {
+              fetch(`/api/documents/${docId}/sync-progress`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  learned_ids: Array.from(learnedSet),
+                  review_ids: Array.from(reviewSet)
+                })
+              }).catch(console.warn);
+            }
+          } catch (e) {
+            console.warn('localStorage read error:', e);
+          }
+
+          // 3. Keep localStorage fresh with merged state
+          saveProgressToLocalStorage(docId);
+
+          // Build Page Dropdown for this document
+          const pages = Array.from(new Set(vocabItems.map(i => i.page))).sort((a, b) => a - b);
+          pageSelect.innerHTML = '<option value="all">📄 كل الصفحات</option>';
+          pages.forEach(p => {
+            const count = vocabItems.filter(i => i.page === p).length;
+            const opt = document.createElement('option');
+            opt.value = String(p);
+            opt.textContent = `صفحة ${p} (${count} كلمة)`;
+            pageSelect.appendChild(opt);
+          });
+          currentPage = 'all';
+
+          updateProgressUI();
+          renderList();
+        } catch (e) {
+          console.error('Error loading document words:', e);
+        }
+      }
+
+      function updateProgressUI() {
+        const total = vocabItems.length;
+        const learnedCount = learnedSet.size;
+        const reviewCount = reviewSet.size;
+        const verbsCount = vocabItems.filter(i => Boolean(i.perfekt || i.praeteritum || i.is_verb)).length;
+        const remainingCount = Math.max(0, total - learnedCount);
+        const percent = total > 0 ? Math.round((learnedCount / total) * 100) : 0;
+
+        document.getElementById('learned-total-count').textContent = learnedCount;
+        document.getElementById('review-total-count').textContent = reviewCount;
+        document.getElementById('remaining-total-count').textContent = remainingCount;
+        document.getElementById('total-words-count').textContent = total;
+        studyProgressBadge.textContent = `${percent}%`;
+        studyProgressBarFill.style.width = `${percent}%`;
+
+        document.getElementById('filter-all-count').textContent = total;
+        document.getElementById('filter-verbs-count').textContent = verbsCount;
+        document.getElementById('filter-review-count').textContent = reviewCount;
+        document.getElementById('filter-learned-count').textContent = learnedCount;
+        document.getElementById('filter-unlearned-count').textContent = remainingCount;
+
+        // Case breakdown counts (Akkusativ, Dativ, Both)
+        const pureAkkCount = vocabItems.filter(i => getItemCase(i) === 'akk').length;
+        const pureDatCount = vocabItems.filter(i => getItemCase(i) === 'dat').length;
+        const bothCount = vocabItems.filter(i => getItemCase(i) === 'both').length;
+        const totalAkk = pureAkkCount + bothCount;
+        const totalDat = pureDatCount + bothCount;
+
+        // Update dropdown option labels - ALWAYS VISIBLE in every file
+        const optAkk = sortSelect ? sortSelect.querySelector('option[value="akk_only"]') : null;
+        const optDat = sortSelect ? sortSelect.querySelector('option[value="dat_only"]') : null;
+        const optBoth = sortSelect ? sortSelect.querySelector('option[value="both_only"]') : null;
+        const optAkkThenDat = sortSelect ? sortSelect.querySelector('option[value="akk_then_dat"]') : null;
+
+        if (optAkk) {
+          optAkk.hidden = false;
+          optAkk.textContent = `🎯 أفعال Akkusativ فقط (${pureAkkCount})`;
+        }
+        if (optDat) {
+          optDat.hidden = false;
+          optDat.textContent = `💎 أفعال Dativ فقط (${pureDatCount})`;
+        }
+        if (optBoth) {
+          optBoth.hidden = false;
+          optBoth.textContent = `🎯+💎 أفعال Dativ + Akkusativ معاً (${bothCount})`;
+        }
+        if (optAkkThenDat) {
+          optAkkThenDat.hidden = false;
+          optAkkThenDat.textContent = `🎯 الأكوزاتيف أولاً ثم 💎 الداتيف (مجمّع)`;
+        }
+
+        // Top filter buttons - ALWAYS VISIBLE in every file
+        if (filterAkkBtn) {
+          filterAkkBtn.classList.remove('hidden');
+          filterAkkCount.textContent = totalAkk;
+        }
+        if (filterDatBtn) {
+          filterDatBtn.classList.remove('hidden');
+          filterDatCount.textContent = totalDat;
+        }
+        if (filterBothBtn) {
+          filterBothBtn.classList.remove('hidden');
+          filterBothCount.textContent = bothCount;
+        }
+      }
+
+      function getCurrentExampleForItem(item) {
+        if (customExamples[item.id]) {
+          return {
+            tag: 'مثالي المخصص ✍️',
+            de: customExamples[item.id].de,
+            ar: customExamples[item.id].ar
+          };
+        }
+        const list = item.examples && item.examples.length ? item.examples : [
+          {
+            tag: 'سياق B2 تطبيقي',
+            de: `In aktuellen Diskussionen spielt der Ausdruck „${item.spokenWord}“ eine wichtige Rolle.`,
+            ar: `في النقاشات الحالية يلعب التعبير "${item.spokenWord}" (${item.arabic}) دوراً مهماً.`
+          }
+        ];
+        const idx = (exampleVariantIndex[item.id] || 0) % list.length;
+        return list[idx];
+      }
+
+      function getFilteredItems() {
+        const q = currentSearch.trim().toLowerCase();
+        return vocabItems.filter(item => {
+          if (currentPage !== 'all' && item.page !== parseInt(currentPage, 10)) return false;
+
+          const c = getItemCase(item);
+          // Dropdown case filters:
+          if (currentSort === 'akk_only' && c !== 'akk') return false;
+          if (currentSort === 'dat_only' && c !== 'dat') return false;
+          if (currentSort === 'both_only' && c !== 'both') return false;
+
+          // Status filter pills:
+          if (currentStatus === 'verbs' && !item.perfekt && !item.praeteritum && !item.is_verb) return false;
+          if (currentStatus === 'review' && !reviewSet.has(item.id)) return false;
+          if (currentStatus === 'learned' && !learnedSet.has(item.id)) return false;
+          if (currentStatus === 'unlearned' && learnedSet.has(item.id)) return false;
+          if (currentStatus === 'akk' && c !== 'akk' && c !== 'both') return false;
+          if (currentStatus === 'dat' && c !== 'dat' && c !== 'both') return false;
+          if (currentStatus === 'both' && c !== 'both') return false;
+
+          if (!q) return true;
+          return String(item.page_word_num || item.id) === q.replace('#', '') ||
+            String(item.id) === q.replace('#', '') ||
+            item.word.toLowerCase().includes(q) ||
+            item.spokenWord.toLowerCase().includes(q) ||
+            item.perfekt.toLowerCase().includes(q) ||
+            (item.praeteritum && item.praeteritum.toLowerCase().includes(q)) ||
+            item.arabic.toLowerCase().includes(q) ||
+            item.synonym.toLowerCase().includes(q);
+        });
+      }
+
+      async function toggleWordLearned(id) {
+        const isNowLearned = !learnedSet.has(id);
+        if (isNowLearned) learnedSet.add(id); else learnedSet.delete(id);
+        updateProgressUI();
+        renderList();
+        saveProgressToLocalStorage(currentDocumentId);
+        try {
+          await fetch(`/api/words/${id}/learned?state=${isNowLearned}`, { method: 'POST' });
+        } catch (e) {
+          console.warn('Network sync failed, preserved in localStorage');
+        }
+      }
+
+      async function toggleWordReview(id) {
+        const isNowReview = !reviewSet.has(id);
+        if (isNowReview) reviewSet.add(id); else reviewSet.delete(id);
+        updateProgressUI();
+        renderList();
+        saveProgressToLocalStorage(currentDocumentId);
+        try {
+          await fetch(`/api/words/${id}/review?state=${isNowReview}`, { method: 'POST' });
+        } catch (e) {
+          console.warn('Network sync failed, preserved in localStorage');
+        }
+      }
+
+      function renderPerfektBadgeHTML(item) {
+        if (!item.perfekt && !item.praeteritum) return '';
+        const spokenPerfekt = (item.perfekt || '').replace(/\//g, ' oder ');
+        const spokenPraet = (item.praeteritum || '').replace(/\//g, ' oder ');
+        return `
+          <div class="mt-2 space-y-1.5" dir="ltr">
+            ${item.perfekt ? `
+              <button
+                type="button"
+                data-speak-custom="${escapeHTML(spokenPerfekt)}"
+                data-word-id="${item.id}"
+                title="اضغط لسماع نطق البيرفكت (Perfekt)"
+                class="w-full text-left px-3 py-1.5 rounded-xl bg-teal-50/90 hover:bg-teal-600 text-teal-900 hover:text-white border border-teal-200 hover:border-teal-600 transition flex items-center justify-between gap-2 cursor-pointer group"
+              >
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-teal-200/80 text-teal-950 group-hover:bg-white/20 group-hover:text-white shrink-0">⏳ Perfekt</span>
+                  <span class="text-xs sm:text-sm font-extrabold font-german truncate">${escapeHTML(item.perfekt)}</span>
+                </div>
+                <span class="text-xs shrink-0 opacity-80 group-hover:opacity-100">🔊 نطق</span>
+              </button>
+            ` : ''}
+
+            ${item.praeteritum ? `
+              <button
+                type="button"
+                data-speak-custom="${escapeHTML(spokenPraet)}"
+                data-word-id="${item.id}"
+                title="اضغط لسماع نطق الماضي البسيط (Präteritum)"
+                class="w-full text-left px-3 py-1.5 rounded-xl bg-amber-50/90 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-200 hover:border-amber-600 transition flex items-center justify-between gap-2 cursor-pointer group"
+              >
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-950 group-hover:bg-white/20 group-hover:text-white shrink-0">📜 Präteritum</span>
+                  <span class="text-xs sm:text-sm font-extrabold font-german truncate">${escapeHTML(item.praeteritum)}</span>
+                </div>
+                <span class="text-xs shrink-0 opacity-80 group-hover:opacity-100">🔊 نطق</span>
+              </button>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      function renderSynonymsInteractiveHTML(item) {
+        if (!item.synonym) return '';
+        const allSpokenSynonyms = (item.synonymList || []).join(', ');
+        return `
+          <div class="pt-2.5 border-t border-slate-100">
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-[11px] font-bold text-slate-500">المرادفات (اضغط لنطق أي مرادف):</span>
+              <button
+                type="button"
+                data-speak-custom="${escapeHTML(allSpokenSynonyms)}"
+                data-word-id="${item.id}"
+                class="no-print text-[11px] font-extrabold bg-purple-50 hover:bg-purple-600 text-purple-800 hover:text-white border border-purple-200 hover:border-purple-600 px-2.5 py-0.5 rounded-lg transition flex items-center gap-1 cursor-pointer shrink-0"
+                title="نطق جميع المرادفات بالألمانية"
+              >
+                <span>🔊</span>
+                <span>نطق المرادفات</span>
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-1.5" dir="ltr">
+              ${(item.synonymList || []).map(syn => `
+                <button
+                  type="button"
+                  data-speak-custom="${escapeHTML(syn)}"
+                  data-word-id="${item.id}"
+                  title="اضغط لسماع نطق المرادف: ${escapeHTML(syn)}"
+                  class="text-xs font-semibold font-german bg-slate-100 hover:bg-purple-600 text-slate-700 hover:text-white border border-slate-200 hover:border-purple-600 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                >
+                  <span>${escapeHTML(syn)}</span>
+                  <span class="text-[10px] opacity-70">🔊</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderExampleBoxHTML(item) {
+        const isOpen = showAllExamples || openExampleIds.has(item.id);
+        if (!isOpen) return '';
+        const ex = getCurrentExampleForItem(item);
+        return `
+          <div class="mt-2.5 bg-amber-50/90 border border-amber-200 rounded-xl p-3 space-y-2 no-print">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="text-[10px] font-extrabold bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded-full">
+                📖 ${escapeHTML(ex.tag)}
+              </span>
+              <div class="flex items-center gap-1 flex-wrap">
+                <button type="button" data-speak-example="${item.id}" data-sentence="${escapeHTML(ex.de)}" class="text-[11px] font-bold bg-white hover:bg-sky-600 hover:text-white text-slate-700 border border-slate-200 px-2 py-0.5 rounded-lg transition cursor-pointer">
+                  🔊 نطق الجملة
+                </button>
+                <button type="button" data-cycle-example="${item.id}" class="text-[11px] font-bold bg-white hover:bg-amber-500 hover:text-white text-slate-700 border border-slate-200 px-2 py-0.5 rounded-lg transition cursor-pointer" title="تغيير السياق المحلي">
+                  🔄 جملة أخرى
+                </button>
+                <button type="button" data-edit-example="${item.id}" class="text-[11px] font-bold bg-white hover:bg-slate-800 hover:text-white text-slate-700 border border-slate-200 px-2 py-0.5 rounded-lg transition cursor-pointer" title="كتابة مثالك الخاص">
+                  ✏️
+                </button>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm font-bold font-german text-slate-900 leading-relaxed" dir="ltr">
+              ${escapeHTML(ex.de)}
+            </p>
+            <p class="text-xs font-semibold text-amber-950 leading-relaxed border-t border-amber-200/60 pt-1.5">
+              ${escapeHTML(ex.ar)}
+            </p>
+            <div class="pt-2 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-1.5">
+              <span class="text-[10px] font-bold text-amber-900">🌐 أمثلة خارجية متنوعة بترجمتها العربية:</span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" data-popup-type="reverso" data-word-id="${item.id}" class="text-[11px] font-extrabold bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded-lg shadow-sm transition cursor-pointer">
+                  🌐 أمثلة Reverso المترجمة
+                </button>
+                <button type="button" data-popup-type="glosbe" data-word-id="${item.id}" class="text-[11px] font-extrabold bg-teal-700 hover:bg-teal-800 text-white px-2.5 py-1 rounded-lg shadow-sm transition cursor-pointer">
+                  📚 أمثلة Glosbe المترجمة
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderList() {
+        const filtered = getFilteredItems();
+        let sortDesc = 'أبجدي A - Z';
+        if (currentSort === 'akk_only') sortDesc = 'أفعال Akkusativ فقط';
+        else if (currentSort === 'dat_only') sortDesc = 'أفعال Dativ فقط';
+        else if (currentSort === 'both_only') sortDesc = 'أفعال Dativ + Akkusativ معاً';
+        else if (currentSort === 'akk_then_dat') sortDesc = 'الأكوزاتيف أولاً ثم الداتيف';
+        else if (currentSort === 'alpha_desc') sortDesc = 'أبجدي عكسي Z - A';
+        else if (currentSort === 'original') sortDesc = 'حسب ورود الكلمات بالملف';
+
+        if (currentPage !== 'all') {
+          resultsCounter.innerHTML = `المعروض: <strong class="text-sky-700">${filtered.length}</strong> كلمة في صفحة ${currentPage} (${sortDesc})`;
+        } else {
+          resultsCounter.innerHTML = `المعروض: <strong class="text-sky-700">${filtered.length}</strong> من ${vocabItems.length} (${sortDesc})`;
+        }
+        if (filtered.length === 0) {
+          cardsContainer.innerHTML = '';
+          tableBody.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+        emptyState.classList.add('hidden');
+
+        if (currentView === 'cards') {
+          cardsContainer.classList.remove('hidden');
+          tableContainer.classList.add('hidden');
+
+          let lastGroup = null;
+          const pieces = [];
+
+          filtered.forEach((item, idx) => {
+            const isLearned = learnedSet.has(item.id);
+            const isReview = reviewSet.has(item.id);
+            const cardStyleClass = isReview ? 'card-review' : (isLearned ? 'card-learned' : 'card-default');
+            const cCase = getItemCase(item);
+            const itemNum = idx + 1;
+
+            // Group divider in akk_then_dat sort mode
+            if (currentSort === 'akk_then_dat' && cCase !== lastGroup) {
+              lastGroup = cCase;
+              let bannerTitle = '';
+              let bannerDesc = '';
+              let bannerStyle = '';
+
+              if (cCase === 'akk') {
+                bannerTitle = '🎯 أفعال تأخذ مفعولاً به منصوباً — Akkusativ (+A)';
+                bannerDesc = 'القسم الأول: أفعال الأكوزاتيف المنصوبة';
+                bannerStyle = 'bg-sky-50 border-sky-300 text-sky-950';
+              } else if (cCase === 'both') {
+                bannerTitle = '🎯+💎 أفعال تأخذ الحالتين معاً — Dativ + Akkusativ (+D+A)';
+                bannerDesc = 'القسم الثاني: أفعال تأخذ داتيف للشخص وأكوزاتيف للشيء';
+                bannerStyle = 'bg-gradient-to-r from-sky-50 to-purple-50 border-indigo-300 text-indigo-950';
+              } else if (cCase === 'dat') {
+                bannerTitle = '💎 أفعال تأخذ حالة الجر — Dativ (+D)';
+                bannerDesc = 'القسم الثالث: أفعال الداتيف المجرورة';
+                bannerStyle = 'bg-purple-50 border-purple-300 text-purple-950';
+              } else {
+                bannerTitle = '📝 أفعال ومفردات إضافية';
+                bannerDesc = 'مفردات عامة';
+                bannerStyle = 'bg-slate-100 border-slate-300 text-slate-800';
+              }
+
+              pieces.push(`
+                <div class="col-span-full py-3 px-4 rounded-2xl border font-black text-sm sm:text-base flex items-center justify-between shadow-xs mt-4 first:mt-0 ${bannerStyle}">
+                  <span class="flex items-center gap-2"><span>📌</span><span>${bannerTitle}</span></span>
+                  <span class="text-xs font-bold opacity-80">${bannerDesc}</span>
+                </div>
+              `);
+            }
+
+            let caseBorderClass = '';
+            if (cCase === 'akk') caseBorderClass = 'border-l-4 border-l-sky-500 bg-sky-50/40';
+            else if (cCase === 'dat') caseBorderClass = 'border-l-4 border-l-purple-600 bg-purple-50/40';
+            else if (cCase === 'both') caseBorderClass = 'border-l-4 border-l-indigo-600 bg-indigo-50/40';
+
+            pieces.push(`
+              <article class="vocab-card bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition p-4 flex flex-col justify-between gap-3 ${cardStyleClass}">
+                <div>
+                  <div class="flex items-center justify-between gap-1.5 mb-2.5 flex-wrap">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="bg-slate-900 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-lg shadow-sm" title="الترتيب #${itemNum} في العرض الحالي">#${itemNum}</span>
+                      <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2 py-0.5 rounded-lg border border-slate-200">صفحة ${item.page}</span>
+                      ${renderCaseBadgeHTML(item)}
+                    </div>
+
+                    <div class="flex items-center gap-1.5 no-print">
+                      <button
+                        type="button"
+                        data-toggle-review="${item.id}"
+                        class="toggle-review-btn text-xs font-extrabold px-2.5 py-1 rounded-xl border transition cursor-pointer flex items-center gap-1 ${
+                          isReview
+                            ? 'bg-amber-500 text-white border-amber-500 shadow-sm hover:bg-amber-600'
+                            : 'bg-slate-50 text-slate-600 border-slate-300 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300'
+                        }"
+                      >
+                        <span>⭐</span>
+                        <span>${isReview ? 'للمراجعة' : 'مراجعة'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        data-toggle-learned="${item.id}"
+                        class="toggle-learned-btn text-xs font-extrabold px-2.5 py-1 rounded-xl border transition cursor-pointer flex items-center gap-1 ${
+                          isLearned
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm hover:bg-emerald-700'
+                            : 'bg-slate-50 text-slate-600 border-slate-300 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300'
+                        }"
+                      >
+                        <span>✅</span>
+                        <span>${isLearned ? 'محفوظة' : 'حفظ'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- German Word Button -->
+                  <button
+                    type="button"
+                    data-speak-id="${item.id}"
+                    data-spoken-word="${escapeHTML(item.spokenWord)}"
+                    title="اضغط لسماع النطق الألماني الدقيق"
+                    class="word-speak-btn w-full text-left bg-slate-50 hover:bg-sky-50 active:bg-sky-100 border border-slate-200 hover:border-sky-400 rounded-xl px-3.5 py-2.5 transition flex items-center justify-between gap-3 cursor-pointer group ${caseBorderClass}"
+                    dir="ltr"
+                  >
+                    <div class="min-w-0">
+                      <span class="text-base sm:text-lg font-black font-german text-slate-900 group-hover:text-sky-700 transition truncate block">
+                        ${escapeHTML(item.word)}
+                      </span>
+                    </div>
+                    <span class="text-sm font-bold text-sky-600 shrink-0 flex items-center gap-1 bg-white group-hover:bg-sky-600 group-hover:text-white px-2 py-1 rounded-lg border border-slate-200 group-hover:border-sky-600 transition">
+                      <span>🔊</span>
+                      <span class="text-xs">نطق</span>
+                    </span>
+                  </button>
+
+                  <!-- Perfekt Badge -->
+                  ${renderPerfektBadgeHTML(item)}
+
+                  <!-- Mini Floating Windows Bar -->
+                  <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between gap-1 flex-wrap no-print">
+                    <span class="text-[10px] font-bold text-slate-400">نوافذ منبثقة:</span>
+                    <div class="flex items-center gap-1">
+                      <button type="button" data-popup-type="youglish" data-word-id="${item.id}" class="text-[11px] font-bold bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 hover:border-rose-600 px-2 py-0.5 rounded-lg transition cursor-pointer flex items-center gap-1">
+                        <span>🎬</span>
+                        <span>YouGlish</span>
+                      </button>
+                      <button type="button" data-popup-type="images" data-word-id="${item.id}" class="text-[11px] font-bold bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 hover:border-indigo-600 px-2 py-0.5 rounded-lg transition cursor-pointer flex items-center gap-1">
+                        <span>🖼️</span>
+                        <span>صور</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Arabic Meaning -->
+                  <div class="mt-2.5 bg-slate-50/80 rounded-xl p-2.5 border border-slate-200/80">
+                    <span class="text-[11px] font-bold text-slate-400 block mb-0.5">المعنى بالعربية:</span>
+                    <p class="text-sm font-extrabold text-slate-900 leading-snug">
+                      ${escapeHTML(item.arabic)}
+                    </p>
+                  </div>
+
+                  <!-- Accordion Examples Box -->
+                  ${renderExampleBoxHTML(item)}
+
+                  <!-- Synonyms Section -->
+                  ${renderSynonymsInteractiveHTML(item)}
+                </div>
+
+                <!-- Footer Card Action: Toggle Local Example -->
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs no-print">
+                  <button
+                    type="button"
+                    data-toggle-example-id="${item.id}"
+                    class="text-indigo-600 hover:text-indigo-800 font-extrabold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <span>${(showAllExamples || openExampleIds.has(item.id)) ? '🔼 إخفاء الأمثلة' : '🔽 إظهار أمثلة سياقية وترجمتها'}</span>
+                  </button>
+                </div>
+              </article>
+            `);
+          });
+
+          cardsContainer.innerHTML = pieces.join('');
+        } else {
+          cardsContainer.classList.add('hidden');
+          tableContainer.classList.remove('hidden');
+
+          let lastGroup = null;
+          const trs = [];
+
+          filtered.forEach((item, idx) => {
+            const isLearned = learnedSet.has(item.id);
+            const isReview = reviewSet.has(item.id);
+            const trClass = isReview ? 'bg-amber-50/70' : (isLearned ? 'bg-emerald-50/60' : 'hover:bg-slate-50');
+            const cCase = getItemCase(item);
+            const itemNum = idx + 1;
+
+            if (currentSort === 'akk_then_dat' && cCase !== lastGroup) {
+              lastGroup = cCase;
+              let bannerTitle = '';
+              let bannerStyle = '';
+              if (cCase === 'akk') {
+                bannerTitle = '🎯 أفعال تأخذ مفعولاً به منصوباً — Akkusativ (+A)';
+                bannerStyle = 'bg-sky-100/80 text-sky-950 font-black';
+              } else if (cCase === 'both') {
+                bannerTitle = '🎯+💎 أفعال تأخذ الحالتين معاً — Dativ + Akkusativ (+D+A)';
+                bannerStyle = 'bg-indigo-100/80 text-indigo-950 font-black';
+              } else if (cCase === 'dat') {
+                bannerTitle = '💎 أفعال تأخذ حالة الجر — Dativ (+D)';
+                bannerStyle = 'bg-purple-100/80 text-purple-950 font-black';
+              } else {
+                bannerTitle = '📝 مفردات وأفعال عامة';
+                bannerStyle = 'bg-slate-200 text-slate-800 font-black';
+              }
+              trs.push(`
+                <tr class="${bannerStyle}">
+                  <td colspan="5" class="py-2.5 px-4 text-sm">${bannerTitle}</td>
+                </tr>
+              `);
+            }
+
+            trs.push(`
+              <tr class="${trClass} transition">
+                <td class="py-3 px-3 text-center align-top">
+                  <div class="font-extrabold text-slate-800 text-sm">#${itemNum}</div>
+                  <div class="text-[11px] text-slate-400">ص ${item.page}</div>
+                </td>
+                <td class="py-3 px-3 text-center align-top no-print">
+                  <div class="flex flex-col gap-1.5 items-center">
+                    <button
+                      type="button"
+                      data-toggle-learned="${item.id}"
+                      class="toggle-learned-btn w-full text-xs font-bold px-2 py-1 rounded-lg border transition cursor-pointer ${
+                        isLearned ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-300 hover:bg-emerald-50'
+                      }"
+                    >
+                      ${isLearned ? '✅ محفوظ' : 'حفظ'}
+                    </button>
+                    <button
+                      type="button"
+                      data-toggle-review="${item.id}"
+                      class="toggle-review-btn w-full text-xs font-bold px-2 py-1 rounded-lg border transition cursor-pointer ${
+                        isReview ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-700 border-slate-300 hover:bg-amber-50'
+                      }"
+                    >
+                      ${isReview ? '⭐ للمراجعة' : 'مراجعة'}
+                    </button>
+                  </div>
+                </td>
+                <td class="py-3 px-4 align-top" dir="ltr">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <button
+                      type="button"
+                      data-speak-id="${item.id}"
+                      data-spoken-word="${escapeHTML(item.spokenWord)}"
+                      class="text-left font-black font-german text-slate-900 hover:text-sky-600 text-sm sm:text-base flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>${escapeHTML(item.word)}</span>
+                      <span class="text-xs text-sky-600">🔊</span>
+                    </button>
+                    ${renderCaseBadgeHTML(item)}
+                  </div>
+                  ${item.perfekt ? `
+                    <div class="mt-1">
+                      <button
+                        type="button"
+                        data-speak-custom="${escapeHTML(item.perfekt.replace(/\//g, ' oder '))}"
+                        data-word-id="${item.id}"
+                        class="text-xs font-extrabold font-german text-teal-700 hover:text-teal-900 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 cursor-pointer"
+                      >
+                        ⏳ Perfekt: ${escapeHTML(item.perfekt)} 🔊
+                      </button>
+                    </div>
+                  ` : ''}
+                  ${item.praeteritum ? `
+                    <div class="mt-1">
+                      <button
+                        type="button"
+                        data-speak-custom="${escapeHTML(item.praeteritum.replace(/\//g, ' oder '))}"
+                        data-word-id="${item.id}"
+                        class="text-xs font-extrabold font-german text-amber-800 hover:text-amber-950 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 cursor-pointer"
+                      >
+                        📜 Präteritum: ${escapeHTML(item.praeteritum)} 🔊
+                      </button>
+                    </div>
+                  ` : ''}
+                  <div class="mt-1 flex items-center gap-2 text-xs no-print">
+                    <button type="button" data-popup-type="youglish" data-word-id="${item.id}" class="text-rose-600 hover:underline">🎬 YouGlish</button>
+                    <span>•</span>
+                    <button type="button" data-popup-type="images" data-word-id="${item.id}" class="text-indigo-600 hover:underline">🖼️ صور</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4 align-top">
+                  <div class="font-bold text-slate-900 text-sm">${escapeHTML(item.arabic)}</div>
+                  <div class="mt-1 flex items-center gap-2 text-xs no-print">
+                    <button type="button" data-popup-type="reverso" data-word-id="${item.id}" class="text-amber-700 hover:underline">🌐 Reverso</button>
+                    <span>•</span>
+                    <button type="button" data-popup-type="glosbe" data-word-id="${item.id}" class="text-teal-700 hover:underline">📚 Glosbe</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4 align-top" dir="ltr">
+                  <div class="flex flex-wrap gap-1">
+                    ${(item.synonymList || []).map(syn => `
+                      <button
+                        type="button"
+                        data-speak-custom="${escapeHTML(syn)}"
+                        data-word-id="${item.id}"
+                        class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-900 px-2 py-0.5 rounded border border-purple-200 cursor-pointer"
+                      >
+                        ${escapeHTML(syn)} 🔊
+                      </button>
+                    `).join('')}
+                  </div>
+                </td>
+              </tr>
+            `);
+          });
+
+          tableBody.innerHTML = trs.join('');
+        }
+      }
+
+      // ==========================================
+      // GLOBAL EVENT DELEGATION FOR CARDS & TABLE
+      // ==========================================
+      document.body.addEventListener('click', function (e) {
+        // Speak Word
+        const speakWordBtn = e.target.closest('[data-spoken-word]');
+        if (speakWordBtn) {
+          const id = parseInt(speakWordBtn.getAttribute('data-speak-id'), 10);
+          const spoken = speakWordBtn.getAttribute('data-spoken-word');
+          speakGermanText(id, spoken);
+          return;
+        }
+
+        // Speak Custom Text (Perfekt / Synonyms)
+        const speakCustomBtn = e.target.closest('[data-speak-custom]');
+        if (speakCustomBtn) {
+          const wid = parseInt(speakCustomBtn.getAttribute('data-word-id'), 10);
+          const text = speakCustomBtn.getAttribute('data-speak-custom');
+          speakGermanText(wid, text);
+          return;
+        }
+
+        // Speak Example Sentence
+        const speakExBtn = e.target.closest('[data-speak-example]');
+        if (speakExBtn) {
+          const wid = parseInt(speakExBtn.getAttribute('data-speak-example'), 10);
+          const sent = speakExBtn.getAttribute('data-sentence');
+          speakGermanText(wid, sent);
+          return;
+        }
+
+        // Cycle Example
+        const cycleExBtn = e.target.closest('[data-cycle-example]');
+        if (cycleExBtn) {
+          const wid = parseInt(cycleExBtn.getAttribute('data-cycle-example'), 10);
+          exampleVariantIndex[wid] = (exampleVariantIndex[wid] || 0) + 1;
+          renderList();
+          return;
+        }
+
+        // Edit Custom Example
+        const editExBtn = e.target.closest('[data-edit-example]');
+        if (editExBtn) {
+          const wid = parseInt(editExBtn.getAttribute('data-edit-example'), 10);
+          const current = customExamples[wid] || {};
+          const newDe = window.prompt('اكتب جملتك التطبيقية المخصصة بالألمانية:', current.de || '');
+          if (newDe !== null && newDe.trim()) {
+            const newAr = window.prompt('اكتب الترجمة العربية لمثالك:', current.ar || '');
+            customExamples[wid] = { de: newDe.trim(), ar: (newAr || '').trim() };
+            renderList();
+            fetch(`/api/words/${wid}/example`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ de: newDe.trim(), ar: (newAr || '').trim() })
+            }).catch(console.error);
+          }
+          return;
+        }
+
+        // Toggle Example Accordion
+        const toggleExBtn = e.target.closest('[data-toggle-example-id]');
+        if (toggleExBtn) {
+          const wid = parseInt(toggleExBtn.getAttribute('data-toggle-example-id'), 10);
+          if (openExampleIds.has(wid)) openExampleIds.delete(wid); else openExampleIds.add(wid);
+          renderList();
+          return;
+        }
+
+        // Popups (YouGlish / Images / Reverso / Glosbe)
+        const popupBtn = e.target.closest('[data-popup-type]');
+        if (popupBtn) {
+          const type = popupBtn.getAttribute('data-popup-type');
+          const wid = parseInt(popupBtn.getAttribute('data-word-id'), 10);
+          const item = vocabItems.find(i => i.id === wid);
+          if (!item) return;
+
+          let url = '';
+          if (type === 'youglish') url = getYouGlishUrl(item.youglishQuery || item.spokenWord);
+          else if (type === 'images') url = getGoogleImagesUrl(item.spokenWord);
+          else if (type === 'reverso') url = getReversoExamplesUrl(item.spokenWord);
+          else if (type === 'glosbe') url = getGlosbeExamplesUrl(item.spokenWord);
+
+          if (url) openSingleMiniPopup(url, `Popup_${type}`);
+          return;
+        }
+
+        // Toggle Learned
+        const toggleLearnedBtn = e.target.closest('[data-toggle-learned]');
+        if (toggleLearnedBtn) {
+          const id = parseInt(toggleLearnedBtn.getAttribute('data-toggle-learned'), 10);
+          toggleWordLearned(id);
+          return;
+        }
+
+        // Toggle Review
+        const toggleReviewBtn = e.target.closest('[data-toggle-review]');
+        if (toggleReviewBtn) {
+          const id = parseInt(toggleReviewBtn.getAttribute('data-toggle-review'), 10);
+          toggleWordReview(id);
+          return;
+        }
+      });
+
+      // ==========================================
+      // TOOLBAR & FILTER LISTENERS
+      // ==========================================
+      toggleAllExamplesBtn.addEventListener('click', function () {
+        showAllExamples = !showAllExamples;
+        this.textContent = showAllExamples ? '🙈 إخفاء كل الأمثلة المحلية' : '📖 إظهار كل الأمثلة المحلية';
+        renderList();
+      });
+
+      searchInput.addEventListener('input', function () {
+        currentSearch = this.value;
+        clearSearchBtn.classList.toggle('hidden', !currentSearch);
+        renderList();
+      });
+
+      clearSearchBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        currentSearch = '';
+        this.classList.add('hidden');
+        renderList();
+        searchInput.focus();
+      });
+
+      studyDocSelect.addEventListener('change', function () {
+        const id = parseInt(this.value, 10);
+        if (id) {
+          window.location.hash = `#/doc/${id}`;
+        }
+      });
+
+      pageSelect.addEventListener('change', function () {
+        currentPage = this.value;
+        renderList();
+      });
+
+      if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', function () {
+          const opts = Array.from(pageSelect.options).map(o => o.value);
+          const idx = opts.indexOf(pageSelect.value);
+          if (idx > 1) {
+            pageSelect.value = opts[idx - 1];
+          } else if (idx === 1) {
+            pageSelect.value = 'all';
+          } else if (opts.length > 1) {
+            pageSelect.value = opts[opts.length - 1];
+          }
+          currentPage = pageSelect.value;
+          renderList();
+        });
+      }
+
+      if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', function () {
+          const opts = Array.from(pageSelect.options).map(o => o.value);
+          const idx = opts.indexOf(pageSelect.value);
+          if (idx >= 0 && idx < opts.length - 1) {
+            pageSelect.value = opts[idx + 1];
+          } else if (opts.length > 1) {
+            pageSelect.value = opts[1];
+          }
+          currentPage = pageSelect.value;
+          renderList();
+        });
+      }
+
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function () {
+          currentSort = this.value;
+          applySortingAndNumbering();
+          renderList();
+        });
+      }
+
+      document.querySelectorAll('.status-filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          currentStatus = this.getAttribute('data-status');
+          document.querySelectorAll('.status-filter-btn').forEach(b => {
+            b.classList.remove('ring-2', 'ring-offset-1', 'ring-slate-900', 'scale-105');
+          });
+          this.classList.add('ring-2', 'ring-offset-1', 'ring-slate-900', 'scale-105');
+          renderList();
+        });
+      });
+
+      document.getElementById('mark-visible-btn').addEventListener('click', async function () {
+        const visible = getFilteredItems();
+        if (visible.length === 0) return;
+        visible.forEach(item => learnedSet.add(item.id));
+        updateProgressUI();
+        renderList();
+        saveProgressToLocalStorage(currentDocumentId);
+        try {
+          await fetch(`/api/documents/${currentDocumentId}/mark-all-learned`, { method: 'POST' });
+        } catch (e) {}
+      });
+
+      document.getElementById('clear-review-btn').addEventListener('click', async function () {
+        if (reviewSet.size === 0) return;
+        if (window.confirm('هل تريد إزالة جميع الكلمات من قائمة المراجعة ⭐ في هذا الملف نهائياً؟')) {
+          reviewSet.clear();
+          saveProgressToLocalStorage(currentDocumentId);
+          updateProgressUI();
+          renderList();
+          try {
+            await fetch(`/api/documents/${currentDocumentId}/clear-review`, { method: 'POST' });
+          } catch (e) {
+            console.warn('Backend clear review error:', e);
+          }
+        }
+      });
+
+      document.getElementById('reset-progress-btn').addEventListener('click', async function () {
+        if (learnedSet.size === 0 && reviewSet.size === 0) return;
+        if (window.confirm('هل أنت متأكد من تصفير الكلمات المحفوظة وقائمة المراجعة لهذا الملف بالكامل؟')) {
+          learnedSet.clear();
+          reviewSet.clear();
+          saveProgressToLocalStorage(currentDocumentId);
+          updateProgressUI();
+          renderList();
+          try {
+            await fetch(`/api/documents/${currentDocumentId}/reset-progress`, { method: 'POST' });
+          } catch (e) {}
+        }
+      });
+
+      document.getElementById('backup-btn').addEventListener('click', async function () {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '⏳ جاري الحفظ...';
+        try {
+          const res = await fetch('/api/backup', { method: 'POST' });
+          const data = await res.json();
+          if (data.status === 'success') {
+            window.alert('✅ تم أخذ نسخة احتياطية وإرسالها بنجاح إلى تليجرام!');
+          } else {
+            window.alert(`💾 تم حفظ نسخة احتياطية مضغوطة محلياً (${data.backup_file}) بحجم ${data.size_kb} KB.`);
+          }
+        } catch (e) {
+          window.alert('حدث خطأ أثناء أخذ النسخة الاحتياطية.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '💾 نسخ احتياطي';
+        }
+      });
+
+      viewCardsBtn.addEventListener('click', function () {
+        currentView = 'cards';
+        viewCardsBtn.className = 'flex-1 py-1 px-1.5 text-xs font-bold rounded-lg bg-white text-sky-700 shadow-sm transition cursor-pointer text-center';
+        viewTableBtn.className = 'flex-1 py-1 px-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer text-center';
+        renderList();
+      });
+
+      viewTableBtn.addEventListener('click', function () {
+        currentView = 'table';
+        viewTableBtn.className = 'flex-1 py-1 px-1.5 text-xs font-bold rounded-lg bg-white text-sky-700 shadow-sm transition cursor-pointer text-center';
+        viewCardsBtn.className = 'flex-1 py-1 px-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer text-center';
+        renderList();
+      });
+
+      document.getElementById('reset-filters-btn').addEventListener('click', function () {
+        currentPage = 'all';
+        currentStatus = 'all';
+        currentSearch = '';
+        searchInput.value = '';
+        pageSelect.value = 'all';
+        clearSearchBtn.classList.add('hidden');
+        renderList();
+      });
+
+      document.getElementById('test-audio-btn').addEventListener('click', () => {
+        const first = vocabItems[0];
+        speakGermanText(first ? first.id : 1, first ? first.word : 'Guten Tag, willkommen bei Vocab Tutor!');
+      });
+
+      document.getElementById('print-pdf-btn').addEventListener('click', () => window.print());
+
+      exportStandaloneBtn.addEventListener('click', function () {
+        if (currentDocumentId) {
+          window.open(`/api/documents/${currentDocumentId}/export/html`, '_blank');
+        }
+      });
+
+      studyExportBtn.addEventListener('click', function () {
+        if (currentDocumentId) {
+          window.open(`/api/documents/${currentDocumentId}/export/html`, '_blank');
+        }
+      });
+
+      // ==========================================
+      // UPLOAD HANDLING (FROM LIBRARY PAGE & MODAL)
+      // ==========================================
+      async function executeUpload(file, title, statusEl, submitBtn, onDone) {
+        if (!file) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>⏳</span><span>جاري التحليل واستخراج الكلمات...</span>';
+        statusEl.className = 'text-xs font-bold p-3 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 block';
+        statusEl.textContent = 'جاري قراءة الملف وتوليد البيرفكت والمرادفات والأمثلة السياقية... قد يستغرق لحظات قليلة.';
+
+        const formData = new FormData();
+        formData.append('file', file);
+        if (title && title.trim()) {
+          formData.append('title', title.trim());
+        }
+
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+          });
+          const result = await res.json();
+
+          if (res.ok && result.status === 'success') {
+            statusEl.className = 'text-xs font-bold p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+            statusEl.textContent = `✅ تم إنشاء صفحة الملف واستخراج ${result.total_words} كلمة بنجاح! جاري الانتقال للصفحة...`;
+            setTimeout(() => {
+              if (onDone) onDone();
+              // Navigate directly to the new document's dedicated page!
+              window.location.hash = `#/doc/${result.document_id}`;
+            }, 1000);
+          } else {
+            statusEl.className = 'text-xs font-bold p-3 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 block';
+            statusEl.textContent = `❌ خطأ: ${result.detail || 'فشل استخراج الكلمات من الملف'}`;
+          }
+        } catch (err) {
+          statusEl.className = 'text-xs font-bold p-3 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 block';
+          statusEl.textContent = '❌ حدث خطأ في الاتصال بالخادم أثناء الرفع.';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>🚀</span><span>بدء المعالجة والاستخراج</span>';
+        }
+      }
+
+      // Library form upload
+      libraryUploadForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const file = libraryUploadFile.files[0];
+        const title = libraryUploadTitle.value;
+        executeUpload(file, title, libraryUploadStatus, librarySubmitUploadBtn, () => {
+          libraryUploadTitle.value = '';
+          libraryUploadFile.value = '';
+        });
+      });
+
+      // Modal form upload
+      openUploadModalBtn.addEventListener('click', () => {
+        uploadModal.classList.remove('hidden');
+        modalUploadTitle.value = '';
+        modalUploadFile.value = '';
+        modalUploadStatus.classList.add('hidden');
+      });
+
+      function closeUploadModal() {
+        uploadModal.classList.add('hidden');
+      }
+
+      closeUploadModalBtn.addEventListener('click', closeUploadModal);
+      cancelUploadBtn.addEventListener('click', closeUploadModal);
+
+      modalUploadForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const file = modalUploadFile.files[0];
+        const title = modalUploadTitle.value;
+        executeUpload(file, title, modalUploadStatus, modalSubmitUploadBtn, closeUploadModal);
+      });
+
+      // Dynamic version sync
+      fetch('/api/version')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.version) {
+            const el = document.getElementById('app-version-badge');
+            if (el) el.textContent = data.version;
+          }
+        })
+        .catch(() => {});
+
+      // Initial Bootstrap
+      handleRouting();
+    })();
+  </script>
+</body>
+</html>

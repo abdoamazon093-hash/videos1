@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>German Coach 🇩🇪 | مُدرّب الألمانية الذكي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Lexend:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css?v=18.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
+  <!-- JSZip for clean client-side Word (.docx) generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Top Sticky Navigation -->
+    <header class="top-nav">
+      <div class="nav-main-row">
+        <!-- Brand -->
+        <div class="brand-box">
+          <span class="brand-icon">🇩🇪</span>
+          <div class="brand-text">
+            <h1>German Coach</h1>
+            <p>مُدرّب الألمانية السياقي المتطور (B1–C2)</p>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="nav-actions">
+          <!-- Level Selector -->
+          <div class="level-selector-wrap">
+            <span>المستوى:</span>
+            <select id="level-select" class="level-select" aria-label="اختيار المستوى">
+              <option value="B1">B1</option>
+              <option value="B2" selected>B2</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
+            </select>
+          </div>
+
+          <!-- Smart Clips Button with Counter -->
+          <a href="#sec-6" class="btn-header primary" id="btn-clips-counter" title="الانتقال للحافظة الذكية">
+            <span>📌 الحافظة</span>
+            <span id="clips-count-badge" class="badge-count">0</span>
+          </a>
+
+          <!-- Export Word Docx Button -->
+          <button type="button" class="btn-header" id="btn-export-word" title="توليد وتحميل ملف Word .docx للحافظة">
+            <span>📄 Word (.docx)</span>
+          </button>
+
+          <!-- Telegram Backup Button -->
+          <button type="button" class="btn-header" id="btn-telegram-backup" title="نسخ قاعدة بيانات SQLite احتياطياً إلى تليجرام">
+            <span>📦 نسخ لتليجرام</span>
+          </button>
+
+          <!-- Help Guide Button -->
+          <button type="button" class="btn-header" id="btn-open-help" title="دليل الاستخدام السريع">
+            <span>💡 الدليل</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Section Anchor Pills -->
+      <nav class="nav-sections-bar" aria-label="التنقل بين الأقسام">
+        <a href="#sec-1" class="nav-pill">١. الإدخال الصوتي والكتابي</a>
+        <a href="#sec-2" class="nav-pill">٢. النص قبل التصحيح</a>
+        <a href="#sec-3" class="nav-pill">٣. الألماني الصحيح والمساعد</a>
+        <a href="#sec-4" class="nav-pill">٤. الأخطاء المستبدلة</a>
+        <a href="#sec-5" class="nav-pill">٥. رادار القواعد</a>
+        <a href="#sec-6" class="nav-pill">٦. الحافظة الذكية 📌</a>
+      </nav>
+    </header>
+
+    <!-- Real Server Status Bar -->
+    <div class="status-bar">
+      <div class="status-left">
+        <span class="status-indicator-dot" id="status-dot"></span>
+        <span id="status-text">متصل بقاعدة SQLite على السيرفر</span>
+      </div>
+      <div class="status-right">
+        <span>مؤشر السرعة:</span>
+        <span id="latency-indicator" class="latency-badge">- ms</span>
+        <span id="cache-indicator-badge" class="latency-badge" style="background: #ECFDF5; color: #047857; display: none;">كاش SQLite ⚡</span>
+      </div>
+    </div>
+
+    <!-- Speech Recognition Notice Banner (if insecure context) -->
+    <div id="mic-notice" class="notice-banner">
+      <span id="mic-notice-text">تنبيه: التعرف الصوتي المباشر عبر المايك يحتاج اتصالاً آمناً (HTTPS) أو تشغيل محلي (localhost) في Chrome/Edge/Safari. الكتابة اليدوية تعمل بكفاءة تامة.</span>
+      <button type="button" id="mic-notice-close" style="background:none; border:none; cursor:pointer; font-size:1.1rem;">&times;</button>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 1: Voice & Text Input (#FFFFFF)
+         ==================================================================== -->
+    <section id="sec-1" class="section-card sec-1">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">١</span>
+          <h2>الإدخال الصوتي والكتابي</h2>
+        </div>
+      </div>
+
+      <!-- Quick Examples Bar -->
+      <div class="examples-quick-bar">
+        <span class="quick-label">أمثلة سريعة للتجربة:</span>
+        <button type="button" class="btn-sample" data-text="Ich gehe heute إلى الجامعة weil ich habe eine Prüfung.">١. خلط عربي + جملة فرعية (B2)</button>
+        <button type="button" class="btn-sample" data-text="Obwohl es regnet, aber er geht spazieren.">٢. رابط Obwohl خاطئ (B1)</button>
+        <button type="button" class="btn-sample" data-text="Ich freue mich auf deinem Besuch nächste Woche.">٣. حرف جر وحالة إعرابية (B2)</button>
+        <button type="button" class="btn-sample" data-text="Im Vergleich mit dem letzten Jahr ist der Umsatz gestiegen.">٤. صياغة متقدمة (C1)</button>
+      </div>
+
+      <!-- Main Input Textarea -->
+      <div class="input-area-wrap">
+        <textarea
+          id="main-input"
+          class="main-textarea ltr-text"
+          rows="3"
+          placeholder="تحدث بالألماني أو اكتب جملتك هنا (يمكنك كتابة كلمات عربية في المنتصف إذا نسيت الكلمة الألمانية)..."
+          aria-label="النص المراد تصحيحه"
+        ></textarea>
+      </div>
+
+      <!-- Input Controls Row -->
+      <div class="input-controls-row">
+        <!-- Dual Microphone Controls -->
+        <div class="mics-group">
+          <button type="button" id="btn-mic-de" class="btn-mic" title="تحدث بالألماني (de-DE)">
+            <span>🇩🇪 مايك ألماني</span>
+          </button>
+          <button type="button" id="btn-mic-ar" class="btn-mic" title="تحدث بالعربي (ar-EG)">
+            <span>🇪🇬 مايك عربي</span>
+          </button>
+          <div style="display: inline-flex; align-items: center; gap: 6px;">
+            <span id="mic-state-label" style="font-size: 0.8rem; color: var(--text-muted);">جاهز للاستماع</span>
+            <div id="mic-volume-meter" class="mic-volume-meter" style="display: none;" title="مستوى التقاط الصوت المباشر">
+              <div id="mic-volume-bar" class="mic-volume-bar"></div>
+            </div>
+          </div>
+          <button type="button" id="btn-diag-mic" class="btn-diag-mic" title="فحص المايك وتشخيص الصلاحيات والتقاط الصوت">🔍 فحص المايك</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-group">
+          <button type="button" class="btn-secondary btn-clear-text" id="btn-clear-input" title="تفريغ ومسح النص بالكامل للبدء من جديد">
+            <span>🗑️ تفريغ النص</span>
+          </button>
+          <button type="button" class="btn-secondary" id="btn-copy-input" title="نسخ النص">نسخ 📋</button>
+          <button type="button" class="btn-action-primary" id="btn-submit-correct">
+            <span id="spinner-correct" style="display: none;">⏳</span>
+            <span>صحح طلقة ⚡</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Automation & Mode Bar -->
+      <div class="live-modes-bar">
+        <div class="modes-left">
+          <button type="button" id="btn-toggle-auto-correct" class="btn-mode-chip active" title="تشغيل أو إيقاف التصحيح التلقائي الفوري أثناء الكلام والكتابة">
+            <span class="mode-indicator">●</span>
+            <span id="label-auto-correct">⚡ تصحيح تلقائي فوري: مفعّل</span>
+          </button>
+          <button type="button" id="btn-toggle-continuous-mic" class="btn-mode-chip active" title="استماع مستمر عبر المايك بدون انقطاع للتحدث بجمل متتالية">
+            <span class="mode-indicator">●</span>
+            <span id="label-continuous-mic">🎙️ استماع مستمر (Hands-Free): مفعّل</span>
+          </button>
+          <button type="button" id="btn-toggle-auto-tts" class="btn-mode-chip" title="تشغيل أو إيقاف قراءة الكلام تلقائياً">
+            <span class="mode-indicator">●</span>
+            <span id="label-auto-tts">🔇 قراءة الكلام تلقائياً: متوقف</span>
+          </button>
+          <button type="button" id="btn-stop-speech" class="btn-mode-chip btn-stop-voice" title="إيقاف قراءة الكلام فوراً">
+            <span>⏹️ إيقاف الصوت</span>
+          </button>
+        </div>
+        <div class="modes-right">
+          <span id="live-auto-status" class="live-auto-status">⚡ التصحيح التلقائي الفوري نشط</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Session Statistics Bar -->
+    <div id="session-stats-bar" class="session-stats-bar">
+      <div class="stat-pill"><span class="stat-icon">📊</span><span>القطعة الحالية:</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-total-sentences">0</span><span>جملة مضافة</span></div>
+      <div class="stat-pill error-stat"><span class="stat-num" id="stat-total-errors">0</span><span>أخطاء مرصودة</span></div>
+      <div class="stat-pill success-stat"><span class="stat-num" id="stat-correct-sentences">0</span><span>سليمة تماماً</span></div>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 2: Text Before Correction (Red Box #FFF1F2)
+         ==================================================================== -->
+    <section id="sec-2" class="section-card sec-2">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">٢</span>
+          <h2>النص قبل التصحيح وتحليل الأخطاء</h2>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn-icon-sm" id="btn-copy-original" title="نسخ النص الأصلي للقطعة">📋</button>
+        </div>
+      </div>
+
+      <!-- Unified Passage Display Before Correction (قطعة متصلة) -->
+      <div id="original-diff-box" class="original-display-box de-text">
+        <span style="color: #9CA3AF;">النص الأصلي مع التظليل المشطوب على مواضع الخلل النحوي والسياقي سيظهر هنا كقطعة متصلة...</span>
+      </div>
+
+      <!-- One-line Summary / Notes -->
+      <div id="summary-ar-box" class="summary-box" style="display: none;">
+        <span>💡</span>
+        <span id="summary-ar-text"></span>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: Correct German Text (#F2FBF6)
+         ==================================================================== -->
+    <section id="sec-3" class="section-card sec-3">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">٣</span>
+          <h2>النص الألماني الصحيح والمحادثة</h2>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn-icon-sm" id="btn-tts-toggle-rate" title="تبديل سرعة النطق">1.0x</button>
+        </div>
+      </div>
+
+      <!-- Clickable Word Inspector Bar -->
+      <div id="word-inspector" class="word-inspector-bar">
+        <div class="inspector-word-title">
+          <span id="insp-word-de" class="inspector-de de-text"></span>
+          <span id="insp-word-ar" class="inspector-ar"></span>
+        </div>
+        <div class="inspector-actions">
+          <button type="button" class="btn-icon-sm" id="btn-insp-speak" title="استمع لنطق الكلمة">🔊</button>
+          <button type="button" class="btn-icon-sm" id="btn-insp-save-clip" title="حفظ الكلمة في الحافظة">📌</button>
+          <button type="button" class="btn-icon-sm" id="btn-insp-copy" title="نسخ الكلمة">📋</button>
+        </div>
+      </div>
+
+      <!-- Unified Passage Display Box (قطعة متصلة - Words are Clickable) -->
+      <div id="corrected-hero-box" class="corrected-display-box de-text">
+        <span style="color: #6EE7B7;">القطعة الألمانية المصححة ستظهر هنا (كل كلمة قابلة للضغط للاستماع ومعرفة المعنى)...</span>
+        <div id="sentence-arabic-meaning" class="sentence-translation-sub" style="display: none;"></div>
+      </div>
+
+      <!-- Action Bar for Corrected Text -->
+      <div class="sec3-controls-bar">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary" id="btn-speak-corrected">🔊 استمع للقطعة</button>
+          <button type="button" class="btn-secondary" id="btn-copy-german">📋 نسخ الألماني</button>
+          <button type="button" class="btn-secondary" id="btn-copy-arabic">📋 نسخ الترجمة</button>
+          <button type="button" class="btn-secondary" id="btn-clip-corrected" style="color:#5B21B6; border-color:#DDD6FE;">📌 حفظ بالحافظة</button>
+        </div>
+      </div>
+
+      <!-- AI Assistant Panel (Quick Q&A) -->
+      <div class="assistant-panel">
+        <div class="assistant-title">
+          <span>🤖 المساعد اللغوي الذكي السريع</span>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div class="quick-prompts-row">
+          <button type="button" class="btn-chip" data-prompt="ما القاعدة النحوية الأساسية في هذه الجملة؟">ما القاعدة النحوية هنا؟</button>
+          <button type="button" class="btn-chip" data-prompt="هل توجد صياغة بديلة أكثر فصاحة بمستوى C1؟">صياغة بديلة C1؟</button>
+          <button type="button" class="btn-chip" data-prompt="اشرح الفرق بين الكلمات المترادفة في هذا السياق باختصار.">شرح الفروق اللغوية</button>
+        </div>
+
+        <!-- Input & Chat Log -->
+        <div class="assistant-input-row">
+          <input type="text" id="assistant-question-input" class="assistant-input" placeholder="اسأل سؤالاً سريعاً عن الجملة أو القواعد...">
+          <button type="button" class="btn-action-primary" id="btn-assistant-send">إرسال</button>
+        </div>
+
+        <div id="assistant-chat-list" class="assistant-chat-list"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 4: Replaced Errors List (Yellow Box #FFFBEB)
+         ==================================================================== -->
+    <section id="sec-4" class="section-card sec-4">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">٤</span>
+          <h2>الأخطاء المستبدلة والبدائل الصحيحة</h2>
+        </div>
+      </div>
+
+      <!-- Replacements Cards List -->
+      <div id="replacements-container" class="replacements-list">
+        <p style="color: #92400E; font-size: 0.9rem;">ستظهر تفاصيل الأخطاء والبدائل الصحيحة مع الأمثلة وأسباب التصحيح هنا بعد التحليل.</p>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 5: Grammar Radar B2/C1/C2 (Cyan Box #ECFEFF)
+         ==================================================================== -->
+    <section id="sec-5" class="section-card sec-5">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">٥</span>
+          <h2>رادار القواعد والتراكيب المتقدمة (B2 / C1 / C2)</h2>
+        </div>
+        <button type="button" class="btn-icon-sm" id="btn-refresh-radar" title="تحديث إحصائيات الرادار">🔄</button>
+      </div>
+
+      <!-- Current Sentence Rules -->
+      <div id="radar-rules-container" class="radar-rules-list">
+        <p style="color: #0891B2; font-size: 0.9rem;">قواعد الجملة المصححة الحالية ستظهر هنا...</p>
+      </div>
+
+      <!-- Cumulative Statistics & Weaknesses -->
+      <div class="radar-stats-box">
+        <h4 style="font-size: 0.92rem; color: #0E7490; margin-bottom: 8px;">📊 أكثر نقاط الضعف النحوية تكراراً (من قاعدة البيانات):</h4>
+        <div id="radar-stats-bars">
+          <p style="color: #155E75; font-size: 0.85rem;">جاري جلب إحصائيات الرادار التراكمية...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 6: Persistent Smart Clips (Purple Box #F5F3FF)
+         ==================================================================== -->
+    <section id="sec-6" class="section-card sec-6">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-num">٦</span>
+          <h2>الحافظة الدائمة الذكية (Smart Clips)</h2>
+        </div>
+      </div>
+
+      <!-- Clips Toolbar -->
+      <div class="clips-toolbar">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary" id="btn-add-clip-manual">+ إضافة تعبير يدوياً</button>
+          <button type="button" class="btn-secondary" id="btn-paste-explain-clip">📋 لصق وشرح فوري</button>
+          <button type="button" class="btn-secondary" id="btn-export-clips-docx">📄 تحميل الحافظة Word</button>
+          <button type="button" class="btn-secondary" id="btn-export-clips-json">💾 تصدير JSON</button>
+          <button type="button" class="btn-secondary" id="btn-import-clips-json">📥 استيراد JSON</button>
+          <input type="file" id="import-json-file-input" accept=".json" style="display: none;">
+        </div>
+        <div>
+          <button type="button" class="btn-secondary" id="btn-clear-all-clips" style="color: #DC2626;">تفريغ الحافظة 🗑️</button>
+        </div>
+      </div>
+
+      <!-- Clips List -->
+      <div id="clips-list-container" class="clips-list">
+        <p style="color: #6D28D9; font-size: 0.9rem;">الحافظة فارغة حالياً. اضغط "حفظ بالحافظة" على أي جملة أو كلمة لحفظها هنا بشكل دائم.</p>
+      </div>
+    </section>
+
+  </div><!-- .app-container -->
+
+  <!-- Floating Text Selection Toolbar -->
+  <div id="selection-popup" class="selection-popup">
+    <button type="button" class="selection-btn" id="sel-btn-copy" title="نسخ">📋 نسخ</button>
+    <button type="button" class="selection-btn" id="sel-btn-clip" title="حفظ بالحافظة">📌 للحافظة</button>
+    <button type="button" class="selection-btn" id="sel-btn-speak" title="استمع">🔊 نطق</button>
+    <button type="button" class="selection-btn" id="sel-btn-ask" title="اسأل المساعد">🤖 اسأل</button>
+  </div>
+
+  <!-- Toast Container with Undo -->
+  <div id="toast-box" class="toast-box" role="alert" aria-live="polite">
+    <span id="toast-message"></span>
+    <button type="button" id="toast-undo-btn" class="toast-undo-btn" style="display: none;">تراجع ↺</button>
+  </div>
+
+  <!-- Quick Guide Modal Dialog -->
+  <div id="help-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="color: #111827; font-size: 1.15rem; font-weight: 800;">💡 دليل الاستخدام السريع لـ German Coach</h3>
+        <button type="button" id="btn-close-help" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+      <div style="font-size: 0.9rem; color: #374151; line-height: 1.7; display: flex; flex-direction: column; gap: 8px;">
+        <p><strong>١. الإدخال المزدوج:</strong> تحدث بالمايك الألماني أو اكتب بيدك (شامل كلمات عربي وسط النص). السكوت لمدة 1.4 ثانية يصحح الجملة تلقائياً.</p>
+        <p><strong>٢. فحص الكلمات:</strong> اضغط على أي كلمة في المربع الأخضر لسماع نطقها فوراً ومعرفة معناها الدقيق وحفظها بالحافظة.</p>
+        <p><strong>٣. المساعد اللغوي:</strong> اسأل أي سؤال عن سبب القاعدة أو الفروق اللغوية وسيجيبك بدقة في نقاط موجزة.</p>
+        <p><strong>٤. تصدير Word:</strong> زر Word (.docx) يولد لك ملفاً كاملاً جاهزاً للطباعة يضم الكلمات وشروحاتها وأمثلتها.</p>
+        <p><strong>٥. الحفظ الدائم:</strong> كل التعديلات والحافظة والمحادثات محفوظة محلياً في قاعدة SQLite على السيرفر ولا تضيع أبداً.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Script -->
+  <script src="/static/app.js?v=18.0"></script>
+</body>
+</html>

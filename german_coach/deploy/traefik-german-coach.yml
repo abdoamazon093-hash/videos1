@@ -1,0 +1,15 @@
+http:
+  routers:
+    german-coach:
+      rule: "Host(`coach.srv2162066.hstgr.cloud`)"
+      entryPoints:
+        - "websecure"
+      service: "german-coach-service"
+      tls:
+        certResolver: "letsencrypt"
+
+  services:
+    german-coach-service:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8000"

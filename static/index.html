@@ -1,119 +1,434 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Videos1 Platform | منصة الفيديوهات والإصدارات الآمنة</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المنصة الألمانية الشاملة | Deutsch All-in-One Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-header: #0f172a;
+      --bg-header-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-vocab: #0284c7;
+      --accent-vocab-hover: #0369a1;
+      --accent-coach: #8b5cf6;
+      --accent-coach-hover: #7c3aed;
+      --success: #10b981;
+      --header-height: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background-color: #020617;
+      color: var(--text-main);
+    }
+
+    /* Top Master Switcher Bar */
+    header#master-header {
+      height: var(--header-height);
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--bg-header-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: relative;
+      z-index: 1000;
+      transition: transform 0.25s ease, height 0.25s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    header#master-header.hidden {
+      transform: translateY(-100%);
+      position: absolute;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-flag {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.2px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Centered Tabs Switcher */
+    .nav-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #020617;
+      padding: 5px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+    }
+
+    .nav-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-btn .tab-badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Active Tab: Vocab */
+    .nav-tab-btn.active.tab-vocab {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
+      border-color: #38bdf8;
+    }
+    .nav-tab-btn.active.tab-vocab .tab-badge {
+      background: #0369a1;
+      color: #e0f2fe;
+    }
+
+    /* Active Tab: Coach */
+    .nav-tab-btn.active.tab-coach {
+      background: #7c3aed;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+      border-color: #a78bfa;
+    }
+    .nav-tab-btn.active.tab-coach .tab-badge {
+      background: #5b21b6;
+      color: #ede9fe;
+    }
+
+    /* Action Controls */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid #1e293b;
+      color: var(--text-muted);
+      padding: 7px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: #334155;
+    }
+
+    .health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--success);
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .health-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    /* Main Viewport Container */
+    #viewport-container {
+      width: 100%;
+      height: calc(100% - var(--header-height));
+      position: relative;
+    }
+
+    header#master-header.hidden + #viewport-container {
+      height: 100%;
+    }
+
+    .app-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.15s ease-in-out;
+    }
+
+    .app-frame.active {
+      visibility: visible;
+      opacity: 1;
+      z-index: 10;
+    }
+
+    /* Floating Pill to Restore Header when hidden */
+    #restore-header-pill {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 14px;
+      z-index: 2000;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.2s ease-in;
+    }
+
+    #restore-header-pill:hover {
+      background: #1e293b;
+      border-color: #64748b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .brand-subtitle { display: none; }
+      .nav-tab-btn { padding: 6px 10px; font-size: 0.85rem; }
+      .btn-action span { display: none; }
+      .health-pill { display: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo-area">
-                <div class="status-indicator live"></div>
-                <h1>Videos1 <span class="badge">v1</span></h1>
-            </div>
-            <div class="header-actions">
-                <span class="tag env-tag">Production</span>
-                <span class="tag branch-tag">GitHub Connected</span>
-            </div>
-        </header>
 
-        <!-- Hero Section -->
-        <section class="hero-card">
-            <h2>نظام إدارة الإصدارات والأمان الصارم</h2>
-            <p>مشروع FastAPI متكامل مع كاش SQLite محلي وواجهة أمامية سريعة، مدعوم بأتمتة كاملة للحفظ والرجوع على GitHub وحماية مطلقة للمفاتيح والأسرار.</p>
-            <div class="quick-stats">
-                <div class="stat-item">
-                    <span class="label">الحالة:</span>
-                    <span id="health-status" class="value ok">جاري الفحص...</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">زمن التشغيل:</span>
-                    <span id="uptime-val" class="value font-mono">0 ثانية</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">عناصر الكاش:</span>
-                    <span id="cache-count" class="value font-mono">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">المنفذ (Port):</span>
-                    <span id="app-port" class="value font-mono">8095</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Grid -->
-        <div class="main-grid">
-            <!-- Cache Management Panel -->
-            <div class="card cache-panel">
-                <h3>إدارة الكاش المحلي (SQLite Cache)</h3>
-                <form id="cache-form" class="cache-form">
-                    <div class="input-group">
-                        <label for="cache-key">المفتاح (Key)</label>
-                        <input type="text" id="cache-key" placeholder="مثال: video_101_meta" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="cache-val">القيمة (Value)</label>
-                        <textarea id="cache-val" rows="3" placeholder="محتوى البيانات (نص أو JSON)..." required></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label for="cache-ttl">مدة الصلاحية بالثواني (اختياري)</label>
-                        <input type="number" id="cache-ttl" placeholder="مثال: 3600">
-                    </div>
-                    <button type="submit" class="btn btn-primary">حفظ في الكاش</button>
-                </form>
-
-                <div class="cache-list-container">
-                    <h4>العناصر المخزنة حالياً</h4>
-                    <div id="cache-list" class="cache-list">
-                        <p class="empty-state">لا توجد عناصر في الكاش بعد.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Architecture & Automation Overview -->
-            <div class="card info-panel">
-                <h3>الأوامر الآلية السريعة (Server CLI)</h3>
-                <div class="cli-command-box">
-                    <div class="cmd-title">1. حفظ إصدار جديد فوراً:</div>
-                    <code>save-version "رسالة التعديل"</code>
-                    <p class="cmd-desc">يقوم بجمع التعديلات، فحص الأمان، زيادة رقم الفيرجن تلقائياً (v1, v2...)، ورفعه إلى GitHub.</p>
-                </div>
-
-                <div class="cli-command-box">
-                    <div class="cmd-title">2. الرجوع الآمن بالزمن:</div>
-                    <code>rollback-version v1</code>
-                    <p class="cmd-desc">يعيد كامل ملفات المشروع 100% وبكل بايت إلى التاج المحدد ويوثق الرجوع ويرفعه لـ GitHub.</p>
-                </div>
-
-                <div class="cli-command-box">
-                    <div class="cmd-title">3. خدمة النظام الخلفية (Systemd):</div>
-                    <code>systemctl status videos1.service</code>
-                    <p class="cmd-desc">يعمل السيرفر في الخلفية 24/7 ويعاود الإقلاع الذاتي فوراً عند إعادة تشغيل الـ VPS.</p>
-                </div>
-
-                <div class="security-rules">
-                    <h4>قواعد الأمان المطبقة:</h4>
-                    <ul>
-                        <li>تم عزل جميع المفاتيح والأسرار داخل <code>.env</code> المحلي فقط.</li>
-                        <li>ملف <code>.gitignore</code> نشط ويتجاهل ملفات البيئة وقواعد البيانات.</li>
-                        <li>ملف <code>.env.example</code> متاح كمرجع خالي من الأسرار.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Videos1 Engine • Strict Versioning &amp; Rollback Architecture • 2026</p>
-        </footer>
+  <!-- Top Master Navigation Bar -->
+  <header id="master-header">
+    <div class="brand-section">
+      <span class="brand-flag">🇩🇪</span>
+      <div class="brand-title">
+        <span>المنصة الألمانية الشاملة</span>
+        <span class="brand-subtitle">Vocab Tutor + German Coach</span>
+      </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <!-- Dual-App Switcher Tabs -->
+    <nav class="nav-tabs-container">
+      <button id="tab-btn-vocab" class="nav-tab-btn tab-vocab active" title="بنك المفردات التفاعلي، استخراج الجداول، النطق وتصنيف Akkusativ/Dativ (Alt+1)">
+        <span>📚 بنك المفردات التفاعلي</span>
+        <span class="tab-badge">v16</span>
+      </button>
+
+      <button id="tab-btn-coach" class="nav-tab-btn tab-coach" title="مدرب المحادثة والنطق الصوتي المباشر بالذكاء الاصطناعي (Alt+2)">
+        <span>🎙️ مدرب المحادثة والنطق</span>
+        <span class="tab-badge">v18</span>
+      </button>
+    </nav>
+
+    <!-- Controls & Status -->
+    <div class="header-controls">
+      <div class="health-pill" title="حالة النظامين في الوقت الفعلي">
+        <span class="health-dot"></span>
+        <span>متصل وجاهز</span>
+      </div>
+
+      <button id="btn-reload" class="btn-action" title="إعادة تحميل التطبيق المفتوح حالياً">
+        🔄 <span>تحديث</span>
+      </button>
+
+      <a id="btn-external" href="/vocab/" target="_blank" class="btn-action" title="فتح التطبيق النشط في صفحة مستقلة">
+        ↗ <span>فتح منفصل</span>
+      </a>
+
+      <button id="btn-fullscreen" class="btn-action" title="إخفاء الشريط العلوي والتركيز الكامل (F11)">
+        ⛶ <span>ملء الشاشة</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Restore Header Floating Button -->
+  <button id="restore-header-pill" title="إظهار شريط التنقل العلوي">
+    ⬇️ إظهار شريط التنقل
+  </button>
+
+  <!-- Main Viewport Holding Both 100% Unaltered Apps -->
+  <main id="viewport-container">
+    <!-- Frame 1: Vocab Tutor (sprechen1 v16) -->
+    <iframe
+      id="frame-vocab"
+      class="app-frame active"
+      src="/vocab/"
+      allow="microphone; camera; clipboard-read; clipboard-write; display-capture"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-downloads allow-popups"
+      title="Vocab Tutor Platform"
+    ></iframe>
+
+    <!-- Frame 2: German Coach (v18) -->
+    <iframe
+      id="frame-coach"
+      class="app-frame"
+      src="/coach/"
+      allow="microphone; camera; clipboard-read; clipboard-write; display-capture"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-downloads allow-popups"
+      title="German Speaking Coach"
+    ></iframe>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const masterHeader = document.getElementById('master-header');
+      const tabBtnVocab = document.getElementById('tab-btn-vocab');
+      const tabBtnCoach = document.getElementById('tab-btn-coach');
+      const frameVocab = document.getElementById('frame-vocab');
+      const frameCoach = document.getElementById('frame-coach');
+      const btnReload = document.getElementById('btn-reload');
+      const btnExternal = document.getElementById('btn-external');
+      const btnFullscreen = document.getElementById('btn-fullscreen');
+      const restorePill = document.getElementById('restore-header-pill');
+
+      let currentTab = localStorage.getItem('active_deutsch_tab') || 'vocab';
+
+      function switchTab(target) {
+        currentTab = target;
+        localStorage.setItem('active_deutsch_tab', target);
+
+        if (target === 'vocab') {
+          tabBtnVocab.classList.add('active');
+          tabBtnCoach.classList.remove('active');
+          frameVocab.classList.add('active');
+          frameCoach.classList.remove('active');
+          btnExternal.href = '/vocab/';
+          document.title = 'بنك المفردات التفاعلي (v16) | Deutsch All-in-One';
+        } else {
+          tabBtnCoach.classList.add('active');
+          tabBtnVocab.classList.remove('active');
+          frameCoach.classList.add('active');
+          frameVocab.classList.remove('active');
+          btnExternal.href = '/coach/';
+          document.title = 'مدرب المحادثة والنطق الصوتي (v18) | Deutsch All-in-One';
+        }
+      }
+
+      tabBtnVocab.addEventListener('click', () => switchTab('vocab'));
+      tabBtnCoach.addEventListener('click', () => switchTab('coach'));
+
+      // Reload Active Frame
+      btnReload.addEventListener('click', () => {
+        const activeFrame = currentTab === 'vocab' ? frameVocab : frameCoach;
+        activeFrame.contentWindow.location.reload();
+      });
+
+      // Fullscreen Toggle
+      function toggleFullscreen() {
+        const isHidden = masterHeader.classList.toggle('hidden');
+        restorePill.style.display = isHidden ? 'block' : 'none';
+      }
+
+      btnFullscreen.addEventListener('click', toggleFullscreen);
+      restorePill.addEventListener('click', toggleFullscreen);
+
+      // Keyboard Shortcuts: Alt+1 for Vocab, Alt+2 for Coach, Escape for Header
+      window.addEventListener('keydown', (e) => {
+        if ((e.altKey && e.key === '1') || (e.ctrlKey && e.key === '1')) {
+          e.preventDefault();
+          switchTab('vocab');
+        } else if ((e.altKey && e.key === '2') || (e.ctrlKey && e.key === '2')) {
+          e.preventDefault();
+          switchTab('coach');
+        } else if (e.key === 'Escape' && masterHeader.classList.contains('hidden')) {
+          toggleFullscreen();
+        }
+      });
+
+      // Health Monitoring
+      async function updateHealth() {
+        try {
+          const res = await fetch('/api/health');
+          if (res.ok) {
+            const data = await res.json();
+            const pill = document.querySelector('.health-pill span:last-child');
+            if (data.status === 'healthy') {
+              pill.textContent = 'كلا النظامين متصلان 100%';
+            } else {
+              pill.textContent = 'أحد النظامين غير متصل';
+            }
+          }
+        } catch (e) {}
+      }
+
+      // Initial Activation
+      switchTab(currentTab);
+      updateHealth();
+      setInterval(updateHealth, 15000);
+    })();
+  </script>
 </body>
 </html>

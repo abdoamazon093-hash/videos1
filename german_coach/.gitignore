@@ -1,0 +1,32 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Virtual environments
+venv/
+.venv/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Database files
+*.db
+*.sqlite*
+data/*.db
+data/*.sqlite*
+
+# Logs
+*.log
+logs/
+
+# Backups
+backups/
+
+# System and IDE
+.DS_Store
+.idea/
+.vscode/
