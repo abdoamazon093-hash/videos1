@@ -93,7 +93,6 @@
 
   // Section 2
   const originalDiffBox = document.getElementById('original-diff-box');
-  const sec2ErrorCards = document.getElementById('sec2-error-cards');
   const summaryArBox = document.getElementById('summary-ar-box');
   const summaryArText = document.getElementById('summary-ar-text');
   const btnCopyOriginal = document.getElementById('btn-copy-original');
@@ -878,7 +877,8 @@
             if (s.start > cursor) {
               builtHtml += escapeHtml(original.slice(cursor, s.start));
             }
-            builtHtml += `<span class="strike-wrong ${s.strikeClass}" data-err-id="${s.errId}">${escapeHtml(s.wrongText)}</span>`;
+            const catTitle = s.cat === 'logic_l1' ? 'منطق وفخ عربي' : (s.cat === 'style' ? 'أسلوب وتكرار' : 'قواعد ونحو');
+            builtHtml += `<span class="strike-wrong ${s.strikeClass}" title="${catTitle}">${escapeHtml(s.wrongText)}</span>`;
             cursor = s.end;
           });
           if (cursor < original.length) {
@@ -977,7 +977,6 @@
 
     if (state.sessionPassages.length === 0) {
       originalDiffBox.innerHTML = '<span style="color: #9CA3AF;">النص الأصلي مع التظليل المشطوب على مواضع الخلل النحوي والسياقي سيظهر هنا كقطعة متصلة...</span>';
-      if (sec2ErrorCards) sec2ErrorCards.innerHTML = '';
       if (summaryArBox) summaryArBox.style.display = 'none';
       return;
     }
@@ -988,52 +987,6 @@
       .join(' ');
 
     originalDiffBox.innerHTML = passageHtml;
-
-    // Collect all errors across passages for structured cards
-    const allErrors = [];
-    state.sessionPassages.forEach((p) => {
-      if (p.errors && p.errors.length > 0) {
-        allErrors.push(...p.errors);
-      }
-    });
-
-    if (sec2ErrorCards) {
-      if (allErrors.length === 0) {
-        sec2ErrorCards.innerHTML = `
-          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 10px 14px; color: #166534; font-weight: 700; font-size: 0.9rem;">
-            ✨ لا توجد أخطاء مرصودة في النص الأصلي! صياغتك سليمة وواضحة.
-          </div>
-        `;
-      } else {
-        sec2ErrorCards.innerHTML = allErrors.map((err) => {
-          const cat = err.category || 'grammar';
-          const catLabel = cat === 'logic_l1' ? 'منطق وفخ عربي' : (cat === 'style' ? 'أسلوب وتكرار' : 'نحو وقواعد');
-          const badgeClass = cat === 'logic_l1' ? 'badge-cat-logic' : (cat === 'style' ? 'badge-cat-style' : 'badge-cat-grammar');
-          const cardCatClass = `cat-${cat}`;
-
-          return `
-            <div class="sec2-error-card ${cardCatClass}" id="card-${err.errId}" data-err-id="${err.errId}">
-              <div class="sec2-card-header">
-                <div class="sec2-card-tags">
-                  <span class="${badgeClass}">${catLabel}</span>
-                  ${err.arabic_trap ? '<span class="badge-trap">⚠️ فخ ترجمة عربية</span>' : ''}
-                  ${err.rule_tag ? `<span class="badge-rule-tag">${escapeHtml(err.rule_tag)}</span>` : ''}
-                </div>
-              </div>
-              <div class="sec2-card-replacement de-text">
-                <span class="sec2-card-wrong">${escapeHtml(err.original || err.wrong)}</span>
-                <span class="sec2-card-arrow">⬅️</span>
-                <span class="sec2-card-right">${escapeHtml(err.correction || err.right)}</span>
-              </div>
-              <div class="sec2-card-explanation">${escapeHtml(err.explanation_ar || err.why || '')}</div>
-            </div>
-          `;
-        }).join('');
-
-        // Bidirectional hover & click synchronization
-        bindErrorSync();
-      }
-    }
 
     // Collect summaries
     const summaries = state.sessionPassages
@@ -1047,48 +1000,6 @@
     } else if (summaryArBox) {
       summaryArBox.style.display = 'none';
     }
-  }
-
-  function bindErrorSync() {
-    if (!sec2ErrorCards || !originalDiffBox) return;
-    const cards = sec2ErrorCards.querySelectorAll('.sec2-error-card');
-    const spans = originalDiffBox.querySelectorAll('.strike-wrong[data-err-id]');
-
-    cards.forEach((card) => {
-      const errId = card.getAttribute('data-err-id');
-      const span = originalDiffBox.querySelector(`.strike-wrong[data-err-id="${errId}"]`);
-      if (!span) return;
-
-      card.addEventListener('mouseenter', () => {
-        card.classList.add('active-hover');
-        span.classList.add('active-hover');
-      });
-      card.addEventListener('mouseleave', () => {
-        card.classList.remove('active-hover');
-        span.classList.remove('active-hover');
-      });
-      card.addEventListener('click', () => {
-        span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      });
-    });
-
-    spans.forEach((span) => {
-      const errId = span.getAttribute('data-err-id');
-      const card = sec2ErrorCards.querySelector(`.sec2-error-card[data-err-id="${errId}"]`);
-      if (!card) return;
-
-      span.addEventListener('mouseenter', () => {
-        span.classList.add('active-hover');
-        card.classList.add('active-hover');
-      });
-      span.addEventListener('mouseleave', () => {
-        span.classList.remove('active-hover');
-        card.classList.remove('active-hover');
-      });
-      span.addEventListener('click', () => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      });
-    });
   }
 
   // Render Section 3: Correct German Text (Unified Passage - قطعة متصلة with Clickable Words & Highlighter on Corrections)

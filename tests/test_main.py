@@ -52,7 +52,6 @@ def test_coach_view(client):
     assert "btn-mic-stop" in response.text
     assert "tone-select" in response.text
     assert "sec2-legend-bar" in response.text
-    assert "sec2-error-cards" in response.text
     assert "tab-btn-direct" in response.text
     assert "tab-btn-native" in response.text
     assert "sec4-filter-bar" in response.text
@@ -66,4 +65,4 @@ def test_health_endpoints(client):
     assert res_version.status_code == 200
     data = res_version.json()
     assert data["vocab_tutor_version"] == "v16"
-    assert data["german_coach_version"] == "v21"
+    assert data["german_coach_version"] == "v22"

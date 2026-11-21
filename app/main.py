@@ -233,8 +233,8 @@ async def get_version(request: Request):
     return {
         "platform": "Unified Deutsch Platform",
         "vocab_tutor_version": "v16",
-        "german_coach_version": "v21",
-        "current_tag": "v7"
+        "german_coach_version": "v22",
+        "current_tag": "v8"
     }
 
 # ============================================================================
