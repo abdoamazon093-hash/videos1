@@ -88,9 +88,12 @@
     </div>
 
     <!-- Speech Recognition Notice Banner (if insecure context) -->
-    <div id="mic-notice" class="notice-banner">
-      <span id="mic-notice-text">تنبيه: التعرف الصوتي المباشر عبر المايك يحتاج اتصالاً آمناً (HTTPS) أو تشغيل محلي (localhost) في Chrome/Edge/Safari. الكتابة اليدوية تعمل بكفاءة تامة.</span>
-      <button type="button" id="mic-notice-close" style="background:none; border:none; cursor:pointer; font-size:1.1rem;">&times;</button>
+    <div id="mic-notice" class="notice-banner" style="display:none; background:#FEF3C7; border:1px solid #F59E0B; padding:10px 14px; border-radius:8px; margin-bottom:16px;">
+      <span id="mic-notice-text" style="color:#92400E; font-weight:600; font-size:0.92rem;">
+        ⚠️ التعرف الصوتي المباشر عبر المايك يتطلب اتصالاً مشفراً (HTTPS) في متصفح Chrome/Edge/Safari.
+        <a id="btn-goto-https" href="https://deutsch.srv2162066.hstgr.cloud/" target="_top" style="display:inline-block; background:#2563EB; color:#FFFFFF; padding:4px 14px; border-radius:6px; font-weight:700; text-decoration:none; margin-right:8px; border:1px solid #1D4ED8;">🎙️ اضغط هنا لتشغيل المايك فوراً عبر الرابط الآمن</a>
+      </span>
+      <button type="button" id="mic-notice-close" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#92400E; margin-right:auto;">&times;</button>
     </div>
 
     <!-- ====================================================================

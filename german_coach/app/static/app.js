@@ -362,8 +362,18 @@
     const isSecure = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 
     if (!SpeechRecognition || !isSecure) {
-      if (micNotice) micNotice.classList.add('show');
-      showToast('⚠️ المتصفح لا يدعم التعرف الصوتي المباشر أو الصفحة غير مؤمنة بـ HTTPS.', 3500);
+      if (micNotice) micNotice.style.display = 'flex';
+      if (!isSecure) {
+        if (confirm('🎙️ لتشغيل المايك الصوتي المباشر، يشترط المتصفح الاتصال المشفر (HTTPS).\n\nهل ترغب بالانتقال فوراً للرابط الآمن المشفر لتفعيل المايك؟')) {
+          if (window.top && window.top !== window) {
+            window.top.location.href = 'https://deutsch.srv2162066.hstgr.cloud/';
+          } else {
+            window.location.href = 'https://deutsch.srv2162066.hstgr.cloud/coach/';
+          }
+        }
+      } else {
+        showToast('⚠️ المتصفح لا يدعم التعرف الصوتي المباشر. يرجى استخدام Google Chrome أو Edge.', 4000);
+      }
       return null;
     }
 
@@ -1945,7 +1955,10 @@
 
     // Notice close
     if (micNoticeClose) {
-      micNoticeClose.addEventListener('click', () => micNotice.classList.remove('show'));
+      micNoticeClose.addEventListener('click', () => {
+        micNotice.classList.remove('show');
+        micNotice.style.display = 'none';
+      });
     }
   }
 

@@ -7,6 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    // Automatic Secure Context Redirection for Web Speech API & Microphone Access
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      window.location.replace('https://deutsch.srv2162066.hstgr.cloud' + window.location.pathname + window.location.search + window.location.hash);
+    }
+  </script>
   <style>
     :root {
       --bg-header: #0f172a;
@@ -317,6 +323,12 @@
     ⬇️ إظهار شريط التنقل
   </button>
 
+  <!-- Insecure HTTP Warning Banner (Fallback) -->
+  <div id="http-insecure-warning" style="display:none; background: linear-gradient(90deg, #991b1b, #b91c1c); color: #fff; padding: 10px 16px; text-align: center; font-weight: bold; font-size: 0.95rem; z-index: 9999; border-bottom: 2px solid #ef4444;">
+    ⚠️ المتصفح يمنع تشغيل المايك الصوتي عبر IP غير مشفر (HTTP).
+    <a href="https://deutsch.srv2162066.hstgr.cloud/" style="color: #fff; background: #2563eb; padding: 5px 16px; border-radius: 6px; text-decoration: none; margin-right: 10px; font-weight: 800; border: 1px solid #93c5fd; display: inline-block;">🎙️ اضغط هنا فوراً للانتقال للرابط المشفر (HTTPS) وتفعيل المايك</a>
+  </div>
+
   <!-- Main Viewport Holding Both 100% Unaltered Apps -->
   <main id="viewport-container">
     <!-- Frame 1: Vocab Tutor (sprechen1 v16) -->
@@ -324,8 +336,7 @@
       id="frame-vocab"
       class="app-frame active"
       src="/vocab/"
-      allow="microphone; camera; clipboard-read; clipboard-write; display-capture"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-downloads allow-popups"
+      allow="microphone *; camera *; clipboard-read *; clipboard-write *; display-capture *"
       title="Vocab Tutor Platform"
     ></iframe>
 
@@ -334,8 +345,7 @@
       id="frame-coach"
       class="app-frame"
       src="/coach/"
-      allow="microphone; camera; clipboard-read; clipboard-write; display-capture"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-downloads allow-popups"
+      allow="microphone *; camera *; clipboard-read *; clipboard-write *; display-capture *"
       title="German Speaking Coach"
     ></iframe>
   </main>
@@ -422,6 +432,12 @@
             }
           }
         } catch (e) {}
+      }
+
+      // Check if running on insecure HTTP and show banner
+      if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        const warnEl = document.getElementById('http-insecure-warning');
+        if (warnEl) warnEl.style.display = 'block';
       }
 
       // Initial Activation
