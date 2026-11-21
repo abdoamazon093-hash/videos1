@@ -1548,3 +1548,309 @@ body {
     justify-content: flex-end;
   }
 }
+
+/* ==========================================================================
+   Upgraded 4-Layer Correction UI & Dual Solution Styling
+   ========================================================================== */
+
+/* Section 2 Color Legend */
+.sec2-legend-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--sec2-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.legend-title {
+  color: #881337;
+  font-weight: 800;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+}
+
+.legend-grammar { color: #DC2626; }
+.legend-logic { color: #EA580C; }
+.legend-style { color: #2563EB; }
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-grammar { background-color: #EF4444; }
+.dot-logic { background-color: #F97316; }
+.dot-style { background-color: #3B82F6; }
+
+/* 3-Color In-Text Strikes in Section 2 */
+.strike-grammar {
+  color: #DC2626 !important;
+  text-decoration: line-through !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-bottom: 2px solid #EF4444 !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  margin: 0 2px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  display: inline-block;
+}
+
+.strike-logic {
+  color: #C2410C !important;
+  text-decoration: line-through !important;
+  background: rgba(249, 115, 22, 0.14) !important;
+  border-bottom: 2px solid #F97316 !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  margin: 0 2px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  display: inline-block;
+}
+
+.strike-style {
+  color: #1D4ED8 !important;
+  text-decoration: line-through !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-bottom: 2px solid #3B82F6 !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  margin: 0 2px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  display: inline-block;
+}
+
+.strike-grammar.active-hover,
+.strike-logic.active-hover,
+.strike-style.active-hover {
+  transform: translateY(-1.5px) scale(1.04) !important;
+  box-shadow: 0 0 0 2.5px #0F172A !important;
+}
+
+/* Section 2 Structured Error Cards */
+.sec2-error-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sec2-error-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.sec2-error-card.cat-grammar { border-right: 4px solid #EF4444; }
+.sec2-error-card.cat-logic_l1 { border-right: 4px solid #F97316; }
+.sec2-error-card.cat-style { border-right: 4px solid #3B82F6; }
+
+.sec2-error-card:hover,
+.sec2-error-card.active-hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+}
+
+.sec2-error-card.cat-grammar.active-hover { border-color: #EF4444; }
+.sec2-error-card.cat-logic_l1.active-hover { border-color: #F97316; }
+.sec2-error-card.cat-style.active-hover { border-color: #3B82F6; }
+
+.sec2-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.sec2-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-cat-grammar {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.badge-cat-logic {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.badge-cat-style {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.badge-trap {
+  background: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-rule-tag {
+  background: #F1F5F9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.sec2-card-replacement {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.sec2-card-wrong {
+  color: #EF4444;
+  text-decoration: line-through;
+  background: rgba(239, 68, 68, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.sec2-card-arrow {
+  color: #94A3B8;
+  font-size: 0.95rem;
+}
+
+.sec2-card-right {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.sec2-card-explanation {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+/* Section 3 Dual Solution Tabs */
+.sec3-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #E6F4EA;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  border: 1px solid #A7F3D0;
+}
+
+.sec3-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #065F46;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sec3-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.sec3-tab-btn.active {
+  background: #059669;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+}
+
+/* Section 4 Filter Chips */
+.sec4-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.btn-filter-chip {
+  background: #FFFFFF;
+  border: 1px solid var(--sec4-border);
+  color: #92400E;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.83rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-filter-chip:hover {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+}
+
+.btn-filter-chip.active {
+  background: #D97706;
+  border-color: #B45309;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+}
+

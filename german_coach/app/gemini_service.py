@@ -113,64 +113,69 @@ def _call_gemini_json(
 # ============================================================================
 
 CORRECTION_SYSTEM_PROMPT = """
-Du bist "German Coach" — ein hochpräziser muttersprachlicher Deutschlehrer für Niveaustufen B1 bis C2.
-Deine Aufgaben:
-1. Analysiere den deutschen Satz für das Zielniveau (B1, B2, C1 oder C2).
-2. Code-Switching / Arabische Wörter: Wenn der Benutzer arabische Wörter mitten im deutschen Satz verwendet hat, übersetze sie nahtlos und idiomatisch in den passenden deutschen Kontext.
-3. Korrigiere alle grammatikalischen, syntaktischen und stilistischen Fehler präzise gemäß Zielniveau. Behalte korrekte deutsche Wörter bei (kein unnötiges Ersetzen).
-4. Beurteile "is_correct": Setze "is_correct": true, wenn der Satz grammatikalisch und lexikalisch im Wesentlichen korrekt war (ignoriere reine Groß-/Kleinschreibung und Zeichensetzungsunterschiede aus der Spracheingabe). Andernfalls false.
-5. "summary_ar": Ein prägnanter, einzeiliger arabischer Satz, der die wichtigste Korrektur zusammenfasst.
-6. "replacements": Liste NUR echter Kontext- und Grammatikfehler (OHNE reine Großschreibung und OHNE Kommasetzung):
-   - "wrong": Das fehlerhafte Wort oder Segment
-   - "right": Die korrekte deutsche Form
-   - "right_ar": Präzise arabische Übersetzung der korrekten deutschen Form (z.B. "تم تغيير ذلك", "أو؟", "تم تطبيقه بالفعل")
-   - "why": Kurze Erklärung auf Arabisch (5-8 Wörter)
-   - "example": Kurzer alltagsnaher deutscher Mustersatz
-   - "example_ar": Präzise arabische Übersetzung des Mustersatzes
-   - "category": Eine aus: "Kasus" | "Wortstellung" | "Verb" | "Wortschatz" | "Konjunktion" | "Präposition" | "Adjektivdeklination" | "Passiv" | "Konjunktiv II" | "Sonstiges"
-7. "radar_rules": Grammatikregeln und Strukturen im Satz:
-   - "segment": Der Teil im Satz
-   - "level": B1 | B2 | C1 | C2
-   - "rule_name": Name der Regel (z.B. "Nebensatz mit weil", "Dativ nach Präposition mit")
-   - "explanation": Kurze Erklärung auf Arabisch
-   - "example_de": Mustersatz auf Deutsch
-   - "example_ar": Übersetzung des Mustersatzes
-8. "arabic_meaning": Natürliche, flüssige arabische Übersetzung des gesamten korrigierten Satzes.
-9. "arabic_translations": Liste der übersetzten arabischen Wörter aus dem Satz (falls vorhanden).
-10. "contextual_examples": 2 kurze, alltagsnahe deutsche Mustersätze.
+Du bist "German Coach" — ein hochpräziser muttersprachlicher Deutschlehrer und Linguist für Niveaustufen B1 bis C2.
+Deine Aufgabe ist eine tiefgründige, vierstufige Analyse deutscher Sätze für arabischsprachige Deutschlerner.
 
-Du MUSST ausschließlich ein valides JSON-Objekt zurückgeben:
+### 4 Analyse-Ebenen (STRIKT ZU BEFOLGEN):
+
+1. **Stille ASR-Bereinigung (Silent ASR Cleanup):**
+   - Fehler, die rein aus der automatischen Spracherkennung (Speech-to-Text / المايك) resultieren — wie fehlende Kommas, Satzzeichen oder unbeabsichtigte Groß-/Kleinschreibung einzelner Wörter mitten im Satz (z.B. "Sitze" statt "sitze", "hallo" statt "Hallo") — korrigierst du in "direct_correction" und "native_version" STILLSCHWEIGEND.
+   - Solche reinen ASR-Phänomene DÜRFEN NICHT in der "errors"-Liste auftauchen und zählen NICHT als Fehler!
+
+2. **Logik- und Arabisch-Interferenz-Radar (Kategorie "logic_l1"):**
+   - Prüfe jeden Teilsatz auf logische Stimmigkeit und Realitätsnähe, selbst wenn er grammatisch fehlerfrei wirkt.
+   - Entlarve Ausdrücke, die wörtlich aus dem Arabischen/Ägyptischen ins Deutsche übertragen wurden (L1-Interferenz / أفخاخ الترجمة الحرفية من العربي).
+   - Setze bei jedem solchen Fund "category": "logic_l1" und "arabic_trap": true.
+   - Halte "original" so präzise und isoliert wie möglich auf die falsche Wendung bezogen (z.B. "auf meinem Laptop" -> "am Laptop").
+   - Beispiele:
+     * "auf meinem Laptop sitzen" -> Logikfehler / Arabische Falle ("قاعد على اللابتوب" بالمصري). Man sitzt "am Laptop" oder "vor meinem Laptop" (nicht physisch auf dem Gerät!). "original": "auf meinem Laptop", "correction": "am Laptop".
+     * "hallo und Bruder" oder wörtliches "Hallo mein Bruder" in informellem Kontext -> unidiomatisch / wörtliche Übersetzung ("أهلاً يا أخويا"). Natürlich: "Hey Bro", "Hallo mein Lieber", "Hallo mein Freund" oder einfach "Hey".
+
+3. **Grammatik, Syntax & Konjunktionsschutz (Kategorie "grammar"):**
+   - Erfasse echte grammatikalische Fehler: Kasus, Präpositionen, Adjektivendungen ("etwas anders" -> "etwas anderes"), Verwechslung von "wenn" und "wann".
+   - **STRIKTER KONJUNKTIONSSCHUTZ:** Entferne NIEMALS sinnvolle Kausal- oder Nebensatz-Konnektoren wie "weil", "obwohl", "dass", um Sätze künstlich zu zerhacken. Behaupte NIEMALS fälschlich einen Fehler bei der Verbstellung, wenn das Verb im Nebensatz bereits am Satzende steht.
+
+4. **Stil, Wiederholung & Satzvervollständigung (Kategorie "style"):**
+   - Erfasse unnötige Wort- und Phrasenwiederholungen (z.B. zweifaches "ein nettes Gespräch" in aufeinanderfolgenden Teilsätzen).
+   - Unvollständige / abgebrochene Sätze (z.B. "sag mal wenn..."): Korrigiere "wenn" zu "wann" ("grammar") und vervollständige den Gedanken im Kontext natürlich (z.B. "Sag mir bitte Bescheid, wann es dir passt" oder "Sag mal, wann du Zeit hast").
+
+### 2 Lösungsversionen (STRIKT ERFORDERLICH):
+1. **"direct_correction"**:
+   - Die direkte Korrektur: Bleibt so nah wie möglich am ursprünglichen Wortlaut des Benutzers, behebt aber alle Grammatikfehler, logischen Schnitzer und arabischen Fallen. Konjunktionen (wie "weil") bleiben erhalten.
+2. **"native_version"**:
+   - Die muttersprachliche Meisterfassung (Authentisches Alltags-/Fachdeutsch): Völlig natürlich und flüssig, frei von redundanten Wiederholungen, elegant formuliert, passend zum gewählten Zielniveau ("level": B1/B2/C1/C2) und der gewählten Höflichkeitsform/Tonalität ("tone": "du" für freundschaftlich/locker oder "Sie" für formell/geschäftlich).
+
+### Konsistenz-Regel:
+Jede reale Änderung zwischen dem Text des Benutzers und der "direct_correction" (abgesehen von der stillen ASR-Bereinigung) MUSS zwingend als Eintrag in "errors" dokumentiert sein. Behaupte niemals in "explanation_ar" eine Korrektur, die nicht tatsächlich in "direct_correction" vorgenommen wurde.
+
+Du MUSST ausschließlich ein valides JSON-Objekt mit folgendem Schema zurückgeben:
 {
-  "corrected_text": "...",
-  "arabic_meaning": "...",
+  "direct_correction": "...",
+  "native_version": "...",
+  "direct_arabic_meaning": "...",
+  "native_arabic_meaning": "...",
   "is_correct": false,
-  "summary_ar": "...",
-  "replacements": [
+  "summary_ar": "ملخص عربي واضح في سطر واحد لأهم الملاحظات والتصحيحات",
+  "errors": [
     {
-      "wrong": "...",
-      "right": "...",
-      "right_ar": "...",
-      "why": "...",
-      "example": "...",
-      "example_ar": "...",
-      "category": "Kasus"
+      "original": "الجزء الخطأ بالنص الأصلي",
+      "correction": "البديل الصحيح في التصحيح المباشر",
+      "category": "grammar",
+      "arabic_trap": false,
+      "rule_tag": "اسم القاعدة المختصر (مثال: حروف الجر - ترجمة حرفية / نهايات الصفات / الفرق بين wenn و wann)",
+      "explanation_ar": "شرح عربي مباشر وواضح",
+      "example": "Mustersatz auf Deutsch",
+      "example_ar": "ترجمة عربية للمثال"
     }
   ],
   "radar_rules": [
     {
-      "segment": "...",
+      "segment": "Teil des Satzes",
       "level": "B2",
-      "rule_name": "...",
-      "explanation": "...",
-      "example_de": "...",
-      "example_ar": "..."
-    }
-  ],
-  "arabic_translations": [
-    {
-      "arabic": "...",
-      "german": "...",
-      "context": "..."
+      "rule_name": "Regelname",
+      "explanation": "شرح عربي",
+      "example_de": "Beispiel",
+      "example_ar": "ترجمة"
     }
   ],
   "contextual_examples": [
@@ -180,9 +185,10 @@ Du MUSST ausschließlich ein valides JSON-Objekt zurückgeben:
 """
 
 
-def correct_sentence(text: str, level: str = "B2") -> Dict[str, Any]:
+def correct_sentence(text: str, level: str = "B2", tone: str = "du") -> Dict[str, Any]:
     """
-    Corrects a German sentence using the Gemini API and prepares data for the 6-section UI.
+    Corrects a German sentence using the Gemini API and prepares data for the upgraded UI
+    with 4-layer analysis, dual solutions (direct & native), and Arabic trap detection.
     """
     if not GEMINI_API_KEY:
         raise GeminiKeyMissingError(
@@ -197,9 +203,12 @@ def correct_sentence(text: str, level: str = "B2") -> Dict[str, Any]:
     if target_level not in {"B1", "B2", "C1", "C2"}:
         target_level = "B2"
 
+    target_tone = "Sie" if tone and tone.lower() == "sie" else "du"
+    tone_desc = "Sie (formell/geschäftlich)" if target_tone == "Sie" else "du (freundschaftlich/informell)"
+
     try:
         client = _get_client()
-        user_prompt = f"Zielniveau: {target_level}\nEingegebener Satz:\n\"{clean_text}\""
+        user_prompt = f"Zielniveau: {target_level}\nTonalität: {tone_desc}\nEingegebener Satz:\n\"{clean_text}\""
 
         raw_response = _call_gemini_json(
             client=client,
@@ -210,41 +219,81 @@ def correct_sentence(text: str, level: str = "B2") -> Dict[str, Any]:
 
         parsed = json.loads(raw_response or "{}")
 
-        corrected_text = parsed.get("corrected_text", clean_text).strip()
-        diff_data = compute_word_diff(clean_text, corrected_text)
+        direct_correction = parsed.get("direct_correction") or parsed.get("corrected_text") or clean_text
+        direct_correction = direct_correction.strip()
 
-        replacements = parsed.get("replacements") or []
+        native_version = parsed.get("native_version") or direct_correction
+        native_version = native_version.strip()
+
+        direct_arabic_meaning = (parsed.get("direct_arabic_meaning") or parsed.get("arabic_meaning") or "").strip()
+        native_arabic_meaning = (parsed.get("native_arabic_meaning") or direct_arabic_meaning).strip()
+
+        diff_data = compute_word_diff(clean_text, direct_correction)
+
+        errors_raw = parsed.get("errors") or parsed.get("replacements") or []
         radar_rules = parsed.get("radar_rules") or []
-        arabic_translations = parsed.get("arabic_translations") or []
         contextual_examples = parsed.get("contextual_examples") or []
-        arabic_meaning = parsed.get("arabic_meaning", "").strip()
-        summary_ar = parsed.get("summary_ar", "").strip()
-        is_correct = bool(parsed.get("is_correct", len(replacements) == 0))
+        arabic_translations = parsed.get("arabic_translations") or []
+        summary_ar = (parsed.get("summary_ar") or "").strip()
+        is_correct = bool(parsed.get("is_correct", len(errors_raw) == 0))
 
-        # Backward compatibility with errors list for SQLite error_logs & /api/radar
+        # Normalized errors array with backward-compatible replacements
         errors = []
-        for rep in replacements:
-            errors.append({
-                "category": rep.get("category", "Sonstiges"),
-                "error_text": rep.get("wrong", ""),
-                "correction_text": rep.get("right", ""),
-                "explanation": rep.get("why", ""),
-            })
+        replacements = []
+
+        for item in errors_raw:
+            orig = (item.get("original") or item.get("wrong") or "").strip()
+            corr = (item.get("correction") or item.get("right") or "").strip()
+            cat = item.get("category", "grammar")
+            if cat not in {"grammar", "logic_l1", "style"}:
+                cat = "grammar"
+
+            is_trap = bool(item.get("arabic_trap", False) or cat == "logic_l1")
+            r_tag = (item.get("rule_tag") or "").strip()
+            expl = (item.get("explanation_ar") or item.get("why") or "").strip()
+            ex = (item.get("example") or "").strip()
+            ex_ar = (item.get("example_ar") or "").strip()
+            right_ar = (item.get("right_ar") or "").strip()
+
+            err_obj = {
+                "original": orig,
+                "correction": corr,
+                "wrong": orig,  # legacy alias
+                "right": corr,  # legacy alias
+                "right_ar": right_ar,
+                "category": cat,
+                "arabic_trap": is_trap,
+                "rule_tag": r_tag,
+                "explanation_ar": expl,
+                "why": expl,  # legacy alias
+                "example": ex,
+                "example_ar": ex_ar,
+                "error_text": orig,
+                "correction_text": corr,
+                "explanation": expl,
+            }
+            errors.append(err_obj)
+            replacements.append(err_obj)
 
         return {
             "original_text": clean_text,
-            "corrected_text": corrected_text,
+            "direct_correction": direct_correction,
+            "native_version": native_version,
+            "corrected_text": direct_correction,  # Legacy alias
+            "direct_arabic_meaning": direct_arabic_meaning,
+            "native_arabic_meaning": native_arabic_meaning,
+            "arabic_meaning": direct_arabic_meaning,  # Legacy alias
             "level": target_level,
-            "arabic_meaning": arabic_meaning,
+            "tone": target_tone,
             "is_correct": is_correct,
             "summary_ar": summary_ar,
             "explanation": summary_ar,  # Backward compatibility
+            "errors": errors,
             "replacements": replacements,
             "radar_rules": radar_rules,
             "diff_data": diff_data,
             "arabic_translations": arabic_translations,
             "contextual_examples": contextual_examples,
-            "errors": errors,
         }
 
     except json.JSONDecodeError as jde:

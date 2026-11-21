@@ -27,6 +27,11 @@ def test_coach_static_assets(client):
     assert "text/css" in res_css.headers["content-type"]
     assert "diff-corrected-highlight" in res_css.text
     assert "btn-mic-stop" in res_css.text
+    assert "strike-grammar" in res_css.text
+    assert "strike-logic" in res_css.text
+    assert "strike-style" in res_css.text
+    assert "sec2-error-card" in res_css.text
+    assert "badge-trap" in res_css.text
 
     res_js = client.get("/static/app.js")
     assert res_js.status_code == 200
@@ -34,6 +39,10 @@ def test_coach_static_assets(client):
     assert "diff-corrected-highlight" in res_js.text
     assert "resetMicSilenceTimer" in res_js.text
     assert "btnMicStop" in res_js.text
+    assert "tab-btn-direct" in res_js.text
+    assert "tab-btn-native" in res_js.text
+    assert "strike-logic" in res_js.text
+    assert "sec4Filter" in res_js.text
 
 def test_coach_view(client):
     response = client.get("/coach/")
@@ -41,6 +50,12 @@ def test_coach_view(client):
     assert "text/html" in response.headers["content-type"]
     assert "German Coach" in response.text
     assert "btn-mic-stop" in response.text
+    assert "tone-select" in response.text
+    assert "sec2-legend-bar" in response.text
+    assert "sec2-error-cards" in response.text
+    assert "tab-btn-direct" in response.text
+    assert "tab-btn-native" in response.text
+    assert "sec4-filter-bar" in response.text
 
 def test_health_endpoints(client):
     res_simple = client.get("/health")
@@ -51,4 +66,4 @@ def test_health_endpoints(client):
     assert res_version.status_code == 200
     data = res_version.json()
     assert data["vocab_tutor_version"] == "v16"
-    assert data["german_coach_version"] == "v18"
+    assert data["german_coach_version"] == "v21"

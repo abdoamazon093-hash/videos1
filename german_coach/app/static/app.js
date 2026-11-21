@@ -12,6 +12,9 @@
   // ============================================================================
   const state = {
     level: 'B2',
+    tone: localStorage.getItem('coach_tone') || 'du', // 'du' | 'Sie'
+    activeSec3Tab: 'direct', // 'direct' | 'native'
+    sec4Filter: 'all', // 'all' | 'logic_l1' | 'grammar' | 'style'
     speechRate: 1.0,
     isRecording: false,
     activeMicLang: null, // 'de-DE' | 'ar-EG'
@@ -49,6 +52,7 @@
   // DOM Elements
   // ============================================================================
   const levelSelect = document.getElementById('level-select');
+  const toneSelect = document.getElementById('tone-select');
   const statusDot = document.getElementById('status-dot');
   const statusText = document.getElementById('status-text');
   const latencyIndicator = document.getElementById('latency-indicator');
@@ -89,11 +93,14 @@
 
   // Section 2
   const originalDiffBox = document.getElementById('original-diff-box');
+  const sec2ErrorCards = document.getElementById('sec2-error-cards');
   const summaryArBox = document.getElementById('summary-ar-box');
   const summaryArText = document.getElementById('summary-ar-text');
   const btnCopyOriginal = document.getElementById('btn-copy-original');
 
   // Section 3
+  const tabBtnDirect = document.getElementById('tab-btn-direct');
+  const tabBtnNative = document.getElementById('tab-btn-native');
   const wordInspector = document.getElementById('word-inspector');
   const inspWordDe = document.getElementById('insp-word-de');
   const inspWordAr = document.getElementById('insp-word-ar');
@@ -122,6 +129,7 @@
 
   // Section 4
   const replacementsContainer = document.getElementById('replacements-container');
+  const sec4FilterChips = document.querySelectorAll('.sec4-filter-bar .btn-filter-chip');
 
   // Section 5
   const radarRulesContainer = document.getElementById('radar-rules-container');
@@ -687,18 +695,28 @@
   }
 
   function getFullCorrectedGerman() {
+    const isNative = state.activeSec3Tab === 'native';
     if (state.sessionPassages.length === 0) {
-      return state.lastCorrection ? state.lastCorrection.corrected_text || '' : '';
+      if (!state.lastCorrection) return '';
+      return isNative
+        ? (state.lastCorrection.native_version || state.lastCorrection.corrected_text || '')
+        : (state.lastCorrection.direct_correction || state.lastCorrection.corrected_text || '');
     }
-    return state.sessionPassages.map((p) => p.corrected).join(' ');
+    return state.sessionPassages
+      .map((p) => (isNative ? (p.native || p.corrected) : (p.direct || p.corrected)))
+      .join(' ');
   }
 
   function getFullArabicTranslation() {
+    const isNative = state.activeSec3Tab === 'native';
     if (state.sessionPassages.length === 0) {
-      return state.lastCorrection ? state.lastCorrection.arabic_meaning || '' : '';
+      if (!state.lastCorrection) return '';
+      return isNative
+        ? (state.lastCorrection.native_arabic_meaning || state.lastCorrection.arabic_meaning || '')
+        : (state.lastCorrection.direct_arabic_meaning || state.lastCorrection.arabic_meaning || '');
     }
     return state.sessionPassages
-      .map((p) => p.arabic)
+      .map((p) => (isNative ? (p.nativeArabic || p.arabic) : (p.directArabic || p.arabic)))
       .filter(Boolean)
       .join(' ');
   }
@@ -777,7 +795,11 @@
       const response = await fetch('/api/correct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: textToSubmit, level: state.level }),
+        body: JSON.stringify({
+          text: textToSubmit,
+          level: state.level,
+          tone: state.tone,
+        }),
         signal: state.currentAbortController.signal,
       });
 
@@ -799,38 +821,97 @@
         cacheIndicatorBadge.textContent = 'توليد حي ✨';
       }
 
-      // Format original text with strikethrough for mistakes
+      // Format original text with 3-color highlights for mistakes
       const original = result.original_text || textToSubmit;
-      const replacements = result.replacements || [];
+      const errors = result.errors || result.replacements || [];
+      const replacements = result.replacements || result.errors || [];
+      const passageIdx = state.sessionPassages.length;
+
+      // Assign unique errId to each error in this passage
+      const taggedErrors = errors.map((err, eIdx) => ({
+        ...err,
+        errId: `err-${passageIdx}-${eIdx}`,
+      }));
+
+      // Render 3-color in-text spans
       let originalHtml = escapeHtml(original);
-      if (!result.is_correct && replacements.length > 0) {
-        replacements.forEach((rep) => {
-          const wrong = escapeHtml(rep.wrong);
-          if (wrong && originalHtml.includes(wrong)) {
-            originalHtml = originalHtml.replace(new RegExp(wrong, 'g'), `<span class="strike-wrong">${wrong}</span>`);
+      if (!result.is_correct && taggedErrors.length > 0) {
+        const spansToMark = [];
+        taggedErrors.forEach((err) => {
+          const wrong = (err.original || err.wrong || '').trim();
+          if (!wrong) return;
+          const cat = err.category || 'grammar';
+          const strikeClass = cat === 'logic_l1' ? 'strike-logic' : (cat === 'style' ? 'strike-style' : 'strike-grammar');
+
+          let pos = 0;
+          while (pos < original.length) {
+            const idx = original.toLowerCase().indexOf(wrong.toLowerCase(), pos);
+            if (idx === -1) break;
+            spansToMark.push({
+              start: idx,
+              end: idx + wrong.length,
+              wrongText: original.slice(idx, idx + wrong.length),
+              strikeClass: strikeClass,
+              errId: err.errId,
+              cat: cat,
+            });
+            pos = idx + wrong.length;
           }
         });
+
+        // Sort spans by start index, filter out overlapping
+        spansToMark.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+        const filteredSpans = [];
+        let lastEnd = 0;
+        spansToMark.forEach((s) => {
+          if (s.start >= lastEnd) {
+            filteredSpans.push(s);
+            lastEnd = s.end;
+          }
+        });
+
+        // Reconstruct originalHtml with colored strike spans
+        if (filteredSpans.length > 0) {
+          let cursor = 0;
+          let builtHtml = '';
+          filteredSpans.forEach((s) => {
+            if (s.start > cursor) {
+              builtHtml += escapeHtml(original.slice(cursor, s.start));
+            }
+            builtHtml += `<span class="strike-wrong ${s.strikeClass}" data-err-id="${s.errId}">${escapeHtml(s.wrongText)}</span>`;
+            cursor = s.end;
+          });
+          if (cursor < original.length) {
+            builtHtml += escapeHtml(original.slice(cursor));
+          }
+          originalHtml = builtHtml;
+        }
       }
 
       // Append to the continuous passage (قطعة متصلة)
       state.sessionPassages.push({
         original: original,
         originalHtml: originalHtml,
-        corrected: result.corrected_text || original,
-        arabic: result.arabic_meaning || '',
+        direct: result.direct_correction || result.corrected_text || original,
+        native: result.native_version || result.corrected_text || original,
+        corrected: result.direct_correction || result.corrected_text || original,
+        directArabic: result.direct_arabic_meaning || result.arabic_meaning || '',
+        nativeArabic: result.native_arabic_meaning || result.arabic_meaning || '',
+        arabic: result.direct_arabic_meaning || result.arabic_meaning || '',
+        errors: taggedErrors,
         replacements: replacements,
         radarRules: result.radar_rules || [],
         summaryAr: result.summary_ar || '',
         isCorrect: !!result.is_correct,
       });
 
-      // Update session statistics
+      // Update session statistics strictly matching real error cards
       state.sessionSentences++;
-      const repCount = replacements.length;
-      if (result.is_correct || repCount === 0) {
+      const realErrCount = taggedErrors.length;
+      if (result.is_correct || realErrCount === 0) {
         state.sessionCorrect++;
       } else {
-        state.sessionErrors += repCount;
+        state.sessionErrors += realErrCount;
       }
       updateSessionStatsUI();
 
@@ -841,8 +922,12 @@
       renderSection5();
 
       // Auto TTS if enabled
-      if (result.corrected_text && state.autoTtsEnabled) {
-        speakGerman(result.corrected_text);
+      const textToSpeak = state.activeSec3Tab === 'native'
+        ? (result.native_version || result.corrected_text)
+        : (result.direct_correction || result.corrected_text);
+
+      if (textToSpeak && state.autoTtsEnabled) {
+        speakGerman(textToSpeak);
       }
 
       updateLiveStatus(result.cached ? '⚡ تم التصحيح الفوري (كاش)' : '✅ تم التصحيح والتحليل بنجاح');
@@ -892,6 +977,7 @@
 
     if (state.sessionPassages.length === 0) {
       originalDiffBox.innerHTML = '<span style="color: #9CA3AF;">النص الأصلي مع التظليل المشطوب على مواضع الخلل النحوي والسياقي سيظهر هنا كقطعة متصلة...</span>';
+      if (sec2ErrorCards) sec2ErrorCards.innerHTML = '';
       if (summaryArBox) summaryArBox.style.display = 'none';
       return;
     }
@@ -902,6 +988,52 @@
       .join(' ');
 
     originalDiffBox.innerHTML = passageHtml;
+
+    // Collect all errors across passages for structured cards
+    const allErrors = [];
+    state.sessionPassages.forEach((p) => {
+      if (p.errors && p.errors.length > 0) {
+        allErrors.push(...p.errors);
+      }
+    });
+
+    if (sec2ErrorCards) {
+      if (allErrors.length === 0) {
+        sec2ErrorCards.innerHTML = `
+          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 10px 14px; color: #166534; font-weight: 700; font-size: 0.9rem;">
+            ✨ لا توجد أخطاء مرصودة في النص الأصلي! صياغتك سليمة وواضحة.
+          </div>
+        `;
+      } else {
+        sec2ErrorCards.innerHTML = allErrors.map((err) => {
+          const cat = err.category || 'grammar';
+          const catLabel = cat === 'logic_l1' ? 'منطق وفخ عربي' : (cat === 'style' ? 'أسلوب وتكرار' : 'نحو وقواعد');
+          const badgeClass = cat === 'logic_l1' ? 'badge-cat-logic' : (cat === 'style' ? 'badge-cat-style' : 'badge-cat-grammar');
+          const cardCatClass = `cat-${cat}`;
+
+          return `
+            <div class="sec2-error-card ${cardCatClass}" id="card-${err.errId}" data-err-id="${err.errId}">
+              <div class="sec2-card-header">
+                <div class="sec2-card-tags">
+                  <span class="${badgeClass}">${catLabel}</span>
+                  ${err.arabic_trap ? '<span class="badge-trap">⚠️ فخ ترجمة عربية</span>' : ''}
+                  ${err.rule_tag ? `<span class="badge-rule-tag">${escapeHtml(err.rule_tag)}</span>` : ''}
+                </div>
+              </div>
+              <div class="sec2-card-replacement de-text">
+                <span class="sec2-card-wrong">${escapeHtml(err.original || err.wrong)}</span>
+                <span class="sec2-card-arrow">⬅️</span>
+                <span class="sec2-card-right">${escapeHtml(err.correction || err.right)}</span>
+              </div>
+              <div class="sec2-card-explanation">${escapeHtml(err.explanation_ar || err.why || '')}</div>
+            </div>
+          `;
+        }).join('');
+
+        // Bidirectional hover & click synchronization
+        bindErrorSync();
+      }
+    }
 
     // Collect summaries
     const summaries = state.sessionPassages
@@ -917,6 +1049,48 @@
     }
   }
 
+  function bindErrorSync() {
+    if (!sec2ErrorCards || !originalDiffBox) return;
+    const cards = sec2ErrorCards.querySelectorAll('.sec2-error-card');
+    const spans = originalDiffBox.querySelectorAll('.strike-wrong[data-err-id]');
+
+    cards.forEach((card) => {
+      const errId = card.getAttribute('data-err-id');
+      const span = originalDiffBox.querySelector(`.strike-wrong[data-err-id="${errId}"]`);
+      if (!span) return;
+
+      card.addEventListener('mouseenter', () => {
+        card.classList.add('active-hover');
+        span.classList.add('active-hover');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.classList.remove('active-hover');
+        span.classList.remove('active-hover');
+      });
+      card.addEventListener('click', () => {
+        span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+
+    spans.forEach((span) => {
+      const errId = span.getAttribute('data-err-id');
+      const card = sec2ErrorCards.querySelector(`.sec2-error-card[data-err-id="${errId}"]`);
+      if (!card) return;
+
+      span.addEventListener('mouseenter', () => {
+        span.classList.add('active-hover');
+        card.classList.add('active-hover');
+      });
+      span.addEventListener('mouseleave', () => {
+        span.classList.remove('active-hover');
+        card.classList.remove('active-hover');
+      });
+      span.addEventListener('click', () => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+  }
+
   // Render Section 3: Correct German Text (Unified Passage - قطعة متصلة with Clickable Words & Highlighter on Corrections)
   function renderSection3() {
     if (!correctedHeroBox) return;
@@ -929,107 +1103,122 @@
       return;
     }
 
-    // Build the list of passages with highlighted corrections
+    const isNativeTab = state.activeSec3Tab === 'native';
     let fullHtml = '';
+
     state.sessionPassages.forEach((p) => {
-      const correctedText = p.corrected || '';
+      const activeGermanText = isNativeTab ? (p.native || p.corrected || '') : (p.direct || p.corrected || '');
       const replacements = p.replacements || [];
 
-      // Find character spans in correctedText corresponding to replacements
-      const spans = [];
-      replacements.forEach((rep) => {
-        const rawRight = (rep.right || '').trim();
-        const rawWrong = (rep.wrong || '').trim();
-        // Clean leading/trailing punctuation for robust substring search
-        const cleanRight = rawRight.replace(/^[^\w\u00C0-\u017F]+|[^\w\u00C0-\u017F]+$/g, '');
-        const tooltip = rawWrong ? `تصحيح: "${rawRight}" بدلاً من "${rawWrong}"` : `تصحيح: "${rawRight}"`;
-
-        let foundPhrase = false;
-        if (cleanRight) {
-          let pos = 0;
-          while (pos < correctedText.length) {
-            const idx = correctedText.toLowerCase().indexOf(cleanRight.toLowerCase(), pos);
-            if (idx === -1) break;
-            foundPhrase = true;
-            spans.push({
-              start: idx,
-              end: idx + cleanRight.length,
-              wrong: rawWrong,
-              right: rawRight,
-              why: rep.why || '',
-              tooltip: tooltip,
-            });
-            pos = idx + cleanRight.length;
-          }
-        }
-
-        // Fallback: If full phrase wasn't found verbatim (e.g. slight punctuation difference), match distinct words introduced
-        if (!foundPhrase && cleanRight) {
-          const rightWords = cleanRight.match(/[\w\u00C0-\u017F]+/g) || [];
-          const wrongWords = new Set((rawWrong.match(/[\w\u00C0-\u017F]+/g) || []).map((w) => w.toLowerCase()));
-
-          rightWords.forEach((w) => {
-            if (!wrongWords.has(w.toLowerCase()) || rightWords.length === 1) {
-              let pos = 0;
-              while (pos < correctedText.length) {
-                const idx = correctedText.toLowerCase().indexOf(w.toLowerCase(), pos);
-                if (idx === -1) break;
-                const before = idx === 0 ? ' ' : correctedText[idx - 1];
-                const after = idx + w.length >= correctedText.length ? ' ' : correctedText[idx + w.length];
-                if (!/[\w\u00C0-\u017F]/.test(before) && !/[\w\u00C0-\u017F]/.test(after)) {
-                  spans.push({
-                    start: idx,
-                    end: idx + w.length,
-                    wrong: rawWrong,
-                    right: rawRight,
-                    why: rep.why || '',
-                    tooltip: tooltip,
-                  });
-                }
-                pos = idx + w.length;
-              }
-            }
-          });
-        }
-      });
-
-      // Tokenize correctedText into words, punctuation, and spaces
-      const tokenRegex = /[\w\u00C0-\u017F]+|[^\w\s\u00C0-\u017F]+|\s+/g;
-      let match;
-      let passageHtml = '';
-
-      while ((match = tokenRegex.exec(correctedText)) !== null) {
-        const token = match[0];
-        const start = match.index;
-        const end = start + token.length;
-
-        const isWord = /^[\w\u00C0-\u017F]+$/.test(token);
-        const matchedSpan = spans.find((s) => s.start <= start && end <= s.end);
-
-        if (matchedSpan) {
-          if (isWord) {
-            const tooltip = matchedSpan.tooltip || 'تم تصحيح هذه الكلمة';
-            passageHtml += `<span class="clickable-word diff-corrected-highlight" data-word="${escapeHtml(token)}" title="${escapeHtml(tooltip)}">${escapeHtml(token)}</span>`;
-          } else {
-            // Space or punctuation within the continuous highlighted span
-            passageHtml += `<span class="diff-highlight-connector">${escapeHtml(token)}</span>`;
-          }
-        } else {
+      if (isNativeTab) {
+        // Native tab: Clean natural formulation with clickable words for lookup
+        const tokenRegex = /[\w\u00C0-\u017F]+|[^\w\s\u00C0-\u017F]+|\s+/g;
+        let match;
+        let passageHtml = '';
+        while ((match = tokenRegex.exec(activeGermanText)) !== null) {
+          const token = match[0];
+          const isWord = /^[\w\u00C0-\u017F]+$/.test(token);
           if (isWord) {
             passageHtml += `<span class="clickable-word" data-word="${escapeHtml(token)}">${escapeHtml(token)}</span>`;
           } else {
             passageHtml += escapeHtml(token);
           }
         }
-      }
+        if (fullHtml) fullHtml += ' ';
+        fullHtml += passageHtml;
+      } else {
+        // Direct tab: Highlight replacements with yellow continuous highlighter
+        const spans = [];
+        replacements.forEach((rep) => {
+          const rawRight = (rep.right || rep.correction || '').trim();
+          const rawWrong = (rep.wrong || rep.original || '').trim();
+          const cleanRight = rawRight.replace(/^[^\w\u00C0-\u017F]+|[^\w\u00C0-\u017F]+$/g, '');
+          const tooltip = rawWrong ? `تصحيح: "${rawRight}" بدلاً من "${rawWrong}"` : `تصحيح: "${rawRight}"`;
 
-      if (fullHtml) fullHtml += ' ';
-      fullHtml += passageHtml;
+          let foundPhrase = false;
+          if (cleanRight) {
+            let pos = 0;
+            while (pos < activeGermanText.length) {
+              const idx = activeGermanText.toLowerCase().indexOf(cleanRight.toLowerCase(), pos);
+              if (idx === -1) break;
+              foundPhrase = true;
+              spans.push({
+                start: idx,
+                end: idx + cleanRight.length,
+                wrong: rawWrong,
+                right: rawRight,
+                why: rep.why || rep.explanation_ar || '',
+                tooltip: tooltip,
+              });
+              pos = idx + cleanRight.length;
+            }
+          }
+
+          if (!foundPhrase && cleanRight) {
+            const rightWords = cleanRight.match(/[\w\u00C0-\u017F]+/g) || [];
+            const wrongWords = new Set((rawWrong.match(/[\w\u00C0-\u017F]+/g) || []).map((w) => w.toLowerCase()));
+
+            rightWords.forEach((w) => {
+              if (!wrongWords.has(w.toLowerCase()) || rightWords.length === 1) {
+                let pos = 0;
+                while (pos < activeGermanText.length) {
+                  const idx = activeGermanText.toLowerCase().indexOf(w.toLowerCase(), pos);
+                  if (idx === -1) break;
+                  const before = idx === 0 ? ' ' : activeGermanText[idx - 1];
+                  const after = idx + w.length >= activeGermanText.length ? ' ' : activeGermanText[idx + w.length];
+                  if (!/[\w\u00C0-\u017F]/.test(before) && !/[\w\u00C0-\u017F]/.test(after)) {
+                    spans.push({
+                      start: idx,
+                      end: idx + w.length,
+                      wrong: rawWrong,
+                      right: rawRight,
+                      why: rep.why || rep.explanation_ar || '',
+                      tooltip: tooltip,
+                    });
+                  }
+                  pos = idx + w.length;
+                }
+              }
+            });
+          }
+        });
+
+        const tokenRegex = /[\w\u00C0-\u017F]+|[^\w\s\u00C0-\u017F]+|\s+/g;
+        let match;
+        let passageHtml = '';
+
+        while ((match = tokenRegex.exec(activeGermanText)) !== null) {
+          const token = match[0];
+          const start = match.index;
+          const end = start + token.length;
+
+          const isWord = /^[\w\u00C0-\u017F]+$/.test(token);
+          const matchedSpan = spans.find((s) => s.start <= start && end <= s.end);
+
+          if (matchedSpan) {
+            if (isWord) {
+              const tooltip = matchedSpan.tooltip || 'تم تصحيح هذه الكلمة';
+              passageHtml += `<span class="clickable-word diff-corrected-highlight" data-word="${escapeHtml(token)}" title="${escapeHtml(tooltip)}">${escapeHtml(token)}</span>`;
+            } else {
+              passageHtml += `<span class="diff-highlight-connector">${escapeHtml(token)}</span>`;
+            }
+          } else {
+            if (isWord) {
+              passageHtml += `<span class="clickable-word" data-word="${escapeHtml(token)}">${escapeHtml(token)}</span>`;
+            } else {
+              passageHtml += escapeHtml(token);
+            }
+          }
+        }
+
+        if (fullHtml) fullHtml += ' ';
+        fullHtml += passageHtml;
+      }
     });
 
     correctedHeroBox.innerHTML = fullHtml;
 
-    // Translation sub-block
+    // Translation sub-block corresponding to active tab
     const fullArabic = getFullArabicTranslation();
     if (fullArabic) {
       const sub = document.createElement('div');
@@ -1071,7 +1260,7 @@
     }
   }
 
-  // Render Section 4: Replaced Errors List (Yellow Box - Cumulative across passage)
+  // Render Section 4: Replaced Errors List (Cumulative across passage with Category Filtering)
   function renderSection4() {
     if (!replacementsContainer) return;
     replacementsContainer.innerHTML = '';
@@ -1087,51 +1276,86 @@
       if (state.sessionPassages.length > 0) {
         replacementsContainer.innerHTML = `
           <div style="background:#FFFFFF; border:1px solid var(--sec4-border); border-radius:var(--radius-md); padding:12px; color:#059669; font-weight:700;">
-            ✨ ممتاز! لم يتم رصد أي أخطاء نحوية أو سياقية في هذه القطعة حتى الآن.
+            ✨ ممتاز! لم يتم رصد أي أخطاء في هذه القطعة حتى الآن.
           </div>`;
       }
       return;
     }
 
-    allReplacements.forEach((rep) => {
+    // Apply Filter
+    const filter = state.sec4Filter || 'all';
+    const filtered = allReplacements.filter((rep) => {
+      if (filter === 'all') return true;
+      const cat = rep.category || 'grammar';
+      if (filter === 'logic_l1') {
+        return cat === 'logic_l1' || rep.arabic_trap === true;
+      }
+      return cat === filter;
+    });
+
+    if (filtered.length === 0) {
+      replacementsContainer.innerHTML = `
+        <div style="background:#FFFFFF; border:1px solid var(--sec4-border); border-radius:var(--radius-md); padding:12px; color:#6B7280; font-weight:600;">
+          لا توجد عناصر مطابقة لهذا التصنيف في القطعة الحالية.
+        </div>`;
+      return;
+    }
+
+    filtered.forEach((rep) => {
       const card = document.createElement('div');
       card.className = 'replacement-card';
 
+      const cat = rep.category || 'grammar';
+      const catBadge = cat === 'logic_l1'
+        ? '<span class="badge-cat-logic">🟠 منطق وفخ عربي</span>'
+        : (cat === 'style' ? '<span class="badge-cat-style">🔵 أسلوب وتدفق</span>' : '<span class="badge-cat-grammar">🔴 قواعد ونحو</span>');
+
+      const trapBadge = rep.arabic_trap ? '<span class="badge-trap">⚠️ فخ ترجمة عربية</span>' : '';
+      const ruleBadge = rep.rule_tag ? `<span class="badge-rule-tag">${escapeHtml(rep.rule_tag)}</span>` : '';
+
       const rightArHtml = rep.right_ar
-        ? `<span class="rep-right-ar">(${escapeHtml(rep.right_ar)})</span>`
+        ? `<span class="rep-right-ar" style="color: #059669; font-weight: 700;">(${escapeHtml(rep.right_ar)})</span>`
         : '';
 
-      const whyHtml = rep.why
-        ? `<div class="rep-explanation" style="margin-top: 4px; color: #92400E; font-size: 0.92rem; font-weight: 600;">
-             <span style="color: #B45309; font-weight: 700;">السبب:</span> ${escapeHtml(rep.why)}
+      const explanation = rep.explanation_ar || rep.why || '';
+      const whyHtml = explanation
+        ? `<div class="rep-explanation" style="margin-top: 6px; color: #92400E; font-size: 0.92rem; font-weight: 600;">
+             <span style="color: #B45309; font-weight: 700;">الشرح:</span> ${escapeHtml(explanation)}
            </div>`
         : '';
 
       let exampleBoxHtml = '';
       if (rep.example) {
         exampleBoxHtml = `
-          <div class="rep-example-box">
+          <div class="rep-example-box" style="margin-top: 6px;">
             <div class="rep-example de-text" style="font-weight: 600; color: #1E293B; font-size: 0.95rem;">
               <span style="color: #D97706; font-weight: 700;">مثال:</span> ${escapeHtml(rep.example)}
             </div>
             ${rep.example_ar ? `
-              <div class="rep-example-ar">
-                <span style="color: #059669; font-weight: 700;">الترجمة:</span> ${escapeHtml(rep.example_ar)}
+              <div class="rep-example-ar" style="font-size: 0.88rem; color: #059669;">
+                <span style="font-weight: 700;">الترجمة:</span> ${escapeHtml(rep.example_ar)}
               </div>
             ` : ''}
           </div>
         `;
       }
 
+      const wrongVal = rep.original || rep.wrong || '';
+      const rightVal = rep.correction || rep.right || '';
+
       card.innerHTML = `
-        <div class="rep-top-row">
+        <div class="rep-top-row" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
           <div class="rep-words de-text" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span class="rep-wrong">${escapeHtml(rep.wrong)}</span>
+            <span class="rep-wrong">${escapeHtml(wrongVal)}</span>
             <span style="color: #94A3B8;">➔</span>
-            <span class="rep-right">${escapeHtml(rep.right)}</span>
+            <span class="rep-right">${escapeHtml(rightVal)}</span>
             ${rightArHtml}
           </div>
-          <span class="rep-category-badge">${escapeHtml(rep.category || 'قاعدة')}</span>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            ${catBadge}
+            ${trapBadge}
+            ${ruleBadge}
+          </div>
         </div>
         ${whyHtml}
         ${exampleBoxHtml}
@@ -1143,11 +1367,11 @@
         </div>
       `;
 
-      card.querySelector('.btn-speak-rep').onclick = () => speakGerman(rep.right || rep.example);
-      card.querySelector('.btn-copy-rep').onclick = () => copyToClipboard(`${rep.wrong} ➔ ${rep.right}${rep.right_ar ? ` (${rep.right_ar})` : ''} - السبب: ${rep.why}`);
-      card.querySelector('.btn-clip-rep').onclick = () => saveClipDirect(rep.right, rep.right_ar ? `${rep.right_ar} — ${rep.why}` : rep.why, rep.category);
+      card.querySelector('.btn-speak-rep').onclick = () => speakGerman(rightVal || rep.example);
+      card.querySelector('.btn-copy-rep').onclick = () => copyToClipboard(`${wrongVal} ➔ ${rightVal}${rep.right_ar ? ` (${rep.right_ar})` : ''} - ${explanation}`);
+      card.querySelector('.btn-clip-rep').onclick = () => saveClipDirect(rightVal, rep.right_ar ? `${rep.right_ar} — ${explanation}` : explanation, rep.category);
       card.querySelector('.btn-ask-rep').onclick = () => {
-        assistantQuestionInput.value = `لماذا استبدلنا "${rep.wrong}" بـ "${rep.right}" في هذه الجملة؟`;
+        assistantQuestionInput.value = `لماذا استبدلنا "${wrongVal}" بـ "${rightVal}" في هذه الجملة؟`;
         sendAssistantQuestion();
         window.location.hash = '#sec-3';
       };
@@ -1207,27 +1431,51 @@
       const data = await res.json();
       const categories = data.categories || [];
 
-      if (categories.length === 0) {
+      let trapNoticeHtml = '';
+      if (data.arabic_traps_count !== undefined) {
+        trapNoticeHtml = `
+          <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: #92400E; font-weight: 700; font-size: 0.88rem;">⚠️ أفخاخ الترجمة من العربي المرصودة:</span>
+            <span style="background: #F59E0B; color: #FFF; padding: 2px 8px; border-radius: 12px; font-weight: 800; font-size: 0.82rem;">${data.arabic_traps_count} فخ</span>
+          </div>
+        `;
+      }
+
+      let topRulesHtml = '';
+      if (data.top_rule_tags && data.top_rule_tags.length > 0) {
+        topRulesHtml = `
+          <div style="margin-top: 12px; border-top: 1px dashed #A5F3FC; padding-top: 8px;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: #0891B2; margin-bottom: 6px;">🎯 أكثر القواعد المستهدفة:</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              ${data.top_rule_tags.slice(0, 6).map((t) => `<span style="background: #CFFAFE; color: #0E7490; padding: 3px 8px; border-radius: 12px; font-size: 0.78rem; font-weight: 700;">${escapeHtml(t.rule_tag)} (${t.count})</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (categories.length === 0 && !trapNoticeHtml) {
         radarStatsBars.innerHTML = '<p style="color:#155E75; font-size:0.85rem;">لا توجد إحصائيات تراكمية مسجلة بعد.</p>';
         return;
       }
 
-      radarStatsBars.innerHTML = categories
+      const barsHtml = categories
         .slice(0, 5)
         .map(
           (c) => `
           <div class="radar-stat-bar">
             <div class="stat-bar-label">
-              <span>${escapeHtml(c.category)}</span>
+              <span>${escapeHtml(c.category === 'logic_l1' ? '🟠 منطق وترجمة حرفية' : (c.category === 'style' ? '🔵 أسلوب وتدفق' : '🔴 نحو وقواعد'))}</span>
               <span>${c.count} تكرار (${c.percentage}%)</span>
             </div>
             <div class="stat-bar-track">
-              <div class="stat-bar-fill" style="width: ${c.percentage}%;"></div>
+              <div class="stat-bar-fill" style="width: ${c.percentage}%; ${c.category === 'logic_l1' ? 'background: #F97316;' : (c.category === 'style' ? 'background: #3B82F6;' : 'background: #EF4444;')}"></div>
             </div>
           </div>
         `
         )
         .join('');
+
+      radarStatsBars.innerHTML = trapNoticeHtml + barsHtml + topRulesHtml;
     } catch (e) {
       console.warn('Failed to load radar stats:', e);
     }
@@ -1787,6 +2035,44 @@
       state.level = e.target.value;
       showToast(`تم ضبط المستوى المستهدف على ${state.level}`, 1500);
     });
+
+    // Tone selector (Social Context)
+    if (toneSelect) {
+      toneSelect.value = state.tone;
+      toneSelect.addEventListener('change', (e) => {
+        state.tone = e.target.value;
+        localStorage.setItem('coach_tone', state.tone);
+        showToast(`تم ضبط السياق ونبرة الحديث على ${state.tone === 'Sie' ? 'رسمي (Sie)' : 'ودي (du)'}`, 1500);
+      });
+    }
+
+    // Section 3 Dual Solution Tabs
+    if (tabBtnDirect && tabBtnNative) {
+      tabBtnDirect.addEventListener('click', () => {
+        state.activeSec3Tab = 'direct';
+        tabBtnDirect.classList.add('active');
+        tabBtnNative.classList.remove('active');
+        renderSection3();
+      });
+      tabBtnNative.addEventListener('click', () => {
+        state.activeSec3Tab = 'native';
+        tabBtnNative.classList.add('active');
+        tabBtnDirect.classList.remove('active');
+        renderSection3();
+      });
+    }
+
+    // Section 4 Category Filter Chips
+    if (sec4FilterChips && sec4FilterChips.length > 0) {
+      sec4FilterChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          sec4FilterChips.forEach((c) => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.sec4Filter = chip.getAttribute('data-filter') || 'all';
+          renderSection4();
+        });
+      });
+    }
 
     // Quick samples
     document.querySelectorAll('.btn-sample').forEach((btn) => {

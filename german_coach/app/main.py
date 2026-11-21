@@ -98,6 +98,7 @@ async def serve_index():
 class CorrectionRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=2000, description="German sentence to correct (can contain embedded Arabic words).")
     level: str = Field(default="B2", pattern="^(B1|B2|C1|C2|b1|b2|c1|c2)$", description="Target CEFR level.")
+    tone: str = Field(default="du", pattern="^(du|Sie|DU|SIE)$", description="Social context / tone: du (friendly) or Sie (formal).")
     force_refresh: bool = Field(default=False, description="Whether to bypass SQLite cache and force a new AI generation.")
 
 
@@ -172,7 +173,8 @@ async def correct_endpoint(payload: CorrectionRequest):
     """
     clean_text = payload.text.strip()
     target_level = payload.level.upper()
-    cache_key = normalize_cache_key(clean_text, target_level)
+    target_tone = "Sie" if payload.tone.lower() == "sie" else "du"
+    cache_key = normalize_cache_key(clean_text, target_level, target_tone)
 
     t_start = time.perf_counter()
 
@@ -187,13 +189,23 @@ async def correct_endpoint(payload: CorrectionRequest):
 
     # 2. Call Gemini API for live analysis
     try:
-        ai_result = await asyncio.to_thread(correct_sentence, text=clean_text, level=target_level)
+        ai_result = await asyncio.to_thread(
+            correct_sentence,
+            text=clean_text,
+            level=target_level,
+            tone=target_tone,
+        )
         elapsed_ms = round((time.perf_counter() - t_start) * 1000, 2)
 
         # 3. Persist to SQLite History & Radar Error Logs
         saved_record = save_correction(
             original_text=ai_result["original_text"],
             corrected_text=ai_result["corrected_text"],
+            direct_correction=ai_result.get("direct_correction", ai_result["corrected_text"]),
+            native_version=ai_result.get("native_version", ai_result["corrected_text"]),
+            tone=target_tone,
+            direct_arabic_meaning=ai_result.get("direct_arabic_meaning", ""),
+            native_arabic_meaning=ai_result.get("native_arabic_meaning", ""),
             level=ai_result["level"],
             explanation=ai_result.get("explanation", ""),
             arabic_translations=ai_result.get("arabic_translations", []),

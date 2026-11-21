@@ -32,6 +32,11 @@ def init_db() -> None:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     original_text TEXT NOT NULL,
                     corrected_text TEXT NOT NULL,
+                    direct_correction TEXT DEFAULT '',
+                    native_version TEXT DEFAULT '',
+                    tone TEXT DEFAULT 'du',
+                    direct_arabic_meaning TEXT DEFAULT '',
+                    native_arabic_meaning TEXT DEFAULT '',
                     level TEXT NOT NULL,
                     explanation TEXT,
                     arabic_translations TEXT DEFAULT '[]',
@@ -50,6 +55,8 @@ def init_db() -> None:
                     error_text TEXT,
                     correction_text TEXT,
                     explanation TEXT,
+                    arabic_trap INTEGER DEFAULT 0,
+                    rule_tag TEXT DEFAULT '',
                     created_at TEXT NOT NULL,
                     FOREIGN KEY (correction_id) REFERENCES corrections(id) ON DELETE CASCADE
                 );
@@ -119,10 +126,26 @@ def init_db() -> None:
                 );
             """)
 
+            # Safe Automated Schema Migration for existing SQLite tables (run before index creation)
+            cursor = conn.cursor()
+            cursor.execute("PRAGMA table_info(error_logs);")
+            existing_err_cols = {row["name"] for row in cursor.fetchall()}
+            if "arabic_trap" not in existing_err_cols:
+                conn.execute("ALTER TABLE error_logs ADD COLUMN arabic_trap INTEGER DEFAULT 0;")
+            if "rule_tag" not in existing_err_cols:
+                conn.execute("ALTER TABLE error_logs ADD COLUMN rule_tag TEXT DEFAULT '';")
+
+            cursor.execute("PRAGMA table_info(corrections);")
+            existing_corr_cols = {row["name"] for row in cursor.fetchall()}
+            for col in ["direct_correction", "native_version", "tone", "direct_arabic_meaning", "native_arabic_meaning"]:
+                if col not in existing_corr_cols:
+                    conn.execute(f"ALTER TABLE corrections ADD COLUMN {col} TEXT DEFAULT '';")
+
             # Indexes for maximum query performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_corrections_created ON corrections(created_at DESC);")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_errors_category ON error_logs(category);")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_errors_correction_id ON error_logs(correction_id);")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_errors_arabic_trap ON error_logs(arabic_trap);")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_correction_cache_key ON correction_cache(normalized_key);")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_word_meanings_word ON word_meanings_cache(word_lower);")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_turns_id ON turns(id ASC);")
@@ -159,12 +182,21 @@ def save_correction(
     diff_data: Optional[List[Dict[str, Any]]] = None,
     contextual_examples: Optional[List[str]] = None,
     errors: Optional[List[Dict[str, Any]]] = None,
+    direct_correction: Optional[str] = None,
+    native_version: Optional[str] = None,
+    tone: Optional[str] = "du",
+    direct_arabic_meaning: Optional[str] = None,
+    native_arabic_meaning: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Saves a sentence correction and all its classified errors to SQLite."""
     arabic_translations = arabic_translations or []
     diff_data = diff_data or []
     contextual_examples = contextual_examples or []
     errors = errors or []
+    direct_corr = direct_correction or corrected_text
+    native_ver = native_version or corrected_text
+    dir_ar = direct_arabic_meaning or ""
+    nat_ar = native_arabic_meaning or ""
     now_iso = datetime.now(timezone.utc).isoformat()
 
     conn = get_connection()
@@ -174,13 +206,19 @@ def save_correction(
             cursor.execute(
                 """
                 INSERT INTO corrections (
-                    original_text, corrected_text, level, explanation,
+                    original_text, corrected_text, direct_correction, native_version,
+                    tone, direct_arabic_meaning, native_arabic_meaning, level, explanation,
                     arabic_translations, diff_data, contextual_examples, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     original_text,
                     corrected_text,
+                    direct_corr,
+                    native_ver,
+                    tone or "du",
+                    dir_ar,
+                    nat_ar,
                     level.upper(),
                     explanation or "",
                     json.dumps(arabic_translations, ensure_ascii=False),
@@ -192,18 +230,28 @@ def save_correction(
             correction_id = cursor.lastrowid
 
             for err in errors:
+                is_trap = 1 if err.get("arabic_trap") else 0
+                r_tag = err.get("rule_tag", "")
+                err_text = err.get("original") or err.get("error_text", "")
+                corr_text = err.get("correction") or err.get("correction_text", "")
+                expl = err.get("explanation_ar") or err.get("explanation", "")
+                cat = err.get("category", "grammar")
+
                 cursor.execute(
                     """
                     INSERT INTO error_logs (
-                        correction_id, category, error_text, correction_text, explanation, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?)
+                        correction_id, category, error_text, correction_text, explanation,
+                        arabic_trap, rule_tag, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         correction_id,
-                        err.get("category", "Sonstiges"),
-                        err.get("error_text", ""),
-                        err.get("correction_text", ""),
-                        err.get("explanation", ""),
+                        cat,
+                        err_text,
+                        corr_text,
+                        expl,
+                        is_trap,
+                        r_tag,
                         now_iso,
                     ),
                 )
@@ -212,6 +260,11 @@ def save_correction(
             "id": correction_id,
             "original_text": original_text,
             "corrected_text": corrected_text,
+            "direct_correction": direct_corr,
+            "native_version": native_ver,
+            "tone": tone or "du",
+            "direct_arabic_meaning": dir_ar,
+            "native_arabic_meaning": nat_ar,
             "level": level.upper(),
             "explanation": explanation or "",
             "arabic_translations": arabic_translations,
@@ -231,7 +284,8 @@ def get_history(limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
         cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT id, original_text, corrected_text, level, explanation,
+            SELECT id, original_text, corrected_text, direct_correction, native_version,
+                   tone, direct_arabic_meaning, native_arabic_meaning, level, explanation,
                    arabic_translations, diff_data, contextual_examples, created_at
             FROM corrections
             ORDER BY id DESC
@@ -246,7 +300,8 @@ def get_history(limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
             cid = row["id"]
             cursor.execute(
                 """
-                SELECT id, category, error_text, correction_text, explanation, created_at
+                SELECT id, category, error_text, correction_text, explanation,
+                       arabic_trap, rule_tag, created_at
                 FROM error_logs
                 WHERE correction_id = ?
                 ORDER BY id ASC
@@ -261,6 +316,8 @@ def get_history(limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
                     "error_text": er["error_text"],
                     "correction_text": er["correction_text"],
                     "explanation": er["explanation"],
+                    "arabic_trap": bool(er["arabic_trap"]) if "arabic_trap" in er.keys() else False,
+                    "rule_tag": er["rule_tag"] if "rule_tag" in er.keys() else "",
                     "created_at": er["created_at"],
                 }
                 for er in error_rows
@@ -270,6 +327,11 @@ def get_history(limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
                 "id": row["id"],
                 "original_text": row["original_text"],
                 "corrected_text": row["corrected_text"],
+                "direct_correction": row["direct_correction"] if "direct_correction" in row.keys() and row["direct_correction"] else row["corrected_text"],
+                "native_version": row["native_version"] if "native_version" in row.keys() and row["native_version"] else row["corrected_text"],
+                "tone": row["tone"] if "tone" in row.keys() and row["tone"] else "du",
+                "direct_arabic_meaning": row["direct_arabic_meaning"] if "direct_arabic_meaning" in row.keys() else "",
+                "native_arabic_meaning": row["native_arabic_meaning"] if "native_arabic_meaning" in row.keys() else "",
                 "level": row["level"],
                 "explanation": row["explanation"],
                 "arabic_translations": json.loads(row["arabic_translations"] or "[]"),
@@ -294,6 +356,16 @@ def get_radar_stats() -> Dict[str, Any]:
         cursor.execute("SELECT COUNT(*) FROM error_logs")
         total_errors = cursor.fetchone()[0]
 
+        # Arabic traps count
+        arabic_traps_count = 0
+        try:
+            cursor.execute("SELECT COUNT(*) FROM error_logs WHERE arabic_trap = 1")
+            arabic_traps_count = cursor.fetchone()[0]
+        except Exception:
+            arabic_traps_count = 0
+
+        # Category Breakdown
+        category_breakdown = {"grammar": 0, "logic_l1": 0, "style": 0}
         cursor.execute(
             """
             SELECT category, COUNT(*) as count
@@ -310,9 +382,12 @@ def get_radar_stats() -> Dict[str, Any]:
             cat_count = r["count"]
             pct = round((cat_count / total_errors * 100), 1) if total_errors > 0 else 0.0
 
+            if cat_name in category_breakdown:
+                category_breakdown[cat_name] = cat_count
+
             cursor.execute(
                 """
-                SELECT error_text, correction_text, explanation
+                SELECT error_text, correction_text, explanation, rule_tag, arabic_trap
                 FROM error_logs
                 WHERE category = ?
                 ORDER BY id DESC
@@ -325,6 +400,8 @@ def get_radar_stats() -> Dict[str, Any]:
                     "error_text": er["error_text"],
                     "correction_text": er["correction_text"],
                     "explanation": er["explanation"],
+                    "rule_tag": er["rule_tag"] if "rule_tag" in er.keys() else "",
+                    "arabic_trap": bool(er["arabic_trap"]) if "arabic_trap" in er.keys() else False,
                 }
                 for er in cursor.fetchall()
             ]
@@ -335,6 +412,26 @@ def get_radar_stats() -> Dict[str, Any]:
                 "percentage": pct,
                 "recent_examples": examples,
             })
+
+        # Top Rule Tags
+        top_rule_tags = []
+        try:
+            cursor.execute(
+                """
+                SELECT rule_tag, category, COUNT(*) as cnt
+                FROM error_logs
+                WHERE rule_tag IS NOT NULL AND rule_tag != ''
+                GROUP BY rule_tag
+                ORDER BY cnt DESC
+                LIMIT 8
+                """
+            )
+            top_rule_tags = [
+                {"rule_tag": r["rule_tag"], "category": r["category"], "count": r["cnt"]}
+                for r in cursor.fetchall()
+            ]
+        except Exception:
+            top_rule_tags = []
 
         cursor.execute(
             """
@@ -348,6 +445,9 @@ def get_radar_stats() -> Dict[str, Any]:
         return {
             "total_corrections": total_corrections,
             "total_errors": total_errors,
+            "arabic_traps_count": arabic_traps_count,
+            "category_breakdown": category_breakdown,
+            "top_rule_tags": top_rule_tags,
             "categories": categories,
             "level_breakdown": level_counts,
         }
@@ -359,10 +459,10 @@ def get_radar_stats() -> Dict[str, Any]:
 # Phase 4A: SQLite Caching (Correction Cache & Word Meanings Cache)
 # ============================================================================
 
-def normalize_cache_key(text: str, level: str) -> str:
-    """Normalizes sentence and level into a canonical cache key."""
+def normalize_cache_key(text: str, level: str, tone: str = "du") -> str:
+    """Normalizes sentence, level, and tone into a canonical cache key."""
     clean = " ".join(text.strip().lower().split())
-    return f"{level.upper()}:{clean}"
+    return f"{level.upper()}:{tone.lower()}:{clean}"
 
 
 def get_cached_correction(normalized_key: str) -> Optional[Dict[str, Any]]:

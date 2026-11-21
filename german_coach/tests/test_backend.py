@@ -142,7 +142,7 @@ class TestGermanCoachBackend(unittest.TestCase):
 
     def test_correction_caching(self):
         key = normalize_cache_key("Ich habe ein Buch gekauft.", "B2")
-        self.assertEqual(key, "B2:ich habe ein buch gekauft.")
+        self.assertEqual(key, "B2:du:ich habe ein buch gekauft.")
 
         sample_data = {
             "corrected_text": "Ich habe ein Buch gekauft.",
@@ -313,6 +313,75 @@ class TestGermanCoachBackend(unittest.TestCase):
         self.assertEqual(resp_corr.status_code, 200)
         self.assertTrue(resp_corr.json()["cached"])
         self.assertLess(resp_corr.json()["elapsed_ms"], 50.0)
+
+    def test_reference_sentence_correction_engine(self):
+        """
+        Tests the 4-layer correction engine on the reference sentence:
+        Verifies logic_l1 (Arabic traps), grammar, silent ASR cleanup,
+        conjunction preservation, and non-repetition in native_version.
+        """
+        ref_text = (
+            "hallo und Bruder ich möchte mal mit dir sprechen bist du bereit für ein nettes Gespräch "
+            "wir haben gestern vereinbart dass wir gerade ein nettes Gespräch führen wie gestern "
+            "was hältst du davon wenn wir aber etwas anders machen weil ich gerade auf meinem Laptop Sitze okay sag mal wenn"
+        )
+        result = correct_sentence(ref_text, level="B2", tone="du")
+        self.assertIn("direct_correction", result)
+        self.assertIn("native_version", result)
+        self.assertIn("errors", result)
+
+        errors = result["errors"]
+
+        # 1. auf meinem Laptop identified as logic_l1 with arabic_trap: true
+        laptop_err = next((e for e in errors if "laptop" in e.get("original", "").lower()), None)
+        self.assertIsNotNone(laptop_err, "auf meinem Laptop must be identified as an error")
+        self.assertEqual(laptop_err.get("category"), "logic_l1")
+        self.assertTrue(laptop_err.get("arabic_trap"))
+        self.assertTrue(
+            "am laptop" in laptop_err.get("correction", "").lower()
+            or "vor meinem laptop" in laptop_err.get("correction", "").lower()
+        )
+
+        # 2. etwas anders -> etwas anderes (grammar)
+        anders_err = next((e for e in errors if "anders" in e.get("original", "").lower()), None)
+        self.assertIsNotNone(anders_err, "etwas anders must be identified as an error")
+        self.assertEqual(anders_err.get("category"), "grammar")
+        self.assertIn("anderes", anders_err.get("correction", "").lower())
+
+        # 3. wenn -> wann (grammar)
+        wenn_err = next((e for e in errors if "wenn" in e.get("original", "").lower()), None)
+        self.assertIsNotNone(wenn_err, "wenn/sag mal wenn must be identified as an error")
+        self.assertEqual(wenn_err.get("category"), "grammar")
+        self.assertIn("wann", wenn_err.get("correction", "").lower())
+
+        # 4. Silent ASR cleanup: Sitze casing and punctuation are not counted in errors
+        sitze_as_grammar = [
+            e for e in errors
+            if e.get("original", "").strip() == "Sitze" and e.get("category") == "grammar"
+        ]
+        self.assertEqual(len(sitze_as_grammar), 0, "Casing of Sitze should not be counted as a grammar error")
+
+        # 5. Connector 'weil' preserved
+        self.assertIn("weil", result["direct_correction"].lower())
+
+        # 6. native_version does not repeat 'ein nettes Gespräch'
+        native = result["native_version"].lower()
+        self.assertLessEqual(native.count("nettes gespräch"), 1)
+
+    def test_radar_and_history_endpoints_with_migration(self):
+        """Verifies /api/radar and /api/history return intact data including arabic_traps."""
+        client = TestClient(app)
+        res_radar = client.get("/api/radar")
+        self.assertEqual(res_radar.status_code, 200)
+        data = res_radar.json()
+        self.assertIn("arabic_traps_count", data)
+        self.assertIn("categories", data)
+        self.assertIn("total_corrections", data)
+
+        res_hist = client.get("/api/history")
+        self.assertEqual(res_hist.status_code, 200)
+        hist_data = res_hist.json()
+        self.assertIn("items", hist_data)
 
 
 if __name__ == "__main__":

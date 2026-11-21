@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Lexend:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css?v=25.0">
+  <link rel="stylesheet" href="/static/styles.css?v=26.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
   <!-- JSZip for clean client-side Word (.docx) generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -37,6 +37,15 @@
               <option value="B2" selected>B2</option>
               <option value="C1">C1</option>
               <option value="C2">C2</option>
+            </select>
+          </div>
+
+          <!-- Tone / Social Context Selector -->
+          <div class="level-selector-wrap" title="تحديد السياق الاجتماعي ونبرة الحديث">
+            <span>السياق:</span>
+            <select id="tone-select" class="level-select" aria-label="اختيار السياق الاجتماعي">
+              <option value="du" selected>ودي (du)</option>
+              <option value="Sie">رسمي (Sie)</option>
             </select>
           </div>
 
@@ -209,10 +218,21 @@
         </div>
       </div>
 
+      <!-- Section 2 3-Color Legend -->
+      <div class="sec2-legend-bar">
+        <span class="legend-title">دليل الألوان:</span>
+        <span class="legend-item legend-grammar"><span class="legend-dot dot-grammar"></span> 🔴 قواعد ونحو</span>
+        <span class="legend-item legend-logic"><span class="legend-dot dot-logic"></span> 🟠 منطق وفخ عربي</span>
+        <span class="legend-item legend-style"><span class="legend-dot dot-style"></span> 🔵 أسلوب وتكرار</span>
+      </div>
+
       <!-- Unified Passage Display Before Correction (قطعة متصلة) -->
       <div id="original-diff-box" class="original-display-box de-text">
         <span style="color: #9CA3AF;">النص الأصلي مع التظليل المشطوب على مواضع الخلل النحوي والسياقي سيظهر هنا كقطعة متصلة...</span>
       </div>
+
+      <!-- Structured Error Cards List under Section 2 -->
+      <div id="sec2-error-cards" class="sec2-error-cards-list"></div>
 
       <!-- One-line Summary / Notes -->
       <div id="summary-ar-box" class="summary-box" style="display: none;">
@@ -234,6 +254,16 @@
         <div style="display: flex; gap: 6px;">
           <button type="button" class="btn-icon-sm" id="btn-tts-toggle-rate" title="تبديل سرعة النطق">1.0x</button>
         </div>
+      </div>
+
+      <!-- Section 3 Dual Solution Tabs -->
+      <div class="sec3-tabs-bar">
+        <button type="button" id="tab-btn-direct" class="sec3-tab-btn active" data-tab="direct">
+          <span>🎯 التصحيح المباشر (أقرب لكلامك)</span>
+        </button>
+        <button type="button" id="tab-btn-native" class="sec3-tab-btn" data-tab="native">
+          <span>✨ صياغة ألماني أصلي (Native)</span>
+        </button>
       </div>
 
       <!-- Clickable Word Inspector Bar -->
@@ -297,6 +327,14 @@
           <span class="section-num">٤</span>
           <h2>الأخطاء المستبدلة والبدائل الصحيحة</h2>
         </div>
+      </div>
+
+      <!-- Replacements Filters Bar -->
+      <div class="sec4-filter-bar">
+        <button type="button" class="btn-filter-chip active" data-filter="all">الكل</button>
+        <button type="button" class="btn-filter-chip" data-filter="logic_l1">⚠️ أفخاخ الترجمة والمنطق</button>
+        <button type="button" class="btn-filter-chip" data-filter="grammar">🔴 قواعد ونحو</button>
+        <button type="button" class="btn-filter-chip" data-filter="style">🔵 أسلوب وتدفق</button>
       </div>
 
       <!-- Replacements Cards List -->
@@ -397,6 +435,6 @@
   </div>
 
   <!-- Main Application Script -->
-  <script src="/static/app.js?v=25.0"></script>
+  <script src="/static/app.js?v=26.0"></script>
 </body>
 </html>
