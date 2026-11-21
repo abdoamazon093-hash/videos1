@@ -938,21 +938,58 @@
       // Find character spans in correctedText corresponding to replacements
       const spans = [];
       replacements.forEach((rep) => {
-        const right = (rep.right || '').trim();
-        if (right) {
+        const rawRight = (rep.right || '').trim();
+        const rawWrong = (rep.wrong || '').trim();
+        // Clean leading/trailing punctuation for robust substring search
+        const cleanRight = rawRight.replace(/^[^\w\u00C0-\u017F]+|[^\w\u00C0-\u017F]+$/g, '');
+        const tooltip = rawWrong ? `تصحيح: "${rawRight}" بدلاً من "${rawWrong}"` : `تصحيح: "${rawRight}"`;
+
+        let foundPhrase = false;
+        if (cleanRight) {
           let pos = 0;
           while (pos < correctedText.length) {
-            const idx = correctedText.toLowerCase().indexOf(right.toLowerCase(), pos);
+            const idx = correctedText.toLowerCase().indexOf(cleanRight.toLowerCase(), pos);
             if (idx === -1) break;
+            foundPhrase = true;
             spans.push({
               start: idx,
-              end: idx + right.length,
-              wrong: rep.wrong || '',
-              right: right,
+              end: idx + cleanRight.length,
+              wrong: rawWrong,
+              right: rawRight,
               why: rep.why || '',
+              tooltip: tooltip,
             });
-            pos = idx + right.length;
+            pos = idx + cleanRight.length;
           }
+        }
+
+        // Fallback: If full phrase wasn't found verbatim (e.g. slight punctuation difference), match distinct words introduced
+        if (!foundPhrase && cleanRight) {
+          const rightWords = cleanRight.match(/[\w\u00C0-\u017F]+/g) || [];
+          const wrongWords = new Set((rawWrong.match(/[\w\u00C0-\u017F]+/g) || []).map((w) => w.toLowerCase()));
+
+          rightWords.forEach((w) => {
+            if (!wrongWords.has(w.toLowerCase()) || rightWords.length === 1) {
+              let pos = 0;
+              while (pos < correctedText.length) {
+                const idx = correctedText.toLowerCase().indexOf(w.toLowerCase(), pos);
+                if (idx === -1) break;
+                const before = idx === 0 ? ' ' : correctedText[idx - 1];
+                const after = idx + w.length >= correctedText.length ? ' ' : correctedText[idx + w.length];
+                if (!/[\w\u00C0-\u017F]/.test(before) && !/[\w\u00C0-\u017F]/.test(after)) {
+                  spans.push({
+                    start: idx,
+                    end: idx + w.length,
+                    wrong: rawWrong,
+                    right: rawRight,
+                    why: rep.why || '',
+                    tooltip: tooltip,
+                  });
+                }
+                pos = idx + w.length;
+              }
+            }
+          });
         }
       });
 
@@ -967,16 +1004,22 @@
         const end = start + token.length;
 
         const isWord = /^[\w\u00C0-\u017F]+$/.test(token);
-        if (isWord) {
-          const matchedSpan = spans.find((s) => s.start <= start && end <= s.end);
-          if (matchedSpan) {
-            const tooltip = matchedSpan.wrong ? `تصحيح: "${matchedSpan.right}" بدلاً من "${matchedSpan.wrong}"` : 'تم التصحيح';
+        const matchedSpan = spans.find((s) => s.start <= start && end <= s.end);
+
+        if (matchedSpan) {
+          if (isWord) {
+            const tooltip = matchedSpan.tooltip || 'تم تصحيح هذه الكلمة';
             passageHtml += `<span class="clickable-word diff-corrected-highlight" data-word="${escapeHtml(token)}" title="${escapeHtml(tooltip)}">${escapeHtml(token)}</span>`;
           } else {
-            passageHtml += `<span class="clickable-word" data-word="${escapeHtml(token)}">${escapeHtml(token)}</span>`;
+            // Space or punctuation within the continuous highlighted span
+            passageHtml += `<span class="diff-highlight-connector">${escapeHtml(token)}</span>`;
           }
         } else {
-          passageHtml += escapeHtml(token);
+          if (isWord) {
+            passageHtml += `<span class="clickable-word" data-word="${escapeHtml(token)}">${escapeHtml(token)}</span>`;
+          } else {
+            passageHtml += escapeHtml(token);
+          }
         }
       }
 

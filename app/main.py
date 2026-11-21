@@ -156,21 +156,44 @@ def serve_vocab():
 def serve_coach():
     index_file = COACH_DIR / "app" / "static" / "index.html"
     if index_file.exists():
-        return FileResponse(index_file, headers={"Cache-Control": "no-cache"})
+        return FileResponse(
+            index_file,
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            }
+        )
     raise HTTPException(status_code=404, detail="German Coach index.html not found.")
 
-@app.get("/static/styles.css")
+@app.api_route("/static/styles.css", methods=["GET", "HEAD"])
 def serve_coach_css():
     css_file = COACH_DIR / "app" / "static" / "styles.css"
     if css_file.exists():
-        return FileResponse(css_file, media_type="text/css")
+        return FileResponse(
+            css_file,
+            media_type="text/css",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            }
+        )
     return Response(status_code=404)
 
-@app.get("/static/app.js")
+@app.api_route("/static/app.js", methods=["GET", "HEAD"])
 def serve_coach_js():
     js_file = COACH_DIR / "app" / "static" / "app.js"
     if js_file.exists():
-        return FileResponse(js_file, media_type="application/javascript")
+        return FileResponse(
+            js_file,
+            media_type="application/javascript",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            }
+        )
     return Response(status_code=404)
 
 # Static files for unified hub
