@@ -21,20 +21,26 @@ def test_vocab_view(client):
     assert "text/html" in response.headers["content-type"]
     assert "Vocab Tutor" in response.text
 
+def test_coach_static_assets(client):
+    res_css = client.get("/static/styles.css")
+    assert res_css.status_code == 200
+    assert "text/css" in res_css.headers["content-type"]
+    assert "diff-corrected-highlight" in res_css.text
+    assert "btn-mic-stop" in res_css.text
+
+    res_js = client.get("/static/app.js")
+    assert res_js.status_code == 200
+    assert "javascript" in res_js.headers["content-type"]
+    assert "diff-corrected-highlight" in res_js.text
+    assert "resetMicSilenceTimer" in res_js.text
+    assert "btnMicStop" in res_js.text
+
 def test_coach_view(client):
     response = client.get("/coach/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "German Coach" in response.text
-
-def test_coach_static_assets(client):
-    res_css = client.get("/static/styles.css")
-    assert res_css.status_code == 200
-    assert "text/css" in res_css.headers["content-type"]
-
-    res_js = client.get("/static/app.js")
-    assert res_js.status_code == 200
-    assert "javascript" in res_js.headers["content-type"]
+    assert "btn-mic-stop" in response.text
 
 def test_health_endpoints(client):
     res_simple = client.get("/health")

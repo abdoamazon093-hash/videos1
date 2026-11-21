@@ -123,8 +123,10 @@ Deine Aufgaben:
 6. "replacements": Liste NUR echter Kontext- und Grammatikfehler (OHNE reine Großschreibung und OHNE Kommasetzung):
    - "wrong": Das fehlerhafte Wort oder Segment
    - "right": Die korrekte deutsche Form
+   - "right_ar": Präzise arabische Übersetzung der korrekten deutschen Form (z.B. "تم تغيير ذلك", "أو؟", "تم تطبيقه بالفعل")
    - "why": Kurze Erklärung auf Arabisch (5-8 Wörter)
    - "example": Kurzer alltagsnaher deutscher Mustersatz
+   - "example_ar": Präzise arabische Übersetzung des Mustersatzes
    - "category": Eine aus: "Kasus" | "Wortstellung" | "Verb" | "Wortschatz" | "Konjunktion" | "Präposition" | "Adjektivdeklination" | "Passiv" | "Konjunktiv II" | "Sonstiges"
 7. "radar_rules": Grammatikregeln und Strukturen im Satz:
    - "segment": Der Teil im Satz
@@ -147,8 +149,10 @@ Du MUSST ausschließlich ein valides JSON-Objekt zurückgeben:
     {
       "wrong": "...",
       "right": "...",
+      "right_ar": "...",
       "why": "...",
       "example": "...",
+      "example_ar": "...",
       "category": "Kasus"
     }
   ],

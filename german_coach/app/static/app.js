@@ -18,6 +18,8 @@
     recognition: null,
     silenceTimer: null,
     silenceDelayMs: 650, // Fast natural micro-pause debounce
+    micSilenceAutoStopTimer: null,
+    lastSpeechTimestamp: 0,
     typingTimer: null,
     currentAbortController: null,
     currentWordData: null,
@@ -59,6 +61,7 @@
   const mainInput = document.getElementById('main-input');
   const btnMicDe = document.getElementById('btn-mic-de');
   const btnMicAr = document.getElementById('btn-mic-ar');
+  const btnMicStop = document.getElementById('btn-mic-stop');
   const micStateLabel = document.getElementById('mic-state-label');
   const btnDiagMic = document.getElementById('btn-diag-mic');
   const micVolumeMeter = document.getElementById('mic-volume-meter');
@@ -356,6 +359,27 @@
     if (micVolumeBar) micVolumeBar.style.width = '0%';
   }
 
+  // 30-Second Inactivity Auto-Stop Timer
+  function resetMicSilenceTimer() {
+    clearTimeout(state.micSilenceAutoStopTimer);
+    if (!state.isRecording) return;
+
+    state.lastSpeechTimestamp = Date.now();
+    state.micSilenceAutoStopTimer = setTimeout(() => {
+      if (state.isRecording) {
+        console.info('Auto-stopping mic after 30 seconds of silence.');
+        stopRecording();
+        updateLiveStatus('⏹️ تم إيقاف المايك تلقائياً لتوفير الطاقة بعد 30 ثانية من الصمت.');
+        showToast('⏹️ تم إيقاف المايك تلقائياً بعد 30 ثانية من الصمت.', 4000);
+      }
+    }, 30000);
+  }
+
+  function clearMicSilenceTimer() {
+    clearTimeout(state.micSilenceAutoStopTimer);
+    state.micSilenceAutoStopTimer = null;
+  }
+
   // Create a clean, isolated SpeechRecognition session
   function createSpeechRecognition(langCode) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -387,6 +411,8 @@
       rec.onstart = () => {
         state.isRecording = true;
         state.activeMicLang = langCode;
+        resetMicSilenceTimer();
+        if (btnMicStop) btnMicStop.classList.add('recording-active');
         if (langCode === 'de-DE') {
           btnMicDe.classList.add('active-recording');
           btnMicAr.classList.remove('active-recording');
@@ -400,15 +426,18 @@
       };
 
       rec.onaudiostart = () => {
+        resetMicSilenceTimer();
         updateLiveStatus('🎙️ تم فتح قناة الصوت في المايك...');
       };
 
       rec.onspeechstart = () => {
+        resetMicSilenceTimer();
         updateLiveStatus('🗣️ تم التقاط صوت كلام...');
       };
 
       rec.onresult = (event) => {
         if (state.isTtsSpeaking) return;
+        resetMicSilenceTimer();
 
         let finalChunk = '';
         let interimChunk = '';
@@ -480,6 +509,13 @@
       };
 
       rec.onend = () => {
+        // Stop if 30 seconds of silence elapsed
+        if (state.lastSpeechTimestamp > 0 && Date.now() - state.lastSpeechTimestamp >= 30000) {
+          stopRecording();
+          updateLiveStatus('⏹️ تم إيقاف المايك تلقائياً بعد 30 ثانية من الصمت.');
+          return;
+        }
+
         // Continuous listening auto-restart with a clean fresh instance
         if (state.isRecording && state.continuousMicEnabled && !state.isTtsSpeaking) {
           clearTimeout(state.micRestartTimer);
@@ -553,6 +589,7 @@
   function stopRecording() {
     state.isRecording = false;
     state.activeMicLang = null;
+    clearMicSilenceTimer();
     clearTimeout(state.silenceTimer);
     clearTimeout(state.micRestartTimer);
     stopSpeaking();
@@ -571,6 +608,7 @@
   function stopRecordingUI() {
     btnMicDe.classList.remove('active-recording');
     btnMicAr.classList.remove('active-recording');
+    if (btnMicStop) btnMicStop.classList.remove('recording-active');
     micStateLabel.textContent = 'جاهز للاستماع';
     updateLiveStatus('⚡ التصحيح التلقائي الفوري نشط');
     if (micVolumeMeter) micVolumeMeter.style.display = 'none';
@@ -879,7 +917,7 @@
     }
   }
 
-  // Render Section 3: Correct German Text (Unified Passage - قطعة متصلة with Clickable Words)
+  // Render Section 3: Correct German Text (Unified Passage - قطعة متصلة with Clickable Words & Highlighter on Corrections)
   function renderSection3() {
     if (!correctedHeroBox) return;
 
@@ -891,20 +929,62 @@
       return;
     }
 
-    const fullGerman = getFullCorrectedGerman();
+    // Build the list of passages with highlighted corrections
+    let fullHtml = '';
+    state.sessionPassages.forEach((p) => {
+      const correctedText = p.corrected || '';
+      const replacements = p.replacements || [];
 
-    // Wrap words across the entire passage into clickable spans
-    const tokens = fullGerman.split(/(\s+|[.,!?;:"])/);
-    const wordsHtml = tokens
-      .map((tok) => {
-        if (/^\w+$/i.test(tok) || /^[\u00C0-\u017F\w]+$/.test(tok)) {
-          return `<span class="clickable-word" data-word="${escapeHtml(tok)}">${escapeHtml(tok)}</span>`;
+      // Find character spans in correctedText corresponding to replacements
+      const spans = [];
+      replacements.forEach((rep) => {
+        const right = (rep.right || '').trim();
+        if (right) {
+          let pos = 0;
+          while (pos < correctedText.length) {
+            const idx = correctedText.toLowerCase().indexOf(right.toLowerCase(), pos);
+            if (idx === -1) break;
+            spans.push({
+              start: idx,
+              end: idx + right.length,
+              wrong: rep.wrong || '',
+              right: right,
+              why: rep.why || '',
+            });
+            pos = idx + right.length;
+          }
         }
-        return escapeHtml(tok);
-      })
-      .join('');
+      });
 
-    correctedHeroBox.innerHTML = wordsHtml;
+      // Tokenize correctedText into words, punctuation, and spaces
+      const tokenRegex = /[\w\u00C0-\u017F]+|[^\w\s\u00C0-\u017F]+|\s+/g;
+      let match;
+      let passageHtml = '';
+
+      while ((match = tokenRegex.exec(correctedText)) !== null) {
+        const token = match[0];
+        const start = match.index;
+        const end = start + token.length;
+
+        const isWord = /^[\w\u00C0-\u017F]+$/.test(token);
+        if (isWord) {
+          const matchedSpan = spans.find((s) => s.start <= start && end <= s.end);
+          if (matchedSpan) {
+            const tooltip = matchedSpan.wrong ? `تصحيح: "${matchedSpan.right}" بدلاً من "${matchedSpan.wrong}"` : 'تم التصحيح';
+            passageHtml += `<span class="clickable-word diff-corrected-highlight" data-word="${escapeHtml(token)}" title="${escapeHtml(tooltip)}">${escapeHtml(token)}</span>`;
+          } else {
+            passageHtml += `<span class="clickable-word" data-word="${escapeHtml(token)}">${escapeHtml(token)}</span>`;
+          }
+        } else {
+          passageHtml += escapeHtml(token);
+        }
+      }
+
+      if (fullHtml) fullHtml += ' ';
+      fullHtml += passageHtml;
+    });
+
+    correctedHeroBox.innerHTML = fullHtml;
 
     // Translation sub-block
     const fullArabic = getFullArabicTranslation();
@@ -973,28 +1053,56 @@
     allReplacements.forEach((rep) => {
       const card = document.createElement('div');
       card.className = 'replacement-card';
+
+      const rightArHtml = rep.right_ar
+        ? `<span class="rep-right-ar">(${escapeHtml(rep.right_ar)})</span>`
+        : '';
+
+      const whyHtml = rep.why
+        ? `<div class="rep-explanation" style="margin-top: 4px; color: #92400E; font-size: 0.92rem; font-weight: 600;">
+             <span style="color: #B45309; font-weight: 700;">السبب:</span> ${escapeHtml(rep.why)}
+           </div>`
+        : '';
+
+      let exampleBoxHtml = '';
+      if (rep.example) {
+        exampleBoxHtml = `
+          <div class="rep-example-box">
+            <div class="rep-example de-text" style="font-weight: 600; color: #1E293B; font-size: 0.95rem;">
+              <span style="color: #D97706; font-weight: 700;">مثال:</span> ${escapeHtml(rep.example)}
+            </div>
+            ${rep.example_ar ? `
+              <div class="rep-example-ar">
+                <span style="color: #059669; font-weight: 700;">الترجمة:</span> ${escapeHtml(rep.example_ar)}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
       card.innerHTML = `
         <div class="rep-top-row">
-          <div class="rep-words de-text">
+          <div class="rep-words de-text" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <span class="rep-wrong">${escapeHtml(rep.wrong)}</span>
-            <span>➔</span>
+            <span style="color: #94A3B8;">➔</span>
             <span class="rep-right">${escapeHtml(rep.right)}</span>
+            ${rightArHtml}
           </div>
           <span class="rep-category-badge">${escapeHtml(rep.category || 'قاعدة')}</span>
         </div>
-        ${rep.why ? `<div class="rep-explanation">${escapeHtml(rep.why)}</div>` : ''}
-        ${rep.example ? `<div class="rep-example de-text">مثال: ${escapeHtml(rep.example)}</div>` : ''}
-        <div class="rep-actions">
-          <button type="button" class="btn-icon-sm btn-speak-rep" title="استمع">🔊</button>
-          <button type="button" class="btn-icon-sm btn-copy-rep" title="نسخ">📋</button>
+        ${whyHtml}
+        ${exampleBoxHtml}
+        <div class="rep-actions" style="margin-top: 10px;">
+          <button type="button" class="btn-icon-sm btn-speak-rep" title="استمع لنطق البديل والمثال">🔊</button>
+          <button type="button" class="btn-icon-sm btn-copy-rep" title="نسخ البديل والترجمة">📋</button>
           <button type="button" class="btn-icon-sm btn-clip-rep" title="حفظ بالحافظة">📌</button>
           <button type="button" class="btn-chip btn-ask-rep">اسأل المساعد عن هذا الخطأ</button>
         </div>
       `;
 
       card.querySelector('.btn-speak-rep').onclick = () => speakGerman(rep.right || rep.example);
-      card.querySelector('.btn-copy-rep').onclick = () => copyToClipboard(`${rep.wrong} ➔ ${rep.right} (${rep.why})`);
-      card.querySelector('.btn-clip-rep').onclick = () => saveClipDirect(rep.right, rep.why, rep.category);
+      card.querySelector('.btn-copy-rep').onclick = () => copyToClipboard(`${rep.wrong} ➔ ${rep.right}${rep.right_ar ? ` (${rep.right_ar})` : ''} - السبب: ${rep.why}`);
+      card.querySelector('.btn-clip-rep').onclick = () => saveClipDirect(rep.right, rep.right_ar ? `${rep.right_ar} — ${rep.why}` : rep.why, rep.category);
       card.querySelector('.btn-ask-rep').onclick = () => {
         assistantQuestionInput.value = `لماذا استبدلنا "${rep.wrong}" بـ "${rep.right}" في هذه الجملة؟`;
         sendAssistantQuestion();
@@ -1649,6 +1757,17 @@
     // Mic Buttons
     btnMicDe.addEventListener('click', () => startRecording('de-DE'));
     btnMicAr.addEventListener('click', () => startRecording('ar-EG'));
+    if (btnMicStop) {
+      btnMicStop.addEventListener('click', () => {
+        if (state.isRecording) {
+          stopRecording();
+          updateLiveStatus('⏹️ تم إيقاف المايك بنجاح.');
+          showToast('⏹️ تم إيقاف المايك بنجاح.', 2000);
+        } else {
+          showToast('ℹ️ المايك متوقف بالفعل.', 1500);
+        }
+      });
+    }
     if (btnDiagMic) btnDiagMic.addEventListener('click', runMicDiagnostic);
 
     // Input actions

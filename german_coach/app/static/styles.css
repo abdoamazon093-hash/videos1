@@ -446,6 +446,42 @@ body {
   animation: pulse-mic 1.4s infinite;
 }
 
+.btn-mic-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFF1F2;
+  border: 1.5px solid #FECDD3;
+  color: #BE123C;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-mic-stop:hover {
+  background: #FFE4E6;
+  border-color: #FDA4AF;
+  color: #9F1239;
+  transform: translateY(-1px);
+}
+
+.btn-mic-stop.recording-active {
+  background: #E11D48;
+  border-color: #BE123C;
+  color: #FFFFFF;
+  box-shadow: 0 0 10px rgba(225, 29, 72, 0.4);
+  animation: pulse-stop-btn 1.4s infinite;
+}
+
+@keyframes pulse-stop-btn {
+  0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(225, 29, 72, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
 @keyframes pulse-mic {
   0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
   70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -885,6 +921,51 @@ body {
   background: #DCFCE7;
   color: #047857;
   transform: translateY(-1px);
+}
+
+/* Highlighted Corrected Words in Section 3 */
+.diff-corrected-highlight {
+  background: #FEF08A !important; /* Crisp highlighter yellow */
+  color: #854D0E !important;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 700;
+  border-bottom: 2.5px solid #EAB308;
+  box-shadow: 0 1px 4px rgba(234, 179, 8, 0.35);
+  display: inline-block;
+  margin: 0 1px;
+  transition: all 0.15s ease;
+}
+
+.diff-corrected-highlight:hover {
+  background: #FDE047 !important;
+  color: #713F12 !important;
+  box-shadow: 0 2px 6px rgba(234, 179, 8, 0.5);
+  transform: translateY(-1px);
+}
+
+.rep-right-ar {
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  color: #047857;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-right: 6px;
+}
+
+.rep-example-box {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(254, 243, 199, 0.6);
+  border-right: 3px solid #F59E0B;
+  border-radius: 6px;
+}
+
+.rep-example-ar {
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  font-size: 0.88rem;
+  color: #475569;
+  margin-top: 3px;
+  font-weight: 500;
 }
 
 .sentence-translation-sub {
